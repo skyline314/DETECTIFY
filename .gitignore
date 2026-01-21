@@ -22,6 +22,5 @@ migrations/
 .DS_Store
 Thumbs.db
 
-# File model yang besar
-*.pth
+
 
