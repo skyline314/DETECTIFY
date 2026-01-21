@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from .config import config
 from .extensions import (
     db, 
@@ -43,5 +43,10 @@ def create_app(config_name='default'):
     @app.route('/hello')
     def hello():
         return "Hello, World! Factory is working."
+    
+    @app.route('/')
+    def index():
+        # Ini akan mencari file app/templates/index.html
+        return render_template('index.html')
 
     return app
