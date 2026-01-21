@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detectify - Developer Console</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #121212; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background-color: #1f1f1f; border-bottom: 1px solid #333; }
+        .console-container { margin-top: 50px; }
+        .card { background-color: #1f1f1f; border: 1px solid #333; color: white; border-radius: 10px; }
+        .status-badge { font-size: 0.8rem; padding: 5px 10px; border-radius: 20px; }
+        .log-window { background-color: #000; color: #00ff00; padding: 15px; border-radius: 5px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">🛡️ Detectify Console</a>
+        <span class="status-badge bg-success text-white">System Active</span>
+    </div>
+</nav>
+
+<div class="container console-container">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2 mb-3">Service Status</h5>
+                    <p class="mb-2">API Status: <span class="text-success fw-bold">Online</span></p>
+                    <p class="mb-2">Celery Worker: <span class="text-success fw-bold">Running</span></p>
+                    <p class="mb-2">Redis Cache: <span class="text-info fw-bold">Connected</span></p>
+                    <hr>
+                    <button class="btn btn-outline-danger btn-sm w-100" onclick="location.reload()">Refresh Console</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Detection Overview</h5>
+                    <p class="text-muted">Monitor deepfake detection activities in real-time.</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-4 text-center">
+                            <h3 class="fw-bold">0</h3>
+                            <p class="small text-secondary">Audio Task</p>
+                        </div>
+                        <div class="col-4 text-center">
+                            <h3 class="fw-bold">0</h3>
+                            <p class="small text-secondary">Image Task</p>
+                        </div>
+                        <div class="col-4 text-center">
+                            <h3 class="fw-bold">0</h3>
+                            <p class="small text-secondary">Text Task</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Live Logs</h5>
+                    <div class="log-window" id="logs">
+                        [SYSTEM] Console initialized...<br>
+                        [SYSTEM] Connected to Hugging Face Space...<br>
+                        [CORE] All ML Assets Loaded.<br>
+                        [AUTH] Accessing Developer Console...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
