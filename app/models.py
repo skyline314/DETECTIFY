@@ -1,5 +1,5 @@
 from .extensions import db
-from sqlalchemy.dialects.mysql import ENUM, JSON
+from sqlalchemy.dialects.postgresql import ENUM, JSON
 from sqlalchemy import text
 import uuid
 import enum
@@ -25,7 +25,8 @@ class User(db.Model):
     subscription_end = db.Column(db.DateTime, nullable=True) # Kapan premium habis
     
     created_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
-    updated_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+    # updated_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')) #mysql
+    updated_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
 
     is_verified = db.Column(db.Boolean, default=False, nullable=False)
     reset_token = db.Column(db.String(100), nullable=True)
