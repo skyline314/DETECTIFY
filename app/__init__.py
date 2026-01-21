@@ -9,10 +9,11 @@ from .extensions import (
     mail
 )
 from flask_cors import CORS
+import os
 
 def create_app(config_name='default'):
-    
-    app = Flask(__name__)
+    template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
+    app = Flask(__name__, template_folder=template_dir)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
     app.config.from_object(config[config_name])
