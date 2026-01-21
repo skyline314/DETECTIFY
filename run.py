@@ -10,8 +10,14 @@ app = create_app(config_name)
 app.config['SERVER_NAME'] = None
 app.config['PREFERRED_URL_SCHEME'] = 'https'
 
-if __name__ == '__main__':
-    with app.app_context():
-        # Perintah ini hanya akan membuat tabel jika tabel belum ada
+with app.app_context():
+    try:
+        from app.models import User, Transaction, AnalysisHistory
         db.create_all()
-    app.run()
+        print(" [DATABASE] Connection successful and tables verified/created.")
+    except Exception as e:
+        print(f" [DATABASE] Error initializing database: {e}")
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 7860))
+    app.run(host="0.0.0.0", port=port)
