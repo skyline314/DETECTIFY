@@ -3,142 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detectify - Master Console v7</title>
+    <title>Detectify Master Console v7</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --sidebar-width: 250px; --primary-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; }
-        body { background-color: var(--primary-dark); color: #e2e8f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* Sidebar Styles */
-        #sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; background: var(--card-bg); border-right: 1px solid #2d334a; transition: all 0.3s; z-index: 1000; }
-        .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 8px; margin: 5px 15px; }
-        .nav-link:hover, .nav-link.active { background: var(--accent); color: white; }
-        
-        /* Main Content */
-        #content { margin-left: var(--sidebar-width); padding: 30px; min-height: 100vh; }
-        .card { background: var(--card-bg); border: 1px solid #2d334a; border-radius: 15px; margin-bottom: 20px; }
-        
-        /* Preview Styles */
-        #audioPreview, #imagePreview { display: none; margin-top: 15px; max-width: 100%; border-radius: 10px; }
-        .log-stream { background: #000; color: #10b981; font-family: 'Fira Code', monospace; padding: 15px; height: 150px; overflow-y: auto; border-radius: 8px; font-size: 0.85rem; }
+        :root { --bg-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; }
+        body { background-color: var(--bg-dark); color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .sidebar { width: 260px; height: 100vh; position: fixed; background: var(--card-bg); border-right: 1px solid #2d334a; }
+        .main-content { margin-left: 260px; padding: 40px; }
+        .card { background: var(--card-bg); border: 1px solid #2d334a; border-radius: 15px; }
+        .nav-link { color: #94a3b8; margin: 5px 15px; border-radius: 8px; }
+        .nav-link.active { background: var(--accent); color: white; }
+        #imagePreview { max-width: 100%; border-radius: 10px; display: none; margin-top: 15px; }
+        .log-terminal { background: #000; color: #10b981; font-family: monospace; padding: 15px; height: 150px; overflow-y: auto; border-radius: 8px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<div id="sidebar">
-    <div class="p-4 text-center border-bottom border-secondary mb-3">
-        <h4 class="fw-bold text-primary">DETECTIFY</h4>
-        <small class="text-muted">Master Console v7</small>
+<div class="sidebar d-flex flex-column p-3">
+    <div class="text-center mb-4">
+        <h3 class="fw-bold text-primary">DETECTIFY</h3>
+        <span class="badge bg-dark border border-secondary">v7.0 Stable</span>
     </div>
-    <nav class="nav flex-column">
-        <a class="nav-link active" data-bs-toggle="tab" href="#audioSection"><i class="fas fa-microphone me-2"></i> Audio Analysis</a>
-        <a class="nav-link" data-bs-toggle="tab" href="#imageSection"><i class="fas fa-image me-2"></i> Image Analysis</a>
-        <a class="nav-link" data-bs-toggle="tab" href="#textSection"><i class="fas fa-file-alt me-2"></i> Text Analysis</a>
-        <a class="nav-link" data-bs-toggle="tab" href="#historySection"><i class="fas fa-history me-2"></i> History</a>
-        <a class="nav-link text-warning" data-bs-toggle="tab" href="#premiumSection"><i class="fas fa-crown me-2"></i> Go Premium</a>
-        <hr class="mx-3 border-secondary">
-        <a class="nav-link text-danger" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
-    </nav>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li><a href="#authSection" class="nav-link active" data-bs-toggle="tab"><i class="fas fa-user-lock me-2"></i> Auth / Register</a></li>
+        <li><a href="#audioSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-microphone me-2"></i> Audio Analysis</a></li>
+        <li><a href="#imageSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-image me-2"></i> Image Analysis</a></li>
+        <li><a href="#textSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-file-alt me-2"></i> Text Analysis</a></li>
+        <li><a href="#historySection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-history me-2"></i> History</a></li>
+        <li><a href="#premiumSection" class="nav-link text-warning" data-bs-toggle="tab"><i class="fas fa-crown me-2"></i> Premium</a></li>
+    </ul>
+    <hr class="border-secondary">
+    <a href="/auth/logout" class="btn btn-outline-danger btn-sm w-100">Logout</a>
 </div>
 
-<div id="content">
+<div class="main-content">
     <div class="tab-content">
         
-        <div class="tab-pane fade show active" id="audioSection">
-            <h2 class="mb-4">Audio Deepfake Detection</h2>
-            <div class="card p-4">
-                <input type="file" id="audioInput" class="form-control mb-3 bg-dark text-white border-secondary" accept="audio/*">
-                <audio id="audioPreview" controls class="w-100"></audio>
-                <button class="btn btn-primary mt-3 w-100 fw-bold" onclick="analyze('audio')">ANALYZE AUDIO</button>
+        <div class="tab-pane fade show active" id="authSection">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card p-4 shadow">
+                        <ul class="nav nav-tabs mb-4 border-secondary">
+                            <li class="nav-item"><a class="nav-link active bg-transparent" data-bs-toggle="tab" href="#loginForm">Login</a></li>
+                            <li class="nav-item"><a class="nav-link bg-transparent" data-bs-toggle="tab" href="#signupForm">Sign Up</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="loginForm" class="tab-pane fade show active">
+                                <form action="/auth/login" method="POST">
+                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email" required>
+                                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Password" required>
+                                    <button class="btn btn-primary w-100">Login to Dashboard</button>
+                                </form>
+                            </div>
+                            <div id="signupForm" class="tab-pane fade">
+                                <form action="/auth/register" method="POST">
+                                    <input type="text" name="username" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Username" required>
+                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email" required>
+                                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Password" required>
+                                    <button class="btn btn-success w-100">Create Account</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="audioSection">
+            <h2>Audio Deepfake Analysis</h2>
+            <div class="card p-4 mt-3">
+                <input type="file" id="audioFile" class="form-control bg-dark text-white border-secondary mb-3" accept="audio/*">
+                <audio id="audioPlayer" controls class="w-100 mb-3" style="display:none;"></audio>
+                <button class="btn btn-primary w-100" onclick="startAnalysis('audio')">Analyze Audio</button>
             </div>
         </div>
 
         <div class="tab-pane fade" id="imageSection">
-            <h2 class="mb-4">Image Deepfake Detection</h2>
-            <div class="card p-4">
-                <input type="file" id="imageInput" class="form-control mb-3 bg-dark text-white border-secondary" accept="image/*">
-                <img id="imagePreview" src="#" alt="Preview" class="img-fluid shadow-sm">
-                <button class="btn btn-primary mt-3 w-100 fw-bold" onclick="analyze('image')">ANALYZE IMAGE</button>
+            <h2>Image Deepfake Analysis</h2>
+            <div class="card p-4 mt-3 text-center">
+                <input type="file" id="imageFile" class="form-control bg-dark text-white border-secondary mb-3" accept="image/*">
+                <img id="imagePreview" src="#" alt="Preview">
+                <button class="btn btn-primary w-100 mt-3" onclick="startAnalysis('image')">Analyze Image</button>
             </div>
         </div>
 
         <div class="tab-pane fade" id="textSection">
-            <h2 class="mb-4">Text & Document Analysis</h2>
-            <div class="card p-4">
-                <textarea id="textInput" class="form-control bg-dark text-white border-secondary mb-3" rows="5" placeholder="Paste text here..."></textarea>
-                <div class="mb-3">
-                    <label class="small text-muted">Or upload file (PDF/DOCX/TXT):</label>
-                    <input type="file" id="textFile" class="form-control bg-dark text-white border-secondary">
-                </div>
-                <button class="btn btn-primary w-100 fw-bold" onclick="analyze('text')">ANALYZE TEXT</button>
+            <h2>Text & Doc Analysis</h2>
+            <div class="card p-4 mt-3">
+                <textarea class="form-control bg-dark text-white border-secondary mb-3" rows="5" placeholder="Paste your text here..."></textarea>
+                <input type="file" class="form-control bg-dark text-white border-secondary mb-3" accept=".pdf,.docx,.txt">
+                <button class="btn btn-primary w-100" onclick="startAnalysis('text')">Analyze Text</button>
             </div>
         </div>
 
         <div class="tab-pane fade" id="historySection">
-            <h2 class="mb-4">Recent Analysis History</h2>
-            <div class="card">
-                <div class="table-responsive p-3">
-                    <table class="table table-dark table-hover mb-0">
-                        <thead>
-                            <tr><th>Date</th><th>Type</th><th>Result</th><th>Score</th></tr>
-                        </thead>
-                        <tbody id="historyTable">
-                            <tr><td colspan="4" class="text-center text-muted">No history found</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+            <h2>Analysis History</h2>
+            <div class="card p-3 mt-3">
+                <table class="table table-dark table-hover">
+                    <thead><tr><th>Date</th><th>Type</th><th>Score</th><th>Status</th></tr></thead>
+                    <tbody id="historyData"><tr><td colspan="4" class="text-center text-muted">History is empty.</td></tr></tbody>
+                </table>
             </div>
         </div>
 
         <div class="tab-pane fade" id="premiumSection">
-            <h2 class="mb-4">Premium Membership</h2>
             <div class="card p-5 text-center">
                 <i class="fas fa-crown fa-4x text-warning mb-3"></i>
-                <h3>Unlock Unlimited Power</h3>
-                <p class="text-muted">Get faster processing, HD image analysis, and unlimited document history.</p>
-                <button class="btn btn-warning btn-lg mt-3 fw-bold shadow">UPGRADE NOW (Pay with Midtrans)</button>
+                <h2>Detectify Premium</h2>
+                <p>Bypass limits and get priority processing with Midtrans payment.</p>
+                <a href="/api/payment/checkout" class="btn btn-warning btn-lg fw-bold px-5">Upgrade Now</a>
             </div>
         </div>
 
     </div>
 
     <div class="mt-5">
-        <h6 class="text-muted small fw-bold">SYSTEM RUNTIME LOGS</h6>
-        <div class="log-stream" id="logs">
-            [SYSTEM] Master Console v7 initialized. Ready.
+        <h6 class="text-muted small fw-bold">RUNTIME CONSOLE</h6>
+        <div class="log-terminal" id="termLogs">
+            [SYSTEM] Ready for authentication...
         </div>
     </div>
 </div>
 
 <script>
-    // Preview Audio
-    document.getElementById('audioInput').onchange = function(e) {
-        const audio = document.getElementById('audioPreview');
-        audio.src = URL.createObjectURL(this.files[0]);
-        audio.style.display = 'block';
+    // Audio Preview Logic
+    document.getElementById('audioFile').onchange = function() {
+        const player = document.getElementById('audioPlayer');
+        player.src = URL.createObjectURL(this.files[0]);
+        player.style.display = 'block';
     };
 
-    // Preview Image
-    document.getElementById('imageInput').onchange = function(e) {
+    // Image Preview Logic
+    document.getElementById('imageFile').onchange = function() {
         const preview = document.getElementById('imagePreview');
         preview.src = URL.createObjectURL(this.files[0]);
         preview.style.display = 'block';
     };
 
-    // Generic Analyze Function
-    function analyze(type) {
-        const logs = document.getElementById('logs');
-        logs.innerHTML += `<br>[${type.toUpperCase()}] Requesting analysis for task...`;
+    function startAnalysis(type) {
+        const term = document.getElementById('termLogs');
+        term.innerHTML += `<br>[${type.toUpperCase()}] Initiating analysis...`;
+        term.scrollTop = term.scrollHeight;
         
-        // Simulasi fetch (Sesuaikan dengan endpoint Flask Anda)
-        setTimeout(() => {
-            logs.innerHTML += `<br>[SUCCESS] Task created. Check history for results.`;
-            logs.scrollTop = logs.scrollHeight;
-        }, 1500);
+        // Logic Fetch API Analysis anda disini
     }
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
