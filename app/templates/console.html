@@ -1,228 +1,297 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detectify Master Console v7 - Complete</title>
+    <title>Detectify Console v7 (Hybrid Input)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --bg-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; --sidebar-w: 260px; }
-        body { background-color: var(--bg-dark); color: #e2e8f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-w); height: 100vh; position: fixed; background: var(--card-bg); border-right: 1px solid #2d334a; z-index: 1000; }
-        .main-content { margin-left: var(--sidebar-w); padding: 40px; min-height: 100vh; }
-        
-        /* UI Elements */
-        .card { background: var(--card-bg); border: 1px solid #2d334a; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .nav-link { color: #94a3b8; margin: 5px 15px; border-radius: 8px; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { background: var(--accent); color: white; }
-        
-        /* Previews */
-        #imagePreview { max-width: 100%; border-radius: 10px; display: none; margin-top: 15px; border: 1px solid #333; }
-        #audioPlayer { display: none; margin-top: 15px; width: 100%; }
-        
-        /* Terminal */
-        .log-terminal { background: #000; color: #10b981; font-family: 'Fira Code', monospace; padding: 15px; height: 180px; overflow-y: auto; border-radius: 8px; font-size: 0.85rem; border: 1px solid #333; }
-        
-        /* Transitions */
-        .tab-pane { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-gW9UL3Oqtt0RXY-i"></script> <style>
+        .nav-tabs .nav-link.active { font-weight: bold; border-top: 3px solid #0d6efd; }
+        .console-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; max-height: 300px; overflow-y: auto; font-size: 0.85em; }
+        .list-group-item-action { cursor: pointer; }
+        .list-group-item-action:hover { background-color: #f1f3f5; }
+        .preview-area { background: #f8f9fa; border: 1px dashed #ced4da; border-radius: 5px; padding: 15px; text-align: center; margin-bottom: 15px; display: none; }
+        audio { width: 100%; margin-top: 10px; }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<div class="sidebar d-flex flex-column p-3">
-    <div class="text-center mb-4 pt-3">
-        <h3 class="fw-bold text-primary mb-0">DETECTIFY</h3>
-        <small class="text-muted">Master Console v7</small>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>🕵️‍♂️ Detectify Console <span class="badge bg-dark fs-6">v7</span></h1>
+        <div>
+            <span id="auth-status" class="badge bg-secondary me-2">Not Logged In</span>
+            <button id="btn-logout" class="btn btn-danger btn-sm" onclick="logout()" style="display:none;">🚪 Logout</button>
+        </div>
     </div>
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li><a href="#authSection" class="nav-link active" data-bs-toggle="tab"><i class="fas fa-user-shield me-2"></i> Authentication</a></li>
-        <li><a href="#audioSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-microphone me-2"></i> Audio Analysis</a></li>
-        <li><a href="#imageSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-image me-2"></i> Image Analysis</a></li>
-        <li><a href="#textSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-file-alt me-2"></i> Text Analysis</a></li>
-        <li><a href="#historySection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-history me-2"></i> History</a></li>
-        <li><a href="#premiumSection" class="nav-link text-warning" data-bs-toggle="tab"><i class="fas fa-crown me-2"></i> Premium Plan</a></li>
-    </ul>
-    <hr class="border-secondary">
-    <div class="px-3 pb-3">
-        <a href="/auth/logout" class="btn btn-outline-danger btn-sm w-100"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
-    </div>
-</div>
 
-<div class="main-content">
-    <div class="tab-content">
-        
-        <div class="tab-pane fade show active" id="authSection">
-            <div class="row justify-content-center pt-5">
-                <div class="col-md-7">
-                    <div class="card p-4">
-                        <ul class="nav nav-tabs mb-4 border-secondary justify-content-center">
-                            <li class="nav-item"><a class="nav-link active bg-transparent border-0" data-bs-toggle="tab" href="#loginForm">LOGIN</a></li>
-                            <li class="nav-item"><a class="nav-link bg-transparent border-0" data-bs-toggle="tab" href="#signupForm">SIGN UP</a></li>
-                        </ul>
-                        <div class="tab-content p-2">
-                            <div id="loginForm" class="tab-pane fade show active">
-                                <form onsubmit="handleAuth(event, '/auth/login', 'Login')">
-                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email Address" required>
-                                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Password" required>
-                                    <button class="btn btn-primary w-100 fw-bold py-2">LOG IN</button>
-                                </form>
+    <div id="auth-section" class="console-box mb-4">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#login-tab">Login</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#signup-tab">Sign Up</button></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="login-tab">
+                <div class="row g-2">
+                    <div class="col-md-5"><input type="email" id="login-email" class="form-control" placeholder="Email" value="test@example.com"></div>
+                    <div class="col-md-5"><input type="password" id="login-password" class="form-control" placeholder="Password" value="password"></div>
+                    <div class="col-md-2"><button class="btn btn-primary w-100" onclick="handleLogin()">Login</button></div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="signup-tab">
+                <div class="row g-2">
+                    <div class="col-md-3"><input type="text" id="reg-username" class="form-control" placeholder="User"></div>
+                    <div class="col-md-4"><input type="email" id="reg-email" class="form-control" placeholder="Email"></div>
+                    <div class="col-md-3"><input type="password" id="reg-password" class="form-control" placeholder="Pass"></div>
+                    <div class="col-md-2"><button class="btn btn-success w-100" onclick="handleRegister()">Register</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-section" style="display:none;">
+        <div class="console-box mb-4 border-start border-5 border-success d-flex justify-content-between align-items-center">
+            <div>
+                <h4>💳 Account & Payment</h4>
+                <p class="mb-0">User: <strong id="user-email-display">-</strong></p>
+            </div>
+            <button class="btn btn-warning fw-bold" onclick="buyPremium()">⚡ Upgrade Premium</button>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="console-box mb-4">
+                    <h4 class="mb-3">🧠 AI Detection Tools</h4>
+                    
+                    <ul class="nav nav-pills mb-3" id="pills-tab">
+                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-audio">🎤 Audio</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-image">🖼️ Image</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-text">📝 Text/Doc</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="pills-audio">
+                            <input type="file" id="audio-file" class="form-control mb-3" accept="audio/*">
+                            <div id="audio-preview-container" class="preview-area">
+                                <strong>🎵 Preview:</strong><audio id="audio-player" controls></audio>
                             </div>
-                            <div id="signupForm" class="tab-pane fade">
-                                <form onsubmit="handleAuth(event, '/auth/register', 'Register')">
-                                    <input type="text" name="username" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Full Name / Username" required>
-                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email Address" required>
-                                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Password" required>
-                                    <button class="btn btn-success w-100 fw-bold py-2">CREATE ACCOUNT</button>
-                                </form>
+                            <button class="btn btn-dark w-100" onclick="analyzeAudio()">Upload & Analyze Audio</button>
+                            <div class="mt-3" id="audio-result"></div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-image">
+                            <input type="file" id="image-file" class="form-control mb-3" accept="image/*">
+                            <div id="image-preview-container" class="preview-area">
+                                <img id="image-preview" style="max-height: 200px;" class="img-fluid rounded">
                             </div>
+                            <button class="btn btn-dark w-100" onclick="analyzeImage()">Upload & Detect Image</button>
+                            <div class="mt-3" id="image-result"></div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-text">
+                            <div class="btn-group w-100 mb-3" role="group">
+                                <input type="radio" class="btn-check" name="textMode" id="mode-type" value="type" checked onclick="toggleTextMode()">
+                                <label class="btn btn-outline-primary" for="mode-type">✍️ Type Text</label>
+
+                                <input type="radio" class="btn-check" name="textMode" id="mode-upload" value="upload" onclick="toggleTextMode()">
+                                <label class="btn btn-outline-primary" for="mode-upload">📂 Upload File</label>
+                            </div>
+
+                            <div id="input-area-type">
+                                <textarea id="text-input-manual" class="form-control mb-3" rows="5" placeholder="Paste or type article text here..."></textarea>
+                            </div>
+
+                            <div id="input-area-upload" style="display:none;">
+                                <div class="alert alert-info py-2"><small>Supported: <strong>.txt, .pdf, .docx</strong></small></div>
+                                <input type="file" id="doc-file" class="form-control mb-3" accept=".txt,.pdf,.docx,.doc">
+                            </div>
+                            
+                            <button class="btn btn-dark w-100" onclick="analyzeHybridText()">Analyze Content</button>
+                            <div class="mt-3" id="text-result"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="tab-pane fade" id="audioSection">
-            <h2 class="fw-bold mb-4"><i class="fas fa-microphone text-primary me-2"></i>Audio Deepfake Detection</h2>
-            <div class="card p-4">
-                <label class="mb-2 text-muted">Upload Audio File (.mp3, .wav):</label>
-                <input type="file" id="audioFile" class="form-control bg-dark text-white border-secondary mb-3" accept="audio/*">
-                <audio id="audioPlayer" controls class="shadow-sm"></audio>
-                <button class="btn btn-primary w-100 mt-4 fw-bold py-2" onclick="processTask('audio')">START AUDIO ANALYSIS</button>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="imageSection">
-            <h2 class="fw-bold mb-4"><i class="fas fa-image text-primary me-2"></i>Image Analysis</h2>
-            <div class="card p-4 text-center">
-                <input type="file" id="imageFile" class="form-control bg-dark text-white border-secondary mb-3" accept="image/*">
-                <img id="imagePreview" src="#" alt="Preview Image" class="shadow">
-                <button class="btn btn-primary w-100 mt-4 fw-bold py-2" onclick="processTask('image')">START IMAGE ANALYSIS</button>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="textSection">
-            <h2 class="fw-bold mb-4"><i class="fas fa-file-alt text-primary me-2"></i>Text & Document Analysis</h2>
-            <div class="card p-4">
-                <textarea class="form-control bg-dark text-white border-secondary mb-3" rows="6" id="textContent" placeholder="Paste your text content here..."></textarea>
-                <div class="p-3 border border-dashed border-secondary rounded text-center mb-3">
-                    <small class="text-muted d-block mb-2">OR Upload Document (PDF/DOCX)</small>
-                    <input type="file" id="textFile" class="form-control form-control-sm bg-dark text-white border-secondary">
-                </div>
-                <button class="btn btn-primary w-100 fw-bold py-2" onclick="processTask('text')">START TEXT ANALYSIS</button>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="historySection">
-            <h2 class="fw-bold mb-4">Analysis History</h2>
-            <div class="card">
-                <div class="table-responsive p-3">
-                    <table class="table table-dark table-hover mb-0">
-                        <thead>
-                            <tr><th>Timestamp</th><th>Module</th><th>Result</th><th>Confidence</th></tr>
-                        </thead>
-                        <tbody id="historyBody">
-                            <tr><td colspan="4" class="text-center text-muted py-4">History is empty. Perform an analysis first.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="premiumSection">
-            <div class="card p-5 text-center border-warning">
-                <i class="fas fa-crown fa-5x text-warning mb-4"></i>
-                <h1 class="fw-bold">Go Premium</h1>
-                <p class="text-muted lead mb-4">Unlock unlimited uploads, high-priority processing, and cloud storage for history.</p>
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <button class="btn btn-warning btn-lg w-100 fw-bold shadow" onclick="window.location.href='/api/payment/checkout'">
-                            UPGRADE NOW (MIDTRANS)
-                        </button>
+            <div class="col-lg-5">
+                <div class="console-box h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0">📜 History</h4>
+                        <button class="btn btn-sm btn-outline-primary" onclick="fetchHistory()">Refresh</button>
+                    </div>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <ul class="list-group" id="history-list">
+                            <li class="list-group-item text-center">Loading...</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-
-    </div>
-
-    <div class="mt-5">
-        <h6 class="text-muted small fw-bold mb-2">SYSTEM RUNTIME CONSOLE</h6>
-        <div class="log-terminal" id="termLogs">
-            [SYSTEM] Master Console v7 Initialized.<br>
-            [SYSTEM] All modules (Audio, Image, Text) ready.
-        </div>
     </div>
 </div>
 
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">🔍 Result</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="modal-content">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const term = document.getElementById('termLogs');
+    let JWT_TOKEN = localStorage.getItem('detectify_token') || '';
+    const BASE_URL = ''; 
 
-    function log(msg, type='info') {
-        const color = type === 'error' ? 'text-danger' : (type === 'success' ? 'text-success' : 'text-info');
-        term.innerHTML += `<br>[${new Date().toLocaleTimeString()}] <span class="${color}">${msg}</span>`;
-        term.scrollTop = term.scrollHeight;
-    }
+    if (JWT_TOKEN) showDashboard();
 
-    // AUTH HANDLER (JSON FIX FOR 415)
-    async function handleAuth(event, url, actionType) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData.entries());
-
-        log(`Sending ${actionType} request...`);
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                log(`${actionType} successful! ${result.message || ''}`, 'success');
-                if (result.access_token) {
-                    localStorage.setItem('access_token', result.access_token);
-                    log("Access Token secured in local storage.");
-                }
-            } else {
-                log(`Error: ${result.error}`, 'error');
-            }
-        } catch (e) {
-            log("Critical: Connection to server failed.", "error");
+    // --- LOGIC TOGGLE TEXT MODE ---
+    function toggleTextMode() {
+        const mode = document.querySelector('input[name="textMode"]:checked').value;
+        if(mode === 'type') {
+            document.getElementById('input-area-type').style.display = 'block';
+            document.getElementById('input-area-upload').style.display = 'none';
+        } else {
+            document.getElementById('input-area-type').style.display = 'none';
+            document.getElementById('input-area-upload').style.display = 'block';
         }
     }
 
-    // MEDIA PREVIEWS
-    document.getElementById('audioFile').onchange = function() {
-        const player = document.getElementById('audioPlayer');
-        player.src = URL.createObjectURL(this.files[0]);
-        player.style.display = 'block';
-        log("Audio file loaded into player.");
-    };
+    // --- PREVIEW LOGIC ---
+    document.getElementById('audio-file').addEventListener('change', function(e) {
+        if(e.target.files[0]) {
+            document.getElementById('audio-player').src = URL.createObjectURL(e.target.files[0]);
+            document.getElementById('audio-preview-container').style.display = 'block';
+        }
+    });
+    document.getElementById('image-file').addEventListener('change', function(e) {
+        if(e.target.files[0]) {
+            const r = new FileReader();
+            r.onload = function(evt) { 
+                document.getElementById('image-preview').src = evt.target.result;
+                document.getElementById('image-preview-container').style.display = 'block';
+            }
+            r.readAsDataURL(e.target.files[0]);
+        }
+    });
 
-    document.getElementById('imageFile').onchange = function() {
-        const preview = document.getElementById('imagePreview');
-        preview.src = URL.createObjectURL(this.files[0]);
-        preview.style.display = 'block';
-        log("Image preview generated.");
-    };
+    // --- MAIN UPLOAD LOGIC ---
+    async function analyzeAudio() { doUpload('/api/analysis/audio', document.getElementById('audio-file').files[0], 'audio-result'); }
+    async function analyzeImage() { doUpload('/api/analysis/image', document.getElementById('image-file').files[0], 'image-result'); }
 
-    // TASK HANDLER
-    function processTask(type) {
-        log(`Initiating ${type.toUpperCase()} analysis...`);
-        // Logic untuk fetch ke /api/analysis sesuai backend Anda
-        setTimeout(() => {
-            log(`${type.toUpperCase()} Task submitted to Celery worker.`, 'success');
-        }, 1000);
+    // HYBRID TEXT ANALYZER
+    async function analyzeHybridText() {
+        const mode = document.querySelector('input[name="textMode"]:checked').value;
+        let fileToSend = null;
+
+        if (mode === 'type') {
+            // Mode Ketik: Ubah teks jadi File Virtual (.txt)
+            const textVal = document.getElementById('text-input-manual').value;
+            if (!textVal.trim()) return alert("Teks tidak boleh kosong!");
+            
+            // Magic Javascript: Membuat File dari String
+            const blob = new Blob([textVal], { type: "text/plain" });
+            fileToSend = new File([blob], "manual_input.txt", { type: "text/plain" });
+        } else {
+            // Mode Upload: Ambil file asli
+            fileToSend = document.getElementById('doc-file').files[0];
+            if (!fileToSend) return alert("Pilih file dokumen dulu!");
+        }
+
+        doUpload('/api/analysis/text', fileToSend, 'text-result');
+    }
+
+    async function doUpload(endpoint, fileObj, resId) {
+        if(!fileObj) return alert("File kosong!");
+        const fd = new FormData(); fd.append('file', fileObj);
+        
+        document.getElementById(resId).innerHTML = '<div class="alert alert-warning">⏳ Uploading & Processing...</div>';
+        try {
+            const res = await fetch(BASE_URL + endpoint, {
+                method:'POST', headers:{'Authorization':`Bearer ${JWT_TOKEN}`}, body:fd
+            });
+            const d = await res.json();
+            if(d.analysis_id) poll(d.analysis_id, resId);
+            else document.getElementById(resId).innerHTML = `<div class="alert alert-danger">Error: ${d.error || JSON.stringify(d)}</div>`;
+        } catch(e) { document.getElementById(resId).innerHTML = "Err: "+e; }
+    }
+
+    // --- POLLING & HISTORY ---
+    async function poll(id, elId) {
+        let iv = setInterval(async ()=>{
+            try {
+                const res = await fetch(BASE_URL + `/api/analysis/${id}`, {headers:{'Authorization':`Bearer ${JWT_TOKEN}`}});
+                const d = await res.json();
+                if(d.status === 'COMPLETED' || d.status === 'FAILED') {
+                    clearInterval(iv);
+                    let color = d.status === 'COMPLETED' ? 'success' : 'danger';
+                    document.getElementById(elId).innerHTML = `
+                        <div class="alert alert-${color}">
+                            <strong>${d.status}</strong><br>
+                            <pre class="bg-dark text-white p-2 mt-2 rounded">${JSON.stringify(d.result_summary || d, null, 2)}</pre>
+                        </div>`;
+                    fetchHistory();
+                }
+            } catch(e) { clearInterval(iv); }
+        }, 2000);
+    }
+
+    function logout() { if(confirm("Logout?")) { localStorage.removeItem('detectify_token'); location.reload(); } }
+    async function handleLogin() { await authRequest('/auth/login', {email:document.getElementById('login-email').value, password:document.getElementById('login-password').value}, 'login'); }
+    async function handleRegister() { await authRequest('/auth/register', {username:document.getElementById('reg-username').value, email:document.getElementById('reg-email').value, password:document.getElementById('reg-password').value}, 'register'); }
+    async function authRequest(endpoint, body, type) {
+        try {
+            const res = await fetch(BASE_URL+endpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+            const data = await res.json();
+            if(res.ok) {
+                if(type==='login'){ JWT_TOKEN=data.access_token; localStorage.setItem('detectify_token',JWT_TOKEN); showDashboard(); }
+                else { alert("Registered!"); document.querySelector('button[data-bs-target="#login-tab"]').click(); }
+            } else alert(data.msg||data.error);
+        } catch(e) { alert("Network Error"); }
+    }
+    function showDashboard() {
+        document.getElementById('auth-section').classList.add('d-none'); document.getElementById('dashboard-section').style.display='block';
+        document.getElementById('auth-status').innerText='Authenticated'; document.getElementById('auth-status').className='badge bg-success me-2';
+        document.getElementById('btn-logout').style.display='inline-block';
+        try{document.getElementById('user-email-display').innerText=JSON.parse(atob(JWT_TOKEN.split('.')[1])).sub;}catch(e){}
+        fetchHistory();
+    }
+    function findValue(obj, keys) { for(let k of keys)if(obj&&obj[k])return obj[k]; return 'N/A'; }
+    async function fetchHistory() {
+        const listEl = document.getElementById('history-list');
+        try {
+            const res = await fetch(BASE_URL+'/api/history',{headers:{'Authorization':`Bearer ${JWT_TOKEN}`}});
+            const data = await res.json();
+            listEl.innerHTML='';
+            if(!data.length){listEl.innerHTML='<li class="list-group-item text-center">No history.</li>';return;}
+            data.reverse().forEach(item => {
+                let fname = findValue(item,['filename','file_name','name']);
+                let typeVal = findValue(item,['type','Type']);
+                if(typeVal=='N/A' && fname!='N/A') {
+                    if(fname.match(/\.(wav|mp3)$/i)) typeVal='AUDIO';
+                    else if(fname.match(/\.(txt|pdf|docx|doc)$/i)) typeVal='TEXT';
+                    else if(fname.match(/\.(jpg|png|jpeg|webp)$/i)) typeVal='IMAGE';
+                }
+                let resData = item.result_summary||item.result||{};
+                let pred = findValue(resData,['prediction','label'])||'';
+                listEl.innerHTML += `<li class="list-group-item list-group-item-action" onclick='openDetail(${JSON.stringify(item).replace(/'/g,"&apos;")})'>
+                    <div class="fw-bold text-truncate" style="max-width:200px">${fname}</div>
+                    <small class="text-muted">${typeVal} | ${pred}</small>
+                    <span class="badge ${item.status=='COMPLETED'?'bg-success':'bg-warning'} float-end">${item.status}</span>
+                </li>`;
+            });
+        }catch(e){listEl.innerHTML='Error';}
+    }
+    function openDetail(item){
+        new bootstrap.Modal(document.getElementById('detailModal')).show();
+        document.getElementById('modal-content').innerHTML=`<pre>${JSON.stringify(item.result_summary||item.result,null,2)}</pre>`;
+    }
+    async function buyPremium(){
+        const res=await fetch(BASE_URL+'/api/payment/create-transaction',{method:'POST',headers:{'Authorization':`Bearer ${JWT_TOKEN}`}});
+        const d=await res.json(); if(d.token) window.snap.pay(d.token);
     }
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
