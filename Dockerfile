@@ -9,7 +9,10 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    libjpeg-dev \
+    libtiff-dev \
     ffmpeg \
+    libsndfile1 \
     libmagic1 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
