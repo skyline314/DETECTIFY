@@ -1,0 +1,86 @@
+@baseUrl = http://127.0.0.1:5000
+
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "detectify_tester",
+    "email": "tester@detectify.com",
+    "password": "passwordSangatRahasia123"
+}
+
+###
+
+
+# Karena kita belum pakai email server asli,
+# link verifikasi akan muncul di Terminal VS Code (tempat flask run).
+# Cari tulisan: "http://localhost:5000/auth/verify/..."
+# Copy link tersebut dan paste di Browser atau buat request GET di bawah ini.
+#
+# (Ganti <TOKEN_PANJANG> di bawah dengan token dari terminal)
+
+GET {{baseUrl}}/auth/verify/InRlc3RlckBkZXRlY3RpZnkuY29tIg.aWesZQ.Q2eqSjF4YO3JPqO8XxL5V28mhRc
+
+###
+
+
+# Login tetap pakai Email & Password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "tester@detectify.com",
+    "password": "passwordSangatRahasia123"
+}
+
+
+
+###
+
+
+POST {{baseUrl}}/api/analysis/text
+# Ganti eyJ... dengan token asli Anda!
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2ODQ2ODY1MiwianRpIjoiMWMxZDU4MTgtNzA1NS00YTIzLTk0MmItMzJlZTU1N2MxOGJmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNjMjdkMGJmLTA3NjQtNDNkOC1hZmE0LTNhNGYwZWU0YTViYiIsIm5iZiI6MTc2ODQ2ODY1MiwiY3NyZiI6IjU1MzA1ODNkLTRkZDItNGY0YS05OGQzLWQ3NzE1MjUyZGM3YiIsImV4cCI6MTc2ODQ2OTU1Mn0.GwS_drbj9IkcmVpNChgbp-CD5k-SRRREvZ-aNOZUbec
+--Mydatasperator
+Content-Disposition: form-data; name="file"; filename="test_manual.txt"
+Content-Type: text/plain
+
+Ini adalah teks percobaan untuk memastikan backend menerima username dan token dengan benar.
+--Mydatasperator--
+
+###
+
+
+# Pastikan Anda menggunakan TOKEN LOGIN di Header!
+POST {{baseUrl}}/api/payment/create-transaction
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2ODQ2ODY1MiwianRpIjoiMWMxZDU4MTgtNzA1NS00YTIzLTk0MmItMzJlZTU1N2MxOGJmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNjMjdkMGJmLTA3NjQtNDNkOC1hZmE0LTNhNGYwZWU0YTViYiIsIm5iZiI6MTc2ODQ2ODY1MiwiY3NyZiI6IjU1MzA1ODNkLTRkZDItNGY0YS05OGQzLWQ3NzE1MjUyZGM3YiIsImV4cCI6MTc2ODQ2OTU1Mn0.GwS_drbj9IkcmVpNChgbp-CD5k-SRRREvZ-aNOZUbec
+Content-Type: application/json
+
+{}
+
+###
+
+
+# Midtrans akan mengirim data ini ke server kita saat user selesai bayar.
+# Kita tembak manual untuk memastikan status User berubah jadi PREMIUM.
+
+POST {{baseUrl}}/api/payment/notification
+Content-Type: application/json
+
+{
+    "transaction_time": "2023-10-25 14:00:00",
+    "transaction_status": "settlement", 
+    "transaction_id": "trx-fake-123",
+    "status_message": "midtrans payment notification",
+    "status_code": "200",
+    "signature_key": "ignore_for_testing",
+    "payment_type": "gopay",
+    "order_id": "ORDER-cc27d0bf-b9929e", 
+    "gross_amount": "50000.00",
+    "fraud_status": "accept"
+}
+
+# ⚠️ CATATAN UNTUK NO 5:
+# Bagian "order_id" DI ATAS harus Anda ganti manual!
+# Ambil "order_id" yang Anda dapatkan dari hasil response Request No 4.
