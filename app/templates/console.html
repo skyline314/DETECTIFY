@@ -3,78 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detectify - Developer Console</title>
+    <title>Detectify - Developer Console v7</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #121212; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .navbar { background-color: #1f1f1f; border-bottom: 1px solid #333; }
-        .console-container { margin-top: 50px; }
-        .card { background-color: #1f1f1f; border: 1px solid #333; color: white; border-radius: 10px; }
-        .status-badge { font-size: 0.8rem; padding: 5px 10px; border-radius: 20px; }
-        .log-window { background-color: #000; color: #00ff00; padding: 15px; border-radius: 5px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9rem; }
+        :root { --bg-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; --text-muted: #94a3b8; }
+        body { background-color: var(--bg-dark); color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        .navbar { background-color: var(--card-bg); border-bottom: 1px solid #2d334a; }
+        .card { background-color: var(--card-bg); border: 1px solid #2d334a; border-radius: 12px; transition: transform 0.2s; }
+        .status-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .bg-online { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
+        .log-window { 
+            background-color: #050505; 
+            color: #10b981; 
+            padding: 20px; 
+            border-radius: 8px; 
+            height: 300px; 
+            overflow-y: auto; 
+            font-family: 'Fira Code', monospace; 
+            font-size: 0.85rem;
+            border: 1px solid #333;
+        }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+        .btn-refresh { border-radius: 8px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-dark shadow-sm">
+<nav class="navbar navbar-dark sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/">🛡️ Detectify Console</a>
-        <span class="status-badge bg-success text-white">System Active</span>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <i class="fas fa-shield-halved me-2 text-primary"></i>
+            <span>DETECTIFY <span class="badge bg-primary ms-2" style="font-size: 0.6rem;">CONSOLE V7</span></span>
+        </a>
+        <div class="d-flex align-items-center">
+            <span class="small text-muted me-3"><span class="status-indicator bg-online"></span> System Live</span>
+            <button class="btn btn-sm btn-outline-light btn-refresh" onclick="location.reload()">
+                <i class="fas fa-sync-alt me-1"></i> Refresh
+            </button>
+        </div>
     </div>
 </nav>
 
-<div class="container console-container">
+<div class="container mt-4">
     <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card shadow">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h5 class="card-title border-bottom pb-2 mb-3">Service Status</h5>
-                    <p class="mb-2">API Status: <span class="text-success fw-bold">Online</span></p>
-                    <p class="mb-2">Celery Worker: <span class="text-success fw-bold">Running</span></p>
-                    <p class="mb-2">Redis Cache: <span class="text-info fw-bold">Connected</span></p>
-                    <hr>
-                    <button class="btn btn-outline-danger btn-sm w-100" onclick="location.reload()">Refresh Console</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-8">
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">Detection Overview</h5>
-                    <p class="text-muted">Monitor deepfake detection activities in real-time.</p>
-                    
-                    <div class="row mt-4">
-                        <div class="col-4 text-center">
-                            <h3 class="fw-bold">0</h3>
-                            <p class="small text-secondary">Audio Task</p>
-                        </div>
-                        <div class="col-4 text-center">
-                            <h3 class="fw-bold">0</h3>
-                            <p class="small text-secondary">Image Task</p>
-                        </div>
-                        <div class="col-4 text-center">
-                            <h3 class="fw-bold">0</h3>
-                            <p class="small text-secondary">Text Task</p>
-                        </div>
+                    <h6 class="text-uppercase text-muted fw-bold mb-3 small">Service Connectivity</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>API Server</span>
+                        <span class="text-success small fw-bold">CONNECTED</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Celery Workers</span>
+                        <span class="text-success small fw-bold">ACTIVE (2)</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Redis Broker</span>
+                        <span class="text-info small fw-bold">SYNCED</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Database (Neon)</span>
+                        <span class="text-success small fw-bold">STABLE</span>
                     </div>
                 </div>
             </div>
 
-            <div class="card shadow">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Live Logs</h5>
-                    <div class="log-window" id="logs">
-                        [SYSTEM] Console initialized...<br>
-                        [SYSTEM] Connected to Hugging Face Space...<br>
-                        [CORE] All ML Assets Loaded.<br>
-                        [AUTH] Accessing Developer Console...
+                    <h6 class="text-uppercase text-muted fw-bold mb-3 small">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        <a href="/api/payment/status" class="btn btn-dark btn-sm text-start">
+                            <i class="fas fa-credit-card me-2"></i> Payment Gateway Status
+                        </a>
+                        <a href="/hello" class="btn btn-dark btn-sm text-start">
+                            <i class="fas fa-vial me-2"></i> Run Health Check
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center p-3">
+                        <div class="text-muted small mb-1">Audio Tasks</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center p-3">
+                        <div class="text-muted small mb-1">Image Tasks</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center p-3">
+                        <div class="text-muted small mb-1">Text Tasks</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent border-bottom border-secondary d-flex justify-content-between align-items-center">
+                    <span class="fw-bold small"><i class="fas fa-terminal me-2"></i>System Runtime Logs</span>
+                    <span class="badge bg-dark">UTC+0</span>
+                </div>
+                <div class="card-body">
+                    <div class="log-window" id="logContent">
+                        <div>[<span class="text-info">SYSTEM</span>] Booting Detectify Engine...</div>
+                        <div>[<span class="text-success">OK</span>] Flask Application Factory initialized.</div>
+                        <div>[<span class="text-success">OK</span>] ML Models (Audio/Text) loaded into shared memory.</div>
+                        <div>[<span class="text-warning">INFO</span>] Celery process connected to Upstash Redis.</div>
+                        <div>[<span class="text-info">AUTH</span>] Developer Console accessed by admin.</div>
+                        <div class="text-white-50">--------------------------------------------------</div>
+                        <div>> Ready for incoming requests...</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Simple auto-scroll for logs
+    const logWindow = document.getElementById('logContent');
+    logWindow.scrollTop = logWindow.scrollHeight;
+</script>
 
 </body>
 </html>
