@@ -3,136 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detectify - Developer Console v7</title>
+    <title>Detectify - Master Console v7</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; --text-muted: #94a3b8; }
-        body { background-color: var(--bg-dark); color: #f1f5f9; font-family: 'Inter', sans-serif; }
-        .navbar { background-color: var(--card-bg); border-bottom: 1px solid #2d334a; }
-        .card { background-color: var(--card-bg); border: 1px solid #2d334a; border-radius: 12px; transition: transform 0.2s; }
-        .status-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .bg-online { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
-        .log-window { 
-            background-color: #050505; 
-            color: #10b981; 
-            padding: 20px; 
-            border-radius: 8px; 
-            height: 300px; 
-            overflow-y: auto; 
-            font-family: 'Fira Code', monospace; 
-            font-size: 0.85rem;
-            border: 1px solid #333;
-        }
-        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
-        .btn-refresh { border-radius: 8px; font-weight: 600; }
+        :root { --sidebar-width: 250px; --primary-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; }
+        body { background-color: var(--primary-dark); color: #e2e8f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Sidebar Styles */
+        #sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; background: var(--card-bg); border-right: 1px solid #2d334a; transition: all 0.3s; z-index: 1000; }
+        .nav-link { color: #94a3b8; padding: 12px 20px; border-radius: 8px; margin: 5px 15px; }
+        .nav-link:hover, .nav-link.active { background: var(--accent); color: white; }
+        
+        /* Main Content */
+        #content { margin-left: var(--sidebar-width); padding: 30px; min-height: 100vh; }
+        .card { background: var(--card-bg); border: 1px solid #2d334a; border-radius: 15px; margin-bottom: 20px; }
+        
+        /* Preview Styles */
+        #audioPreview, #imagePreview { display: none; margin-top: 15px; max-width: 100%; border-radius: 10px; }
+        .log-stream { background: #000; color: #10b981; font-family: 'Fira Code', monospace; padding: 15px; height: 150px; overflow-y: auto; border-radius: 8px; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-dark sticky-top">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="/">
-            <i class="fas fa-shield-halved me-2 text-primary"></i>
-            <span>DETECTIFY <span class="badge bg-primary ms-2" style="font-size: 0.6rem;">CONSOLE V7</span></span>
-        </a>
-        <div class="d-flex align-items-center">
-            <span class="small text-muted me-3"><span class="status-indicator bg-online"></span> System Live</span>
-            <button class="btn btn-sm btn-outline-light btn-refresh" onclick="location.reload()">
-                <i class="fas fa-sync-alt me-1"></i> Refresh
-            </button>
-        </div>
+<div id="sidebar">
+    <div class="p-4 text-center border-bottom border-secondary mb-3">
+        <h4 class="fw-bold text-primary">DETECTIFY</h4>
+        <small class="text-muted">Master Console v7</small>
     </div>
-</nav>
+    <nav class="nav flex-column">
+        <a class="nav-link active" data-bs-toggle="tab" href="#audioSection"><i class="fas fa-microphone me-2"></i> Audio Analysis</a>
+        <a class="nav-link" data-bs-toggle="tab" href="#imageSection"><i class="fas fa-image me-2"></i> Image Analysis</a>
+        <a class="nav-link" data-bs-toggle="tab" href="#textSection"><i class="fas fa-file-alt me-2"></i> Text Analysis</a>
+        <a class="nav-link" data-bs-toggle="tab" href="#historySection"><i class="fas fa-history me-2"></i> History</a>
+        <a class="nav-link text-warning" data-bs-toggle="tab" href="#premiumSection"><i class="fas fa-crown me-2"></i> Go Premium</a>
+        <hr class="mx-3 border-secondary">
+        <a class="nav-link text-danger" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+    </nav>
+</div>
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h6 class="text-uppercase text-muted fw-bold mb-3 small">Service Connectivity</h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>API Server</span>
-                        <span class="text-success small fw-bold">CONNECTED</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Celery Workers</span>
-                        <span class="text-success small fw-bold">ACTIVE (2)</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Redis Broker</span>
-                        <span class="text-info small fw-bold">SYNCED</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span>Database (Neon)</span>
-                        <span class="text-success small fw-bold">STABLE</span>
-                    </div>
-                </div>
+<div id="content">
+    <div class="tab-content">
+        
+        <div class="tab-pane fade show active" id="audioSection">
+            <h2 class="mb-4">Audio Deepfake Detection</h2>
+            <div class="card p-4">
+                <input type="file" id="audioInput" class="form-control mb-3 bg-dark text-white border-secondary" accept="audio/*">
+                <audio id="audioPreview" controls class="w-100"></audio>
+                <button class="btn btn-primary mt-3 w-100 fw-bold" onclick="analyze('audio')">ANALYZE AUDIO</button>
             </div>
+        </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-uppercase text-muted fw-bold mb-3 small">Quick Actions</h6>
-                    <div class="d-grid gap-2">
-                        <a href="/api/payment/status" class="btn btn-dark btn-sm text-start">
-                            <i class="fas fa-credit-card me-2"></i> Payment Gateway Status
-                        </a>
-                        <a href="/hello" class="btn btn-dark btn-sm text-start">
-                            <i class="fas fa-vial me-2"></i> Run Health Check
-                        </a>
-                    </div>
+        <div class="tab-pane fade" id="imageSection">
+            <h2 class="mb-4">Image Deepfake Detection</h2>
+            <div class="card p-4">
+                <input type="file" id="imageInput" class="form-control mb-3 bg-dark text-white border-secondary" accept="image/*">
+                <img id="imagePreview" src="#" alt="Preview" class="img-fluid shadow-sm">
+                <button class="btn btn-primary mt-3 w-100 fw-bold" onclick="analyze('image')">ANALYZE IMAGE</button>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="textSection">
+            <h2 class="mb-4">Text & Document Analysis</h2>
+            <div class="card p-4">
+                <textarea id="textInput" class="form-control bg-dark text-white border-secondary mb-3" rows="5" placeholder="Paste text here..."></textarea>
+                <div class="mb-3">
+                    <label class="small text-muted">Or upload file (PDF/DOCX/TXT):</label>
+                    <input type="file" id="textFile" class="form-control bg-dark text-white border-secondary">
+                </div>
+                <button class="btn btn-primary w-100 fw-bold" onclick="analyze('text')">ANALYZE TEXT</button>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="historySection">
+            <h2 class="mb-4">Recent Analysis History</h2>
+            <div class="card">
+                <div class="table-responsive p-3">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr><th>Date</th><th>Type</th><th>Result</th><th>Score</th></tr>
+                        </thead>
+                        <tbody id="historyTable">
+                            <tr><td colspan="4" class="text-center text-muted">No history found</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-8">
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="card text-center p-3">
-                        <div class="text-muted small mb-1">Audio Tasks</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card text-center p-3">
-                        <div class="text-muted small mb-1">Image Tasks</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card text-center p-3">
-                        <div class="text-muted small mb-1">Text Tasks</div>
-                        <div class="stat-value">0</div>
-                    </div>
-                </div>
+        <div class="tab-pane fade" id="premiumSection">
+            <h2 class="mb-4">Premium Membership</h2>
+            <div class="card p-5 text-center">
+                <i class="fas fa-crown fa-4x text-warning mb-3"></i>
+                <h3>Unlock Unlimited Power</h3>
+                <p class="text-muted">Get faster processing, HD image analysis, and unlimited document history.</p>
+                <button class="btn btn-warning btn-lg mt-3 fw-bold shadow">UPGRADE NOW (Pay with Midtrans)</button>
             </div>
+        </div>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-transparent border-bottom border-secondary d-flex justify-content-between align-items-center">
-                    <span class="fw-bold small"><i class="fas fa-terminal me-2"></i>System Runtime Logs</span>
-                    <span class="badge bg-dark">UTC+0</span>
-                </div>
-                <div class="card-body">
-                    <div class="log-window" id="logContent">
-                        <div>[<span class="text-info">SYSTEM</span>] Booting Detectify Engine...</div>
-                        <div>[<span class="text-success">OK</span>] Flask Application Factory initialized.</div>
-                        <div>[<span class="text-success">OK</span>] ML Models (Audio/Text) loaded into shared memory.</div>
-                        <div>[<span class="text-warning">INFO</span>] Celery process connected to Upstash Redis.</div>
-                        <div>[<span class="text-info">AUTH</span>] Developer Console accessed by admin.</div>
-                        <div class="text-white-50">--------------------------------------------------</div>
-                        <div>> Ready for incoming requests...</div>
-                    </div>
-                </div>
-            </div>
+    </div>
+
+    <div class="mt-5">
+        <h6 class="text-muted small fw-bold">SYSTEM RUNTIME LOGS</h6>
+        <div class="log-stream" id="logs">
+            [SYSTEM] Master Console v7 initialized. Ready.
         </div>
     </div>
 </div>
 
 <script>
-    // Simple auto-scroll for logs
-    const logWindow = document.getElementById('logContent');
-    logWindow.scrollTop = logWindow.scrollHeight;
+    // Preview Audio
+    document.getElementById('audioInput').onchange = function(e) {
+        const audio = document.getElementById('audioPreview');
+        audio.src = URL.createObjectURL(this.files[0]);
+        audio.style.display = 'block';
+    };
+
+    // Preview Image
+    document.getElementById('imageInput').onchange = function(e) {
+        const preview = document.getElementById('imagePreview');
+        preview.src = URL.createObjectURL(this.files[0]);
+        preview.style.display = 'block';
+    };
+
+    // Generic Analyze Function
+    function analyze(type) {
+        const logs = document.getElementById('logs');
+        logs.innerHTML += `<br>[${type.toUpperCase()}] Requesting analysis for task...`;
+        
+        // Simulasi fetch (Sesuaikan dengan endpoint Flask Anda)
+        setTimeout(() => {
+            logs.innerHTML += `<br>[SUCCESS] Task created. Check history for results.`;
+            logs.scrollTop = logs.scrollHeight;
+        }, 1500);
+    }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
