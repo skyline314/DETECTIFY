@@ -48,5 +48,6 @@ def create_app(config_name='default'):
     def index():
         # Ini akan mencari file app/templates/index.html
         return render_template('index.html')
+    
 
     return app
