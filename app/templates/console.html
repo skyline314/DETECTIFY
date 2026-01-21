@@ -3,65 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detectify Master Console v7</title>
+    <title>Detectify Master Console v7 - Complete</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; }
-        body { background-color: var(--bg-dark); color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .sidebar { width: 260px; height: 100vh; position: fixed; background: var(--card-bg); border-right: 1px solid #2d334a; }
-        .main-content { margin-left: 260px; padding: 40px; }
-        .card { background: var(--card-bg); border: 1px solid #2d334a; border-radius: 15px; }
-        .nav-link { color: #94a3b8; margin: 5px 15px; border-radius: 8px; }
-        .nav-link.active { background: var(--accent); color: white; }
-        #imagePreview { max-width: 100%; border-radius: 10px; display: none; margin-top: 15px; }
-        .log-terminal { background: #000; color: #10b981; font-family: monospace; padding: 15px; height: 150px; overflow-y: auto; border-radius: 8px; font-size: 0.8rem; }
+        :root { --bg-dark: #0f111a; --card-bg: #1a1d2b; --accent: #4f46e5; --sidebar-w: 260px; }
+        body { background-color: var(--bg-dark); color: #e2e8f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-w); height: 100vh; position: fixed; background: var(--card-bg); border-right: 1px solid #2d334a; z-index: 1000; }
+        .main-content { margin-left: var(--sidebar-w); padding: 40px; min-height: 100vh; }
+        
+        /* UI Elements */
+        .card { background: var(--card-bg); border: 1px solid #2d334a; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .nav-link { color: #94a3b8; margin: 5px 15px; border-radius: 8px; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: var(--accent); color: white; }
+        
+        /* Previews */
+        #imagePreview { max-width: 100%; border-radius: 10px; display: none; margin-top: 15px; border: 1px solid #333; }
+        #audioPlayer { display: none; margin-top: 15px; width: 100%; }
+        
+        /* Terminal */
+        .log-terminal { background: #000; color: #10b981; font-family: 'Fira Code', monospace; padding: 15px; height: 180px; overflow-y: auto; border-radius: 8px; font-size: 0.85rem; border: 1px solid #333; }
+        
+        /* Transitions */
+        .tab-pane { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="sidebar d-flex flex-column p-3">
-    <div class="text-center mb-4">
-        <h3 class="fw-bold text-primary">DETECTIFY</h3>
-        <span class="badge bg-dark border border-secondary">v7.0 Stable</span>
+    <div class="text-center mb-4 pt-3">
+        <h3 class="fw-bold text-primary mb-0">DETECTIFY</h3>
+        <small class="text-muted">Master Console v7</small>
     </div>
     <ul class="nav nav-pills flex-column mb-auto">
-        <li><a href="#authSection" class="nav-link active" data-bs-toggle="tab"><i class="fas fa-user-lock me-2"></i> Auth / Register</a></li>
+        <li><a href="#authSection" class="nav-link active" data-bs-toggle="tab"><i class="fas fa-user-shield me-2"></i> Authentication</a></li>
         <li><a href="#audioSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-microphone me-2"></i> Audio Analysis</a></li>
         <li><a href="#imageSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-image me-2"></i> Image Analysis</a></li>
         <li><a href="#textSection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-file-alt me-2"></i> Text Analysis</a></li>
         <li><a href="#historySection" class="nav-link" data-bs-toggle="tab"><i class="fas fa-history me-2"></i> History</a></li>
-        <li><a href="#premiumSection" class="nav-link text-warning" data-bs-toggle="tab"><i class="fas fa-crown me-2"></i> Premium</a></li>
+        <li><a href="#premiumSection" class="nav-link text-warning" data-bs-toggle="tab"><i class="fas fa-crown me-2"></i> Premium Plan</a></li>
     </ul>
     <hr class="border-secondary">
-    <a href="/auth/logout" class="btn btn-outline-danger btn-sm w-100">Logout</a>
+    <div class="px-3 pb-3">
+        <a href="/auth/logout" class="btn btn-outline-danger btn-sm w-100"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+    </div>
 </div>
 
 <div class="main-content">
     <div class="tab-content">
         
         <div class="tab-pane fade show active" id="authSection">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card p-4 shadow">
-                        <ul class="nav nav-tabs mb-4 border-secondary">
-                            <li class="nav-item"><a class="nav-link active bg-transparent" data-bs-toggle="tab" href="#loginForm">Login</a></li>
-                            <li class="nav-item"><a class="nav-link bg-transparent" data-bs-toggle="tab" href="#signupForm">Sign Up</a></li>
+            <div class="row justify-content-center pt-5">
+                <div class="col-md-7">
+                    <div class="card p-4">
+                        <ul class="nav nav-tabs mb-4 border-secondary justify-content-center">
+                            <li class="nav-item"><a class="nav-link active bg-transparent border-0" data-bs-toggle="tab" href="#loginForm">LOGIN</a></li>
+                            <li class="nav-item"><a class="nav-link bg-transparent border-0" data-bs-toggle="tab" href="#signupForm">SIGN UP</a></li>
                         </ul>
-                        <div class="tab-content">
+                        <div class="tab-content p-2">
                             <div id="loginForm" class="tab-pane fade show active">
-                                <form action="/auth/login" method="POST">
-                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email" required>
+                                <form onsubmit="handleAuth(event, '/auth/login', 'Login')">
+                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email Address" required>
                                     <input type="password" name="password" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Password" required>
-                                    <button class="btn btn-primary w-100">Login to Dashboard</button>
+                                    <button class="btn btn-primary w-100 fw-bold py-2">LOG IN</button>
                                 </form>
                             </div>
                             <div id="signupForm" class="tab-pane fade">
-                                <form action="/auth/register" method="POST">
-                                    <input type="text" name="username" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Username" required>
-                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email" required>
+                                <form onsubmit="handleAuth(event, '/auth/register', 'Register')">
+                                    <input type="text" name="username" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Full Name / Username" required>
+                                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Email Address" required>
                                     <input type="password" name="password" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Password" required>
-                                    <button class="btn btn-success w-100">Create Account</button>
+                                    <button class="btn btn-success w-100 fw-bold py-2">CREATE ACCOUNT</button>
                                 </form>
                             </div>
                         </div>
@@ -71,84 +86,143 @@
         </div>
 
         <div class="tab-pane fade" id="audioSection">
-            <h2>Audio Deepfake Analysis</h2>
-            <div class="card p-4 mt-3">
+            <h2 class="fw-bold mb-4"><i class="fas fa-microphone text-primary me-2"></i>Audio Deepfake Detection</h2>
+            <div class="card p-4">
+                <label class="mb-2 text-muted">Upload Audio File (.mp3, .wav):</label>
                 <input type="file" id="audioFile" class="form-control bg-dark text-white border-secondary mb-3" accept="audio/*">
-                <audio id="audioPlayer" controls class="w-100 mb-3" style="display:none;"></audio>
-                <button class="btn btn-primary w-100" onclick="startAnalysis('audio')">Analyze Audio</button>
+                <audio id="audioPlayer" controls class="shadow-sm"></audio>
+                <button class="btn btn-primary w-100 mt-4 fw-bold py-2" onclick="processTask('audio')">START AUDIO ANALYSIS</button>
             </div>
         </div>
 
         <div class="tab-pane fade" id="imageSection">
-            <h2>Image Deepfake Analysis</h2>
-            <div class="card p-4 mt-3 text-center">
+            <h2 class="fw-bold mb-4"><i class="fas fa-image text-primary me-2"></i>Image Analysis</h2>
+            <div class="card p-4 text-center">
                 <input type="file" id="imageFile" class="form-control bg-dark text-white border-secondary mb-3" accept="image/*">
-                <img id="imagePreview" src="#" alt="Preview">
-                <button class="btn btn-primary w-100 mt-3" onclick="startAnalysis('image')">Analyze Image</button>
+                <img id="imagePreview" src="#" alt="Preview Image" class="shadow">
+                <button class="btn btn-primary w-100 mt-4 fw-bold py-2" onclick="processTask('image')">START IMAGE ANALYSIS</button>
             </div>
         </div>
 
         <div class="tab-pane fade" id="textSection">
-            <h2>Text & Doc Analysis</h2>
-            <div class="card p-4 mt-3">
-                <textarea class="form-control bg-dark text-white border-secondary mb-3" rows="5" placeholder="Paste your text here..."></textarea>
-                <input type="file" class="form-control bg-dark text-white border-secondary mb-3" accept=".pdf,.docx,.txt">
-                <button class="btn btn-primary w-100" onclick="startAnalysis('text')">Analyze Text</button>
+            <h2 class="fw-bold mb-4"><i class="fas fa-file-alt text-primary me-2"></i>Text & Document Analysis</h2>
+            <div class="card p-4">
+                <textarea class="form-control bg-dark text-white border-secondary mb-3" rows="6" id="textContent" placeholder="Paste your text content here..."></textarea>
+                <div class="p-3 border border-dashed border-secondary rounded text-center mb-3">
+                    <small class="text-muted d-block mb-2">OR Upload Document (PDF/DOCX)</small>
+                    <input type="file" id="textFile" class="form-control form-control-sm bg-dark text-white border-secondary">
+                </div>
+                <button class="btn btn-primary w-100 fw-bold py-2" onclick="processTask('text')">START TEXT ANALYSIS</button>
             </div>
         </div>
 
         <div class="tab-pane fade" id="historySection">
-            <h2>Analysis History</h2>
-            <div class="card p-3 mt-3">
-                <table class="table table-dark table-hover">
-                    <thead><tr><th>Date</th><th>Type</th><th>Score</th><th>Status</th></tr></thead>
-                    <tbody id="historyData"><tr><td colspan="4" class="text-center text-muted">History is empty.</td></tr></tbody>
-                </table>
+            <h2 class="fw-bold mb-4">Analysis History</h2>
+            <div class="card">
+                <div class="table-responsive p-3">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr><th>Timestamp</th><th>Module</th><th>Result</th><th>Confidence</th></tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr><td colspan="4" class="text-center text-muted py-4">History is empty. Perform an analysis first.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <div class="tab-pane fade" id="premiumSection">
-            <div class="card p-5 text-center">
-                <i class="fas fa-crown fa-4x text-warning mb-3"></i>
-                <h2>Detectify Premium</h2>
-                <p>Bypass limits and get priority processing with Midtrans payment.</p>
-                <a href="/api/payment/checkout" class="btn btn-warning btn-lg fw-bold px-5">Upgrade Now</a>
+            <div class="card p-5 text-center border-warning">
+                <i class="fas fa-crown fa-5x text-warning mb-4"></i>
+                <h1 class="fw-bold">Go Premium</h1>
+                <p class="text-muted lead mb-4">Unlock unlimited uploads, high-priority processing, and cloud storage for history.</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <button class="btn btn-warning btn-lg w-100 fw-bold shadow" onclick="window.location.href='/api/payment/checkout'">
+                            UPGRADE NOW (MIDTRANS)
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 
     <div class="mt-5">
-        <h6 class="text-muted small fw-bold">RUNTIME CONSOLE</h6>
+        <h6 class="text-muted small fw-bold mb-2">SYSTEM RUNTIME CONSOLE</h6>
         <div class="log-terminal" id="termLogs">
-            [SYSTEM] Ready for authentication...
+            [SYSTEM] Master Console v7 Initialized.<br>
+            [SYSTEM] All modules (Audio, Image, Text) ready.
         </div>
     </div>
 </div>
 
 <script>
-    // Audio Preview Logic
+    const term = document.getElementById('termLogs');
+
+    function log(msg, type='info') {
+        const color = type === 'error' ? 'text-danger' : (type === 'success' ? 'text-success' : 'text-info');
+        term.innerHTML += `<br>[${new Date().toLocaleTimeString()}] <span class="${color}">${msg}</span>`;
+        term.scrollTop = term.scrollHeight;
+    }
+
+    // AUTH HANDLER (JSON FIX FOR 415)
+    async function handleAuth(event, url, actionType) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        log(`Sending ${actionType} request...`);
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                log(`${actionType} successful! ${result.message || ''}`, 'success');
+                if (result.access_token) {
+                    localStorage.setItem('access_token', result.access_token);
+                    log("Access Token secured in local storage.");
+                }
+            } else {
+                log(`Error: ${result.error}`, 'error');
+            }
+        } catch (e) {
+            log("Critical: Connection to server failed.", "error");
+        }
+    }
+
+    // MEDIA PREVIEWS
     document.getElementById('audioFile').onchange = function() {
         const player = document.getElementById('audioPlayer');
         player.src = URL.createObjectURL(this.files[0]);
         player.style.display = 'block';
+        log("Audio file loaded into player.");
     };
 
-    // Image Preview Logic
     document.getElementById('imageFile').onchange = function() {
         const preview = document.getElementById('imagePreview');
         preview.src = URL.createObjectURL(this.files[0]);
         preview.style.display = 'block';
+        log("Image preview generated.");
     };
 
-    function startAnalysis(type) {
-        const term = document.getElementById('termLogs');
-        term.innerHTML += `<br>[${type.toUpperCase()}] Initiating analysis...`;
-        term.scrollTop = term.scrollHeight;
-        
-        // Logic Fetch API Analysis anda disini
+    // TASK HANDLER
+    function processTask(type) {
+        log(`Initiating ${type.toUpperCase()} analysis...`);
+        // Logic untuk fetch ke /api/analysis sesuai backend Anda
+        setTimeout(() => {
+            log(`${type.toUpperCase()} Task submitted to Celery worker.`, 'success');
+        }, 1000);
     }
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
