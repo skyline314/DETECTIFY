@@ -18,9 +18,9 @@ joblib
 librosa
 soundfile
 scipy
-torch --index-url https://download.pytorch.org/whl/cpu
-torchaudio --index-url https://download.pytorch.org/whl/cpu
-torchvision --index-url https://download.pytorch.org/whl/cpu
+torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu
+torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.19.1 --index-url https://download.pytorch.org/whl/cpu
 timm
 boto3
 botocore
