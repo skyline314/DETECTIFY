@@ -26,7 +26,7 @@ class User(db.Model):
     
     created_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
     # updated_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')) #mysql
-    updated_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP CURRENT_TIMESTAMP'), onupdate=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP'), onupdate=datetime.utcnow)
 
     is_verified = db.Column(db.Boolean, default=False, nullable=False)
     reset_token = db.Column(db.String(100), nullable=True)
