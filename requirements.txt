@@ -29,3 +29,4 @@ pillow
 python-docx
 PyPDF2
 midtransclient
+resend

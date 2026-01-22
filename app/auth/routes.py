@@ -8,6 +8,8 @@ from flask_jwt_extended import create_access_token
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 from flask import render_template
+import resend
+import os
 
 
 def generate_confirmation_token(email):
@@ -33,17 +35,22 @@ def confirm_token(token, expiration=86400):
 
 def send_email(to, subject, body):
     """Mengirim email (dibungkus try-except agar app tidak crash jika gagal)."""
+    resend.api_key = os.environ.get("RESEND_API_KEY")
     try:
-        msg = Message(
-            subject=subject,
-            recipients=[to],
-            html=body  
-        )
-        mail.send(msg)
-        print(f"Email berhasil dikirim ke {to}")
+        from_email = "Detectify <onboarding@resend.dev>"
+
+        msg = {
+            "from": from_email,
+            "to": [to],
+            "subject": subject,
+            "html": body,
+        }
+
+        resend.Emails.send(msg)
+        print(f" [EMAIL] Berhasil dikirim via API ke {to}", flush=True)
         return True
     except Exception as e:
-        print(f"Gagal mengirim email ke {to}: {e}")
+        print(f" [EMAIL] GAGAL mengirim via API ke {to}: {str(e)}", flush=True)
         return False
 
 
