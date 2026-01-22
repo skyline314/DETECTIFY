@@ -37,7 +37,7 @@ def send_email(to, subject, body):
     """Mengirim email (dibungkus try-except agar app tidak crash jika gagal)."""
     resend.api_key = os.environ.get("RESEND_API_KEY")
     try:
-        from_email = "Detectify <onboarding@resend.dev>"
+        from_email = "Detectify <no-reply@detectify-app.online>"
 
         msg = {
             "from": from_email,
