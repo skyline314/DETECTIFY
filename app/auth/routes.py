@@ -93,13 +93,13 @@ def register_user():
             # Generate Token
             token = generate_confirmation_token(new_user.email)
             
-            # DEBUG: Print Token ke Terminal 
-            print("="*50)
-            print(f"DEBUG TOKEN (Copy ini): {token}")
-            print("="*50)
+            # # DEBUG: Print Token ke Terminal 
+            # print("="*50)
+            # print(f"DEBUG TOKEN (Copy ini): {token}")
+            # print("="*50)
 
             # Buat Link Verifikasi
-            # Link akan berbentuk: http://localhost:5000/auth/verify/<token>
+            # Link akan berbentuk: baseurl/auth/verify/<token>
             verify_url = url_for('auth.verify_email', token=token, _external=True)
             
             # Kirim Email
