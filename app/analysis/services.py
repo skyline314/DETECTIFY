@@ -3,7 +3,6 @@ import logging
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from flask import current_app
-
 from app.extensions import db, s3_client
 from app.models import AnalysisHistory, User
 
@@ -14,6 +13,40 @@ class AnalysisService:
         'IMAGE': {'jpg', 'jpeg', 'png'}
     }
 
+    @classmethod
+    def process_upload(cls, user_id, file, analysis_type):
+        """Entry point utama untuk proses upload."""
+        # 1. Validasi Awal (User & File)
+        user = cls._get_and_validate_user(user_id)
+        original_filename, ext = cls._validate_file(file, analysis_type)
+        
+        # 2. Upload ke S3
+        s3_file_key = cls._handle_s3_upload(file, user_id, analysis_type, ext)
+
+        # 3. Simpan ke Database (Atomic)
+        try:
+            job = cls._create_analysis_job(user_id, analysis_type, original_filename, s3_file_key)
+            db.session.commit()
+            db.session.refresh(job)
+        except Exception as e:
+            db.session.rollback()
+            cls._rollback_s3(s3_file_key) # Hapus file di S3 jika DB gagal
+            raise RuntimeError("Gagal menyimpan data transaksi")
+
+        # 4. Kirim ke Celery Worker
+        cls._dispatch_task(job)
+        
+        return cls._format_response(job, original_filename)
+
+    @staticmethod
+    def _get_and_validate_user(user_id):
+        user = User.query.get(user_id)
+        if not user:
+            raise ValueError("User tidak ditemukan")
+        if not user.can_analyze():
+            raise PermissionError(f"Kuota harian habis.")
+        return user
+    
     @staticmethod
     def _validate_file(file, analysis_type):
         if not file or file.filename == '':
@@ -31,83 +64,61 @@ class AnalysisService:
             raise ValueError(f"Format tidak didukung untuk {analysis_type}. Gunakan: {', '.join(allowed)}")
             
         return filename, ext
-
+    
     @staticmethod
-    def process_upload(user_id, file, analysis_type):
-        # 1. Cek User & Kuota
-        user = User.query.filter_by(user_id=user_id).first()
-        if not user:
-            raise ValueError("User tidak ditemukan")
-
-        if not user.can_analyze():
-            raise PermissionError(f"Kuota habis. Terpakai: {user.get_daily_usage_count()}")
-
-        # 2. Validasi & Upload S3
-        original_filename, file_extension = AnalysisService._validate_file(file, analysis_type)
-        
+    def _handle_s3_upload(file, user_id, analysis_type, ext):
         bucket_name = current_app.config['AWS_S3_BUCKET_NAME']
-        unique_id = str(uuid.uuid4())
-        
-        # Folder di S3: audio/user_id/... atau text/user_id/...
-        s3_folder = analysis_type.lower()
-        s3_file_key = f"{s3_folder}/{user_id}/{unique_id}.{file_extension}"
-
+        s3_key = f"{analysis_type.lower()}/{user_id}/{uuid.uuid4()}.{ext}"
         try:
             file.seek(0)
-            s3_client.upload_fileobj(file, bucket_name, s3_file_key)
+            s3_client.upload_fileobj(file, bucket_name, s3_key)
+            return s3_key
         except Exception as e:
             current_app.logger.error(f"S3 Upload Error: {e}")
             raise RuntimeError("Gagal upload ke storage cloud")
 
-        # 3. DB Transaction
+    @staticmethod
+    def _create_analysis_job(user_id, analysis_type, original_filename, s3_key):
         job = AnalysisHistory(
             user_id=user_id,
             status='PENDING',
             analysis_type=analysis_type,
             file_name_original=original_filename,
-            file_location=s3_file_key
+            file_location=s3_key
         )
-        
-        try:
-            db.session.add(job)
-            db.session.commit()
-            db.session.refresh(job)
-        except Exception as e:
-            db.session.rollback()
-            try:
-                s3_client.delete_object(Bucket=bucket_name, Key=s3_file_key)
-            except:
-                pass
-            raise RuntimeError("Gagal menyimpan data transaksi")
+        db.session.add(job)
+        return job
 
-        # 4. Dispatch Task (VERSI FINAL - TANPA QUEUE KHUSUS)
+    @staticmethod
+    def _rollback_s3(s3_key):
         try:
-            if analysis_type == 'AUDIO':
-                # Import dari modul tasks_audio yang baru
+            bucket = current_app.config['AWS_S3_BUCKET_NAME']
+            s3_client.delete_object(Bucket=bucket, Key=s3_key)
+        except:
+            pass
+
+    @staticmethod
+    def _dispatch_task(job):
+        """Pusat kontrol pengiriman tugas ke Celery."""
+        try:
+            if job.analysis_type == 'AUDIO':
                 from celery_worker.tasks_audio import process_audio_task
-                process_audio_task.apply_async(args=[job.analysis_id]) 
-            
-            elif analysis_type == 'TEXT':
-                # Import dari modul tasks_text yang baru
+                process_audio_task.apply_async(args=[job.analysis_id])
+            elif job.analysis_type == 'TEXT':
                 from celery_worker.tasks_text import process_text_task
                 process_text_task.apply_async(args=[job.analysis_id])
-
-            elif analysis_type == 'IMAGE':
-                # Import dari modul tasks_image yang baru
+            elif job.analysis_type == 'IMAGE':
                 from celery_worker.tasks_image import process_image_task
-                task = process_image_task.apply_async(args=[job.analysis_id])
-
-        except ImportError as e:
-             current_app.logger.warning(f"Celery task import failed: {e}")
+                process_image_task.apply_async(args=[job.analysis_id])
         except Exception as e:
-             current_app.logger.error(f"Gagal dispatch Celery: {e}")
-        
+            current_app.logger.error(f"Celery Dispatch Error: {e}")
+
+    @staticmethod
+    def _format_response(job, filename):
         return {
-            "message": f"File {analysis_type} diterima",
             "analysis_id": job.analysis_id,
             "status": "PENDING",
-            "type": analysis_type,
-            "file_name": original_filename,
+            "file_name": filename,
             "timestamp": datetime.utcnow().isoformat()
         }
 

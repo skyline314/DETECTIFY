@@ -76,7 +76,7 @@ def upload_image():
     except RuntimeError as e:
         return jsonify({"error": str(e)}), 500
     except Exception as e:
-        return jsonify({"error": "Internal Error", "details": str(e)}), 5000
+        return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
 
 # ENDPOINT HISTORY 
