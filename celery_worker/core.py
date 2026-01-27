@@ -154,7 +154,7 @@ class ModelRegistry:
             if os.path.exists(AUDIO_MODEL_PATH):
                 print(f"[Core] Loading Audio Model from: {AUDIO_MODEL_PATH}")
                 self.audio_model = SimpleAudioCNN().to(DEVICE)
-                self.audio_model.load_state_dict(torch.load(AUDIO_MODEL_PATH, map_location=DEVICE))
+                self.audio_model.load_state_dict(torch.load(AUDIO_MODEL_PATH, map_location=DEVICE, weights_only=True))
                 self.audio_model.eval()
         except Exception as e:
             print(f"[Core]  Error loading Audio Model: {e}")
@@ -172,7 +172,7 @@ class ModelRegistry:
         try:
             if os.path.exists(IMAGE_MODEL_PATH):
                 self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
-                checkpoint = torch.load(IMAGE_MODEL_PATH, map_location=DEVICE)
+                checkpoint = torch.load(IMAGE_MODEL_PATH, map_location=DEVICE, weights_only=True)
                 
                 # Handle dictionary vs full model save
                 if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
