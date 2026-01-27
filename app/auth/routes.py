@@ -161,7 +161,7 @@ def login_user():
         password = data.get('password')
 
         user = User.query.filter_by(email=email).first()
-        password_match = User.check_password(password)
+        password_match = user.check_password(password)
 
         # Cek User Ada & Password Cocok
         if not user or not password_match:
