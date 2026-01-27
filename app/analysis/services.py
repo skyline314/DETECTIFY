@@ -1,10 +1,10 @@
 import uuid
 import logging
 from werkzeug.utils import secure_filename
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import current_app
 from app.extensions import db, s3_client
-from app.models import AnalysisHistory, User
+from app.models import AnalysisHistory, db
 
 class AnalysisService:
     ALLOWED_EXTENSIONS = {
@@ -12,6 +12,17 @@ class AnalysisService:
         'TEXT': {'txt', 'pdf', 'docx'},
         'IMAGE': {'jpg', 'jpeg', 'png'}
     }
+
+    @staticmethod
+    def get_daily_usage(user_id):
+        """
+        Menghitung jumlah analisis yang dilakukan user dalam 24 jam terakhir.
+        """
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        return AnalysisHistory.query.filter(
+            AnalysisHistory.user_id == user_id,
+            AnalysisHistory.created_at >= yesterday
+        ).count()
 
     @classmethod
     def process_upload(cls, user_id, file, analysis_type):
