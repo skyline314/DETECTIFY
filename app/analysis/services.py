@@ -53,7 +53,7 @@ class AnalysisService:
     def _get_and_validate_user(user_id):
         from app.models import User
 
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         if not user:
             raise ValueError("User tidak ditemukan")
         
@@ -63,7 +63,7 @@ class AnalysisService:
         
         # jika tidak hitung limit
         usage_count = AnalysisService.get_daily_usage(user_id)
-        limit = current_app.config.get('LIMIT_DAILY')
+        limit = int(current_app.config.get('LIMIT_DAILY'))
         if usage_count >= limit: 
             raise PermissionError("Kuota harian habis.")
             
