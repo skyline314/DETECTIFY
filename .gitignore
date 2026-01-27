@@ -26,4 +26,5 @@ Thumbs.db
 tests/
 instance/
 test_detectify.sqlite
+.pytest_cache
 

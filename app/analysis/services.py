@@ -51,11 +51,22 @@ class AnalysisService:
 
     @staticmethod
     def _get_and_validate_user(user_id):
+        from app.models import User
+
         user = User.query.get(user_id)
         if not user:
             raise ValueError("User tidak ditemukan")
-        if not user.can_analyze():
-            raise PermissionError(f"Kuota harian habis.")
+        
+        # jike premium langsung bisa
+        if user.is_premium_active():
+            return user
+        
+        # jika tidak hitung limit
+        usage_count = AnalysisService.get_daily_usage(user_id)
+        limit = current_app.config.get('LIMIT_DAILY')
+        if usage_count >= limit: 
+            raise PermissionError("Kuota harian habis.")
+            
         return user
     
     @staticmethod
