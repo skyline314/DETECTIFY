@@ -2,6 +2,7 @@ from functools import wraps
 from flask import jsonify
 from flask_jwt_extended import get_jwt_identity
 from app.models import User
+from app.analysis.services import AnalysisService
 
 def premium_required(fn):
     """
@@ -15,13 +16,20 @@ def premium_required(fn):
         user = User.query.filter_by(user_id=current_user_id).first()
         if not user:
             return jsonify({"error": "User tidak ditemukan"}), 404
+        
+        is_premium = user.is_premium_active()
             
         # Logika Subscription
-        if str(user.plan.name) != 'PREMIUM': 
-            return jsonify({
-                "error": "Upgrade Required",
-                "message": "Fitur ini khusus untuk akun Premium."
-            }), 403
+        if not is_premium:
+            usage = AnalysisService.get_daily_usage(user.user_id)
+            limit = 3
+
+            if usage >= limit:
+                return jsonify({
+                    "error": "Limit Reached",
+                    "message": f"Kuota harian gratis ({limit}) sudah habis. Silakan upgrade ke Premium."
+                }), 403
             
         return fn(*args, **kwargs)
+    
     return wrapper

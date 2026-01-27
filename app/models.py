@@ -6,6 +6,10 @@ import enum
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
+class UserPlan(enum.Enum):
+    FREE = "free"
+    PREMIUM = "premium"
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -17,7 +21,7 @@ class User(db.Model):
 
     # KOMPATIBEL DENGAN MIDTRANS
     # default 'free', nanti diubah jadi 'premium'
-    plan = db.Column(db.String(20), default='free', nullable=False)
+    plan = db.Column(db.Enum(UserPlan), default=UserPlan.FREE, nullable=False)
     subscription_end = db.Column(db.DateTime, nullable=True) # Kapan premium habis
     
     created_at = db.Column(db.TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
@@ -32,29 +36,14 @@ class User(db.Model):
     history = db.relationship('AnalysisHistory', backref='user', lazy=True, cascade="all, delete-orphan")
     transactions = db.relationship('Transaction', backref='user', lazy=True)
 
-    # Hitung Penggunaan Hari Ini
-    def get_daily_usage_count(self):
-        from .models import AnalysisHistory  # Import lokal untuk hindari circular import
-        
-        # Tentukan awal hari ini (jam 00:00:00)
-        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-        
-        # Hitung jumlah analisis user ini sejak jam 00:00 tadi
-        count = AnalysisHistory.query.filter_by(user_id=self.user_id)\
-            .filter(AnalysisHistory.created_at >= today_start)\
-            .count()
-            
-        return count
-
-    # Helper: Cek Izin 
-    def can_analyze(self):
-        # Jika Premium, bebas tanpa batas
-        if self.plan == 'premium':
-            return True
-            
-        # Jika Free, batasi (3 kali sehari)
-        LIMIT_HARIAN = 3 
-        return self.get_daily_usage_count() < LIMIT_HARIAN
+    # Helper
+    def is_premium_active(self):
+        """Hanya cek status dan masa berlaku."""
+        if self.plan != UserPlan.PREMIUM:
+            return False
+        if self.subscription_end and self.subscription_end < datetime.utcnow():
+            return False
+        return True
 
     def __repr__(self):
         return f'<User {self.email} [{self.plan}]>'

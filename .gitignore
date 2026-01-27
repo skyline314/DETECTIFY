@@ -22,5 +22,8 @@ migrations/
 .DS_Store
 Thumbs.db
 
-
+# testing
+tests/
+instance/
+test_detectify.sqlite
 
