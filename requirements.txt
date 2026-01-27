@@ -27,6 +27,6 @@ botocore
 requests
 pillow
 python-docx
-PyPDF2
+pypdf
 midtransclient
 resend

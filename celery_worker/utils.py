@@ -3,7 +3,7 @@ import tempfile
 from contextlib import contextmanager
 from app.extensions import s3_client
 from flask import current_app
-import PyPDF2
+import pypdf
 import docx
 
 @contextmanager
@@ -45,7 +45,7 @@ def extract_text_from_file(file_path):
         
         elif ext == '.pdf':
             with open(file_path, 'rb') as f:
-                reader = PyPDF2.PdfReader(f)
+                reader = pypdf.PdfReader(f)
                 for page in reader.pages:
                     text += page.extract_text() + "\n"
         
