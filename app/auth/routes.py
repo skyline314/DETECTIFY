@@ -3,7 +3,6 @@ from . import auth_bp
 from app.models import User
 from app.extensions import db, mail
 from flask_mail import Message
-import bcrypt
 from flask_jwt_extended import create_access_token
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
@@ -77,18 +76,13 @@ def register_user():
         if User.query.filter_by(username=username).first():
             return jsonify({"error": "Username ini sudah digunakan, pilih yang lain"}), 409
     
-
-        # 2. Hash Password
-        password_bytes = password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        password_hash = bcrypt.hashpw(password_bytes, salt).decode('utf-8')
-
-        # 3. Simpan User Baru (Default is_verified=False)
-        new_user = User(username=username, email=email, password_hash=password_hash)
+        # 2. Simpan User Baru (Default is_verified=False)
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
 
-        # 4. Proses Token & Email 
+        # 3. Proses Token & Email 
         try:
             # Generate Token
             token = generate_confirmation_token(new_user.email)
@@ -167,17 +161,10 @@ def login_user():
         password = data.get('password')
 
         user = User.query.filter_by(email=email).first()
+        password_match = User.check_password(password)
 
         # Cek User Ada & Password Cocok
-        if not user:
-            return jsonify({"error": "Email atau password salah"}), 401 
-        
-        password_match = bcrypt.checkpw(
-            password.encode('utf-8'), 
-            user.password_hash.encode('utf-8')
-        )
-        
-        if not password_match:
+        if not user or not password_match:
             return jsonify({"error": "Email atau password salah"}), 401 
         
         if not user.is_verified:
@@ -225,9 +212,9 @@ def forgot_password():
 
         # 3. Kirim Email
         # DEBUG: 
-        print("="*50)
-        print(f"DEBUG RESET TOKEN (Copy ini): {reset_token}")
-        print("="*50)
+        # print("="*50)
+        # print(f"DEBUG RESET TOKEN (Copy ini): {reset_token}")
+        # print("="*50)
         # ----------------------------------------------
 
         # Note: Di frontend nanti URL-nya biasanya mengarah ke halaman React/Vue
@@ -269,11 +256,7 @@ def reset_password():
             return jsonify({"error": "Token sudah kadaluarsa. Silakan request ulang."}), 400
 
         # 3. Update Password
-        password_bytes = new_password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        password_hash = bcrypt.hashpw(password_bytes, salt).decode('utf-8')
-
-        user.password_hash = password_hash
+        user.set_password(new_password)
         
         # 4. Hapus Token (Supaya tidak bisa dipakai lagi)
         user.reset_token = None
