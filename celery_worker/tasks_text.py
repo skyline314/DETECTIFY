@@ -4,61 +4,50 @@ import tempfile
 from app.models import AnalysisHistory
 from app.extensions import db, s3_client
 from flask import current_app
-from app.analysis.utils import extract_text_from_file
 import os
+from .utils import s3_temp_file, cleanup_s3, extract_text_from_file
+
 
 @celery.task(name='process_text_task')
 def process_text_task(analysis_id):
     """Worker for Text Analysis"""
     print(f"[Worker] Starting Text Job: {analysis_id}")
     
+    # Ambil Data Job dari DB
     job = AnalysisHistory.query.filter_by(analysis_id=analysis_id).first()
     if not job: 
         print(f"[Worker] Error: Job ID {analysis_id} not found in DB.")
         return
 
     try:
+        # Update Status -> PROCESSING
         job.status = 'PROCESSING'
         db.session.commit()
 
-        # Fetch S3
-        bucket_name = current_app.config['AWS_S3_BUCKET_NAME']
-        file_key = job.file_location
-        
-        print(f"[Worker] Fetching Document from S3: {file_key}")
-        s3_response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
-        file_data_bytes = s3_response['Body'].read()
+        # Pakai shared utility: Download -> Pakai -> Hapus Lokal otomatis
+        with s3_temp_file(job.file_location) as temp_path:
+            raw_text = extract_text_from_file(temp_path)
+            
+            if not raw_text or len(raw_text.strip()) < 10:
+                raise ValueError("Teks tidak ditemukan atau terlalu pendek untuk dianalisis.")
+            
+            result_data = ml_registry.predict_text('LogReg', raw_text)
 
-        original_ext = os.path.splitext(job.file_name_original)[1] if job.file_name_original else ".txt"
-
-        with tempfile.NamedTemporaryFile(delete=False, suffix=original_ext) as temp_file:
-            temp_file.write(file_data_bytes)
-            temp_path = temp_file.name
-
-        print(f"[Worker] Extracting text from {temp_path}...")
-        raw_text = extract_text_from_file(temp_path)
-
-        if not raw_text.strip():
-            raise ValueError("File teks kosong")
-
-        # Predict (default logreg)
-        result = ml_registry.predict_text('LogReg', raw_text)
-
-        if "error" in result:
-            raise ValueError(result['error'])
-
-        # Save
-        job.status = 'COMPLETED'
-        job.result_summary = result
-        db.session.commit()
-
-        # Cleanup
-        s3_client.delete_object(Bucket=bucket_name, Key=job.file_location)
-        print(f"[Worker] Text Job Completed: {result['prediction']}")
+            if "error" in result_data:
+                raise ValueError(result_data["error"])
+            
+            # Update Status -> COMPLETED (Success)
+            job.status = 'COMPLETED'
+            job.result_summary = result_data
+            db.session.commit()
+            print(f"[Worker] Job {analysis_id} SUCCESS.")
 
     except Exception as e:
-        print(f"[Worker] Text Job Failed: {e}")
+        print(f"[Worker] Job Failed: {e}")
         db.session.rollback()
         job.status = 'FAILED'
         job.error_message = str(e)
         db.session.commit()
+
+    finally:
+        cleanup_s3(job.file_location) # Hapus di S3 setelah selesai
