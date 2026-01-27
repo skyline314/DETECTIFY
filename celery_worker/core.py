@@ -15,13 +15,8 @@ from torchvision import transforms
 from PIL import Image
 from timm import create_model
 
-
-# 1. GLOBAL CONFIGURATION & PATHS
-# try:
-#     torchaudio.set_audio_backend("soundfile")
-#     print("[Core] Audio Backend forced to: soundfile")
-# except Exception as e:
-#     print(f"[Core] Warning: Failed to set audio backend: {e}")
+###########################################################################################################
+# GLOBAL CONFIGURATION & PATHS
 
 # CONFIG & PATHS 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -31,23 +26,19 @@ MODEL_DIR = os.path.join(ASSETS_DIR, 'models')
 # AUDIO
 AUDIO_MODEL_PATH = os.path.join(MODEL_DIR, 'audio', 'AUDIO_MODEL.pth')
 AUDIO_MODEL = None
-DEVICE = "cpu"
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # TEXT
 TEXT_MODEL_DIR = os.path.join(MODEL_DIR, 'text') 
-TEXT_MODELS_PATHS = {
-    'LogReg': os.path.join(TEXT_MODEL_DIR, 'logistic_regression' ,'log_reg_model.pkl'),
-    'XGBoost': os.path.join(TEXT_MODEL_DIR, 'xgboost' ,'xgb_clf_model.pkl'),
-}
-TEXT_VECTORIZERS_PATHS = {
-    'LogReg': os.path.join(TEXT_MODEL_DIR, 'logistic_regression' ,'tfidf_vectorizer.pkl'),
-    'XGBoost': os.path.join(TEXT_MODEL_DIR, 'xgboost' ,'xgb_tfidf_vectorizer.pkl'),
-}
+TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'logistic_regression' ,'log_reg_model.pkl')
+TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'logistic_regression' ,'tfidf_vectorizer.pkl')
 
 # IMAGE
 IMAGE_MODEL_PATH = os.path.join(MODEL_DIR, 'image', 'IMAGE_MODEL.pth')
 
-# 2. HELPER FUNCTIONS 
+###########################################################################################################
+
+# HELPER FUNCTIONS 
 def clean_text(text):
     """
     Cleaning function untuk Text Analysis (untuk XGBoost pipeline)
@@ -64,6 +55,8 @@ def clean_text(text):
     # Remove words containing numbers
     text = re.sub(r'\w*\d\w*', '', text)
     return text
+
+###########################################################################################################
 
 # MODEL CLASSES
 
@@ -122,6 +115,8 @@ class EfficientNetV2(nn.Module):
         out = self.classifier(features)
         return out.squeeze(1)
 
+###########################################################################################################
+# REGISTRY CORE
 
 class ModelRegistry:
     """
@@ -133,8 +128,8 @@ class ModelRegistry:
         self.audio_model = None
         
         # Text Assets
-        self.text_models = {}
-        self.text_vectorizers = {}
+        self.text_model = None
+        self.text_vectorizer = None
 
         # Image Assets
         self.image_model = None
@@ -142,12 +137,19 @@ class ModelRegistry:
         self._is_loaded = False
 
     def load_assets(self):
-        """Loads all models into memory."""
+        """Metode utama pemuatan aset (Entry Point)."""
         if self._is_loaded:
             return
         
-        print("[CORE] Loading ML Models into Memory...")
-        # 1. LOAD AUDIO MODEL (PyTorch) 
+        print(f"[CORE] Loading ML Models on {DEVICE}")
+        self._load_audio_model()
+        self._load_text_model()
+        self._load_image_model()
+        self._is_loaded = True
+        print("[Core] All Assets Loaded.")
+
+    # --- Loader Sub-methods ---
+    def _load_audio_model(self):
         try:
             if os.path.exists(AUDIO_MODEL_PATH):
                 print(f"[Core] Loading Audio Model from: {AUDIO_MODEL_PATH}")
@@ -157,20 +159,16 @@ class ModelRegistry:
         except Exception as e:
             print(f"[Core]  Error loading Audio Model: {e}")
 
-        # 2. LOAD TEXT MODELS (Scikit-Learn/Joblib) 
+    def _load_text_model(self):
         try:
-            for name, path in TEXT_MODELS_PATHS.items():
-                if os.path.exists(path):
-                    self.text_models[name] = joblib.load(path)
-                    print(f"[Core] Loaded Text Model: {name}")
-
-            for name, path in TEXT_VECTORIZERS_PATHS.items():
-                if os.path.exists(path):
-                    self.text_vectorizers[name] = joblib.load(path)
+            if os.path.exists(TEXT_MODEL_PATH) and os.path.exists(TEXT_VECTORIZER_PATH):
+                    self.text_model = joblib.load(TEXT_MODEL_PATH)
+                    self.text_vectorizer = joblib.load(TEXT_VECTORIZER_PATH)
+                    print(f"[Core] Loaded Text Model: Logistic Regression")
         except Exception as e:
             print(f"[Core] Error loading Text Models: {e}")
-
-        # 3. LOAD IMAGE MODEL
+    
+    def _load_image_model(self):
         try:
             if os.path.exists(IMAGE_MODEL_PATH):
                 self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
@@ -186,10 +184,29 @@ class ModelRegistry:
                 print(f"[Core] Image Model Loaded")
         except Exception as e:
             print(f"[Core] Error loading Image Model: {e}")
+    
+    # --- Audio Inference Sub-methods ---
 
-        self._is_loaded = True
-        print("[Core] All Assets Loaded.")
-
+    def _preprocess_audio(self, file_path):
+        waveform, sample_rate = torchaudio.load(file_path, backend='soundfile')
+        if sample_rate != 16000:
+            waveform = torchaudio.transforms.Resample(sample_rate, 16000)(waveform)
+        if waveform.shape[0] > 1:
+            waveform = torch.mean(waveform, dim=0, keepdim=True)
+        return waveform
+    
+    def _segment_audio(self, waveform):
+        segment_len = 16000 * 4
+        total_len = waveform.shape[1]
+        segments = []
+        if total_len <= segment_len:
+            segments.append(F.pad(waveform, (0, segment_len - total_len)))
+        else:
+            for i in range(0, total_len - segment_len + 1, segment_len):
+                segments.append(waveform[:, i : i + segment_len])
+            if total_len % segment_len != 0:
+                segments.append(waveform[:, -segment_len:])
+        return segments
 
     def predict_audio(self, file_path):
         """
@@ -203,36 +220,11 @@ class ModelRegistry:
             return {"error": "Model Audio tidak tersedia/gagal dimuat."}
 
         try:
-            # A. Load Audio File
-            waveform, sample_rate = torchaudio.load(file_path, backend='soundfile')
-            
-            # Resample ke 16000 Hz
-            if sample_rate != 16000:
-                resampler = torchaudio.transforms.Resample(sample_rate, 16000)
-                waveform = resampler(waveform)
+            # Preprocess and Segementation
+            waveform = self._preprocess_audio(file_path)
+            segments = self._segment_audio(waveform)
 
-            # Stereo to Mono
-            if waveform.shape[0] > 1:
-                waveform = torch.mean(waveform, dim=0, keepdim=True)
-
-            # B. Segmentasi (Split per 4 Detik)
-            segment_len = 16000 * 4
-            total_len = waveform.shape[1]
-            segments = []
-
-            # Padding jika audio kependekan
-            if total_len <= segment_len:
-                pad_amount = segment_len - total_len
-                segments.append(F.pad(waveform, (0, pad_amount)))
-            else:
-                # Potong-potong audio panjang
-                for i in range(0, total_len - segment_len + 1, segment_len):
-                    segments.append(waveform[:, i : i + segment_len])
-                # Ambil sisa ekor audio
-                if total_len % segment_len != 0:
-                    segments.append(waveform[:, -segment_len:])
-
-            # C. Prediction Loop
+            # Prediction Loop
             segment_preds = []
             total_confidence = 0.0
 
@@ -246,13 +238,11 @@ class ModelRegistry:
                     segment_preds.append(pred)
                     total_confidence += prob[0][pred].item()
 
-            # D. Majority Voting
+            # Majority Voting
             # Label: 0 = REAL, 1 = FAKE (Asumsi dari training notebook)
             vote_result = Counter(segment_preds)
             final_pred_idx = vote_result.most_common(1)[0][0]
-            
             avg_confidence = (total_confidence / len(segments)) * 100
-            
             label = "FAKE" if final_pred_idx == 1 else "REAL"
             
             return {
@@ -277,38 +267,23 @@ class ModelRegistry:
         Output: Dictionary hasil prediksi.
         """
         if not self._is_loaded: self.load_assets()
-
-        # Fallback logic jika model name salah
-        if model_name not in self.text_models:
-             if 'LogReg' in self.text_models: model_name = 'LogReg'
-             elif self.text_models: model_name = list(self.text_models.keys())[0]
-             else: return {"error": "No Text models available"}
-
-        model = self.text_models[model_name]
-        vectorizer = self.text_vectorizers.get(model_name)
-
-        if not vectorizer:
-            return {"error": f"Vectorizer for {model_name} missing"}
-
-        # Preprocessing
-        if model_name == 'XGBoost':
-            processed_text = clean_text(raw_text)
-        else:
-            processed_text = str(raw_text).lower() 
+        if not raw_text or len(raw_text.strip()) < 10:
+            return {"error": "Teks terlalu pendek (Minimal 10 karakter)."}
+        if not self.text_model or not self.text_vectorizer: return {"error": "Model Teks tidak tersedia."}
 
         # Predict
         try:
-            text_vectorized = vectorizer.transform([processed_text])
-            prediction = model.predict(text_vectorized)[0]
-            probabilities = model.predict_proba(text_vectorized)[0]
+            processed_text = clean_text(raw_text)
+            text_vectorized = self.text_vectorizer.transform([processed_text])
+            prediction = self.text_model.predict(text_vectorized)[0]
+            probabilities = self.text_model.predict_proba(text_vectorized)[0]
             
             # Mapping: 0 = Human/REAL, 1 = AI/FAKE
-            # Sesuaikan dengan training label Anda. Biasanya 1=Fake.
             label = "FAKE" if prediction == 1 else "REAL"
             confidence = probabilities[1] if prediction == 1 else probabilities[0]
 
             return {
-                "model_used": f"Detectify_Text_{model_name}",
+                "model_used": f"Detectify_Text_Logistic_Regression",
                 "prediction": label,
                 "confidence_score": float(confidence), 
                 "probability_ai": float(probabilities[1]),
