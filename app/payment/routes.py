@@ -34,7 +34,7 @@ def create_transaction():
         return jsonify({"error": "User tidak ditemukan"}), 404
 
     # Harga Paket 
-    amount = amount = current_app.config.get('PREMIUM_PRICE')
+    amount = int(current_app.config.get('PREMIUM_PRICE'))
 
     safe_uid = str(user.user_id)[:8]
     # Format Order ID: ORDER-{UID}-{RANDOM}
