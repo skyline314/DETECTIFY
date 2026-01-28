@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import ENUM, JSON
 from sqlalchemy import text
 import uuid
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserPlan(enum.Enum):
@@ -41,7 +41,7 @@ class User(db.Model):
         """Hanya cek status dan masa berlaku."""
         if self.plan != UserPlan.PREMIUM:
             return False
-        if self.subscription_end and self.subscription_end < datetime.utcnow():
+        if self.subscription_end and self.subscription_end < datetime.now(timezone.utc):
             return False
         return True
 

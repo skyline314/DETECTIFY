@@ -5,7 +5,7 @@ from app.extensions import db, mail
 from flask_mail import Message
 from flask_jwt_extended import create_access_token
 from itsdangerous import URLSafeTimedSerializer
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask import render_template
 import resend
 import os
@@ -207,7 +207,7 @@ def forgot_password():
         # 2. Simpan ke Database
         user.reset_token = reset_token
         # Token berlaku 1 jam
-        user.reset_token_expiration = datetime.utcnow() + timedelta(hours=1)
+        user.reset_token_expiration = datetime.now(timezone.utc) + timedelta(hours=1)
         db.session.commit()
 
         # 3. Kirim Email
