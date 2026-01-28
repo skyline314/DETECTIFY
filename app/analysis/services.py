@@ -1,7 +1,7 @@
 import uuid
 import logging
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
+from datetime import datetime, time, timezone
 from flask import current_app
 from app.extensions import db, s3_client
 from app.models import AnalysisHistory, db
@@ -18,10 +18,10 @@ class AnalysisService:
         """
         Menghitung jumlah analisis yang dilakukan user dalam 24 jam terakhir.
         """
-        yesterday = datetime.utcnow() - timedelta(days=1)
+        today_start = datetime.combine(datetime.now(timezone.utc).date(), time.min)
         return AnalysisHistory.query.filter(
             AnalysisHistory.user_id == user_id,
-            AnalysisHistory.created_at >= yesterday
+            AnalysisHistory.created_at >= today_start
         ).count()
 
     @classmethod
