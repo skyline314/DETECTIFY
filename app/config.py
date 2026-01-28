@@ -34,6 +34,13 @@ class Config:
     # Nonaktifkan event tracking dari SQLAlchemy
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,  # Cek koneksi sebelum digunakan
+        "pool_recycle": 1800,   # Reset koneksi setiap 30 menit
+        "pool_size": 10,        # Jumlah koneksi maksimal
+        "max_overflow": 20      # Toleransi kelebihan koneksi
+    }
+    
     # Celery (Async Tasks)
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
