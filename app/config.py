@@ -40,7 +40,7 @@ class Config:
         "pool_size": 10,        # Jumlah koneksi maksimal
         "max_overflow": 20      # Toleransi kelebihan koneksi
     }
-    
+
     # Celery (Async Tasks)
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
     CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
@@ -56,6 +56,9 @@ class Config:
 
     #LIMIT
     LIMIT_DAILY = os.environ.get('LIMIT_DAILY')
+
+    # PRICE
+    PREMIUM_PRICE = os.environ.get('PREMIUM_PRICE')
 
 
 class DevelopmentConfig(Config):
