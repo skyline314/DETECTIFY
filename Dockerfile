@@ -34,4 +34,4 @@ ENV PATH="/home/user/.local/bin:$PATH"
 
 EXPOSE 7860
 
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:7860 --workers 1 --threads 8 --timeout 0 run:app & celery -A celery_worker.celery_app.celery worker --loglevel=info --concurrency=2"]
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:7860 --workers 1 --threads 8 --timeout 0 run:app & celery -A celery_worker.celery_app.celery worker --loglevel=info -P solo"]
