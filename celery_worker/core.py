@@ -1,4 +1,6 @@
 import os
+os.environ['OMP_NUM_THREADS'] = '1'
+
 import joblib
 import pandas as pd
 import numpy as np
