@@ -30,3 +30,4 @@ python-docx
 pypdf
 midtransclient
 resend
+opencv-python-headless

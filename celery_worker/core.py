@@ -16,6 +16,7 @@ from collections import Counter
 from torchvision import transforms
 from PIL import Image
 from timm import create_model
+import cv2
 
 ###########################################################################################################
 # GLOBAL CONFIGURATION & PATHS
@@ -303,6 +304,14 @@ class ModelRegistry:
         if self.image_model is None: return {"error": "Model Image Not Found"}
 
         try:
+            # Cek apakah input adalah path (str) atau sudah berupa objek Image
+            if isinstance(image_path, str):
+                # Jika String: Ini adalah alur S3/Image 
+                img = Image.open(image_path).convert("RGB")
+            else:
+                # Jika bukan String: Ini adalah alur Video (Frame sudah di RAM)
+                img = image_path.convert("RGB")
+
             # 1. Transformasi (Wajib sama dengan Training)
             transform = transforms.Compose([
                 transforms.Resize((224, 224)),
@@ -344,6 +353,18 @@ class ModelRegistry:
             }
         except Exception as e:
             return {"error": f"Image Error: {str(e)}"}
+        
+    def predict_video_frame(self, frame_array):
+        """
+        Menerjemahkan array OpenCV menjadi PIL Image untuk predict_image.
+        """
+        # OpenCV (BGR) -> RGB
+        frame_rgb = cv2.cvtColor(frame_array, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(frame_rgb)
+        
+        # Kirim ke predict_image sebagai objek
+        return self.predict_image(img)
+
 
 # Global Registry Instance  
 ml_registry = ModelRegistry()
