@@ -67,6 +67,7 @@
                     <ul class="nav nav-pills mb-3" id="pills-tab">
                         <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-audio">🎤 Audio</button></li>
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-image">🖼️ Image</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-video">📹 Video</button></li>
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-text">📝 Text/Doc</button></li>
                     </ul>
 
@@ -87,6 +88,16 @@
                             </div>
                             <button class="btn btn-dark w-100" onclick="analyzeImage()">Upload & Detect Image</button>
                             <div class="mt-3" id="image-result"></div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-video">
+                            <input type="file" id="video-file" class="form-control mb-3" accept="video/*">
+                            <div id="video-preview-container" class="preview-area">
+                                <strong>🎬 Preview:</strong>
+                                <video id="video-player" controls style="width: 100%; margin-top: 10px;"></video>
+                            </div>
+                            <button class="btn btn-dark w-100" onclick="analyzeVideo()">Upload & Detect Video</button>
+                            <div class="mt-3" id="video-result"></div>
                         </div>
 
                         <div class="tab-pane fade" id="pills-text">
@@ -176,10 +187,17 @@
             r.readAsDataURL(e.target.files[0]);
         }
     });
+    document.getElementById('video-file').addEventListener('change', function(e) {
+        if(e.target.files[0]) {
+            document.getElementById('video-player').src = URL.createObjectURL(e.target.files[0]);
+            document.getElementById('video-preview-container').style.display = 'block';
+        }
+    });
 
     // --- MAIN UPLOAD LOGIC ---
     async function analyzeAudio() { doUpload('/api/analysis/audio', document.getElementById('audio-file').files[0], 'audio-result'); }
     async function analyzeImage() { doUpload('/api/analysis/image', document.getElementById('image-file').files[0], 'image-result'); }
+    async function analyzeVideo() { doUpload('/api/analysis/video', document.getElementById('video-file').files[0], 'video-result'); }
 
     // HYBRID TEXT ANALYZER
     async function analyzeHybridText() {
@@ -273,6 +291,7 @@
                     if(fname.match(/\.(wav|mp3)$/i)) typeVal='AUDIO';
                     else if(fname.match(/\.(txt|pdf|docx|doc)$/i)) typeVal='TEXT';
                     else if(fname.match(/\.(jpg|png|jpeg|webp)$/i)) typeVal='IMAGE';
+                    else if(fname.match(/\.(mp4|avi|mov)$/i)) typeVal='VIDEO';
                 }
                 let resData = item.result_summary||item.result||{};
                 let pred = findValue(resData,['prediction','label'])||'';

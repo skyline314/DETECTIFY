@@ -10,7 +10,8 @@ class AnalysisService:
     ALLOWED_EXTENSIONS = {
         'AUDIO': {'mp3', 'wav', 'flac'},
         'TEXT': {'txt', 'pdf', 'docx'},
-        'IMAGE': {'jpg', 'jpeg', 'png'}
+        'IMAGE': {'jpg', 'jpeg', 'png'},
+        'VIDEO': {'mp4', 'avi', 'mov'}
     }
 
     @staticmethod
@@ -132,6 +133,9 @@ class AnalysisService:
             elif job.analysis_type == 'IMAGE':
                 from celery_worker.tasks_image import process_image_task
                 process_image_task.apply_async(args=[job.analysis_id])
+            elif job.analysis_type == 'VIDEO':
+                from celery_worker.tasks_video import process_video_task
+                process_video_task.apply_async(args=[job.analysis_id])
         except Exception as e:
             current_app.logger.error(f"Celery Dispatch Error: {e}")
 

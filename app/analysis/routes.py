@@ -54,6 +54,8 @@ def upload_text():
     except Exception as e:
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
     
+
+# ENDPOINT UPLOAD IMAGE    
 @analysis_bp.route('/analysis/image', methods=['POST'])
 @jwt_required()
 def upload_image():
@@ -78,6 +80,29 @@ def upload_image():
     except Exception as e:
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
+# ENDPOINT UPLOAD VIDEO
+@analysis_bp.route('/analysis/video', methods=['POST'])
+@jwt_required()
+def upload_video():
+    # Cek apakah user mengirim file
+    if 'file' not in request.files:
+        return jsonify({"error": "Tidak ada file video yang dikirim"}), 400
+        
+    file = request.files['file']
+    user_id = get_jwt_identity()
+
+    try:
+        result = AnalysisService.process_upload(user_id, file, 'VIDEO')
+        return jsonify(result), 202
+        
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except PermissionError as e:
+        return jsonify({"error": str(e)}), 403
+    except RuntimeError as e:
+        return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
 # ENDPOINT HISTORY 
 @analysis_bp.route('/history', methods=['GET'])
