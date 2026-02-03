@@ -2,8 +2,9 @@ FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV HOME=/home/user
+ENV PATH="/home/user/.local/bin:$PATH"
 
-WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -14,14 +15,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     libsndfile1 \
     libmagic1 \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Setup user
+# Setup user and workdir
 RUN useradd -m -u 1000 user
-# Pre-create logs directory with right permissions
-RUN mkdir -p /app/logs && chown -R user:user /app/logs
+WORKDIR /app
+
+RUN chown user:user /app
+USER user
 
 # Install requirements
 COPY --chown=user requirements.txt .
@@ -31,8 +34,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy sisa file
 COPY --chown=user . .
 
-USER user
-ENV PATH="/home/user/.local/bin:$PATH"
+# Buat folder log dan tmp di dalam folder yang bisa ditulis user
+RUN mkdir -p /app/logs /app/tmp
 
 EXPOSE 7860
 
