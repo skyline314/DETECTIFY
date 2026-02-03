@@ -320,7 +320,6 @@ class ModelRegistry:
             ])
 
             # 2. Preprocess
-            img = Image.open(image_path).convert("RGB")
             img_tensor = transform(img).unsqueeze(0).to(DEVICE)
 
             # 3. Predict
