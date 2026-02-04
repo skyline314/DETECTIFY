@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import analysis_bp
 from .services import AnalysisService 
 from app.decorators import premium_required
+from io import BytesIO
 
 # ENDPOINT UPLOAD AUDIO 
 @analysis_bp.route('/analysis/audio', methods=['POST'])
@@ -103,6 +104,31 @@ def upload_video():
         return jsonify({"error": str(e)}), 500
     except Exception as e:
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
+
+# ENDPOINT HUMANIZE
+@analysis_bp.route('/analysis/humanize', methods=['POST'])
+@jwt_required()
+def humanize_text():
+    data = request.get_json()
+    text_content = data.get('text')
+    language = data.get('language', 'en') # id atau en
+    user_id = get_jwt_identity()
+
+    if not text_content:
+        return jsonify({"error": "Teks tidak boleh kosong"}), 400
+
+    # Buat file virtual dengan nama manual_text.input sesuai sistem sebelumnya
+    # Tambahkan prefix bahasa agar task bisa mendeteksi
+    filename = f"{language}_Humanize.input"
+    file_obj = BytesIO(text_content.encode('utf-8'))
+    file_obj.filename = filename
+
+    try:
+        result = AnalysisService.process_upload(user_id, file_obj, 'HUMANIZE')
+        return jsonify(result), 202
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 # ENDPOINT HISTORY 
 @analysis_bp.route('/history', methods=['GET'])

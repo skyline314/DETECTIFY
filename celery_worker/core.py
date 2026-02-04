@@ -363,6 +363,23 @@ class ModelRegistry:
         
         # Kirim ke predict_image sebagai objek
         return self.predict_image(img)
+    
+    def humanize_text(self, text, language='en'):
+        import requests
+        OLLAMA_URL = "http://localhost:11434/api/generate" 
+        
+        # Prompt Berdasarkan Bahasa
+        if language == 'id':
+            prompt = f"Anda adalah editor profesional. Ubah teks berikut agar terdengar alami, manusiawi, dan tidak kaku (Bahasa Indonesia). Pertahankan makna asli:\n\n{text}"
+        else:
+            prompt = f"You are a professional editor. Rewrite the following text to sound natural and human (English). Avoid robotic wording:\n\n{text}"
+
+        try:
+            payload = {"model": "llama3", "prompt": prompt, "stream": False}
+            response = requests.post(OLLAMA_URL, json=payload, timeout=120)
+            return response.json().get("response", "").strip()
+        except Exception as e:
+            return f"Humanizer Error: {str(e)}"
 
 
 # Global Registry Instance  

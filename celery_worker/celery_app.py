@@ -20,7 +20,8 @@ def create_celery_app(config_name=os.getenv('FLASK_ENV', 'default')):
             'celery_worker.tasks_audio', # Load modul Audio
             'celery_worker.tasks_text',  # Load modul Text
             'celery_worker.tasks_image', # Load modul Image
-            'celery_worker.tasks_video'  # Load modul Video
+            'celery_worker.tasks_video',  # Load modul Video
+            'celery_worker.tasks_humanize' # Load modul Humanize
         ]
     )
     

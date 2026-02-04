@@ -31,3 +31,4 @@ pypdf
 midtransclient
 resend
 opencv-python-headless
+requests

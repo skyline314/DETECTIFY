@@ -17,7 +17,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagic1 \
     libgl1 \
     libglib2.0-0 \
+    curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
 
 # Setup user and workdir
 RUN useradd -m -u 1000 user
@@ -39,4 +43,4 @@ RUN mkdir -p /app/logs /app/tmp
 
 EXPOSE 7860
 
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:7860 --workers 1 --threads 8 --timeout 0 run:app & celery -A celery_worker.celery_app.celery worker --loglevel=info -P solo"]
+CMD ["sh", "-c", "ollama serve & sleep 5 && ollama pull llama3 && gunicorn --bind 0.0.0.0:7860 --workers 1 --threads 8 --timeout 0 run:app & celery -A celery_worker.celery_app.celery worker --loglevel=info -P solo"]
