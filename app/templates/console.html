@@ -102,33 +102,35 @@
 
                         <div class="tab-pane fade" id="pills-text">
                             <div class="mb-3">
-                                <label class="form-label small fw-bold">Select Language:</label>
-                                <select id="text-lang" class="form-select form-select-sm">
+                                <label class="form-label small fw-bold text-muted">1. Pilihan Bahasa (Untuk Humanize):</label>
+                                <select id="text-lang" class="form-select form-select-sm border-primary">
                                     <option value="en">English</option>
                                     <option value="id">Bahasa Indonesia</option>
                                 </select>
                             </div>
 
-                            <div class="btn-group w-100 mb-3">
-                                <input type="radio" class="btn-check" name="textMode" id="mode-type" value="type" checked onclick="toggleTextMode()">
-                                <label class="btn btn-outline-primary" for="mode-type">✍️ Type Text</label>
-                                <input type="radio" class="btn-check" name="textMode" id="mode-upload" value="upload" onclick="toggleTextMode()">
-                                <label class="btn btn-outline-primary" for="mode-upload">📂 Upload File</label>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">2. Input Teks:</label>
+                                <textarea id="text-input-manual" class="form-control" rows="5" placeholder="Tempel teks AI di sini..."></textarea>
                             </div>
 
-                            <div id="input-area-type">
-                                <textarea id="text-input-manual" class="form-control mb-3" rows="5" placeholder="Paste or type article text here..."></textarea>
+                            <div id="humanize-output-area" style="display: none;" class="mb-3 animate__animated animate__fadeIn">
+                                <label class="form-label small fw-bold text-success">✨ Hasil Humanize:</label>
+                                <textarea id="text-output-humanized" class="form-control border-success bg-light" rows="5" readonly></textarea>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-success" onclick="copyHumanizedText()">📋 Salin Hasil</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="moveToInput()">🔄 Gunakan untuk Analisis</button>
+                                </div>
                             </div>
 
                             <div class="row g-2">
-                                <div class="col-md-6">
-                                    <button class="btn btn-dark w-100" onclick="analyzeHybridText()">🔍 Analyze</button>
+                                <div class="col-6">
+                                    <button class="btn btn-dark w-100" onclick="analyzeHybridText()">🔍 Deteksi AI</button>
                                 </div>
-                                <div class="col-md-6">
-                                    <button id="btn-humanize" class="btn btn-primary w-100" onclick="startHumanize()">✨ Humanize</button>
+                                <div class="col-6">
+                                    <button id="btn-humanize" class="btn btn-primary w-100" onclick="startHumanize()">✨ Humanize Saja</button>
                                 </div>
                             </div>
-
                             <div class="mt-3" id="text-result"></div>
                         </div>
                     </div>
@@ -230,14 +232,18 @@
 
         doUpload('/api/analysis/text', fileToSend, 'text-result');
     }
-    
+
     // FUNGSI HUMANIZER
     async function startHumanize() {
         const textVal = document.getElementById('text-input-manual').value;
         const lang = document.getElementById('text-lang').value;
-        if (!textVal.trim()) return alert("Teks tidak boleh kosong!");
+        
+        if (textVal.trim().length < 20) {
+            return alert("Teks terlalu pendek untuk diproses (Minimal 20 karakter).");
+        }
 
-        document.getElementById('text-result').innerHTML = '<div class="alert alert-info">⏳ Humanizing text...</div>';
+        document.getElementById('text-result').innerHTML = '<div class="alert alert-info">⏳ Sedang memproses Humanization...</div>';
+        
         try {
             const res = await fetch(BASE_URL + '/api/analysis/humanize', {
                 method: 'POST',
@@ -246,27 +252,51 @@
             });
             const d = await res.json();
             if (d.analysis_id) pollHumanize(d.analysis_id);
-            else document.getElementById('text-result').innerHTML = `<div class="alert alert-danger">Error: ${d.error}</div>`;
-        } catch (e) { alert("Err: " + e); }
+        } catch (e) { alert("Error koneksi ke server."); }
     }
 
-    // POLLING KHUSUS HUMANIZER UNTUK AUTO-VALIDASI
     async function pollHumanize(id) {
         let iv = setInterval(async () => {
-            const res = await fetch(BASE_URL + `/api/analysis/${id}`, { headers: { 'Authorization': `Bearer ${JWT_TOKEN}` } });
-            const d = await res.json();
-            if (d.status === 'COMPLETED') {
-                clearInterval(iv);
-                const humanizedText = d.result.humanized_text;
-                document.getElementById('text-input-manual').value = humanizedText;
-                document.getElementById('text-result').innerHTML = '<div class="alert alert-success">✅ Humanized! Now auto-validating...</div>';
-                // Jalankan analisis otomatis untuk validasi
-                analyzeHybridText();
-            } else if (d.status === 'FAILED') {
-                clearInterval(iv);
-                document.getElementById('text-result').innerHTML = `<div class="alert alert-danger">Humanization Failed: ${d.error}</div>`;
-            }
+            try {
+                const res = await fetch(BASE_URL + `/api/analysis/${id}`, { 
+                    headers: { 'Authorization': `Bearer ${JWT_TOKEN}` } 
+                });
+                const d = await res.json();
+
+                if (d.status === 'COMPLETED') {
+                    clearInterval(iv);
+                    const resultText = d.result.humanized_text;
+                    
+                    // Tampilkan area hasil dan isi teksnya
+                    document.getElementById('humanize-output-area').style.display = 'block';
+                    document.getElementById('text-output-humanized').value = resultText;
+                    
+                    document.getElementById('text-result').innerHTML = `
+                        <div class="alert alert-success">✅ Humanization Berhasil!</div>`;
+                    
+                    // Scroll otomatis ke hasil
+                    document.getElementById('humanize-output-area').scrollIntoView({ behavior: 'smooth' });
+
+                } else if (d.status === 'FAILED') {
+                    clearInterval(iv);
+                    document.getElementById('text-result').innerHTML = `<div class="alert alert-danger">Error: ${d.error || 'Gagal memproses teks'}</div>`;
+                }
+            } catch (e) { clearInterval(iv); }
         }, 2000);
+    }
+
+    // Fungsi pembantu untuk UX
+    function copyHumanizedText() {
+        const copyText = document.getElementById("text-output-humanized");
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+        alert("Teks berhasil disalin!");
+    }
+
+    function moveToInput() {
+        const resText = document.getElementById("text-output-humanized").value;
+        document.getElementById("text-input-manual").value = resText;
+        alert("Teks dipindahkan ke input. Anda sekarang bisa menekan tombol 'Deteksi AI'.");
     }
 
     async function doUpload(endpoint, fileObj, resId) {
