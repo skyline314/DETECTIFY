@@ -101,26 +101,20 @@
                         </div>
 
                         <div class="tab-pane fade" id="pills-text">
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-muted">1. Pilihan Bahasa (Untuk Humanize):</label>
-                                <select id="text-lang" class="form-select form-select-sm border-primary">
-                                    <option value="en">English</option>
-                                    <option value="id">Bahasa Indonesia</option>
-                                </select>
+                            <div class="btn-group w-100 mb-3">
+                                <input type="radio" class="btn-check" name="textMode" id="mode-type" value="type" checked onclick="toggleTextMode()">
+                                <label class="btn btn-outline-primary" for="mode-type">✍️ Ketik Teks</label>
+                                
+                                <input type="radio" class="btn-check" name="textMode" id="mode-upload" value="upload" onclick="toggleTextMode()">
+                                <label class="btn btn-outline-primary" for="mode-upload">📂 Upload File</label>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">2. Input Teks:</label>
-                                <textarea id="text-input-manual" class="form-control" rows="5" placeholder="Tempel teks AI di sini..."></textarea>
+                            <div id="input-area-type">
+                                <textarea id="text-input-manual" class="form-control mb-3" rows="6" placeholder="Masukkan teks di sini..."></textarea>
                             </div>
 
-                            <div id="humanize-output-area" style="display: none;" class="mb-3 animate__animated animate__fadeIn">
-                                <label class="form-label small fw-bold text-success">✨ Hasil Humanize:</label>
-                                <textarea id="text-output-humanized" class="form-control border-success bg-light" rows="5" readonly></textarea>
-                                <div class="mt-2">
-                                    <button class="btn btn-sm btn-outline-success" onclick="copyHumanizedText()">📋 Salin Hasil</button>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="moveToInput()">🔄 Gunakan untuk Analisis</button>
-                                </div>
+                            <div id="input-area-upload" style="display: none;">
+                                <input type="file" id="text-file" class="form-control mb-3" accept=".txt,.pdf,.docx">
                             </div>
 
                             <div class="row g-2">
@@ -128,10 +122,11 @@
                                     <button class="btn btn-dark w-100" onclick="analyzeHybridText()">🔍 Deteksi AI</button>
                                 </div>
                                 <div class="col-6">
-                                    <button id="btn-humanize" class="btn btn-primary w-100" onclick="startHumanize()">✨ Humanize Saja</button>
+                                    <button class="btn btn-primary w-100" onclick="startHumanize()">✨ Humanize Saja</button>
                                 </div>
                             </div>
-                            <div class="mt-3" id="text-result"></div>
+                            
+                            <div id="text-result" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -173,12 +168,15 @@
     // --- LOGIC TOGGLE TEXT MODE ---
     function toggleTextMode() {
         const mode = document.querySelector('input[name="textMode"]:checked').value;
-        if(mode === 'type') {
-            document.getElementById('input-area-type').style.display = 'block';
-            document.getElementById('input-area-upload').style.display = 'none';
+        const typeArea = document.getElementById('input-area-type');
+        const uploadArea = document.getElementById('input-area-upload');
+        
+        if (mode === 'type') {
+            typeArea.style.display = 'block';
+            uploadArea.style.display = 'none';
         } else {
-            document.getElementById('input-area-type').style.display = 'none';
-            document.getElementById('input-area-upload').style.display = 'block';
+            typeArea.style.display = 'none';
+            uploadArea.style.display = 'block';
         }
     }
 
@@ -213,24 +211,34 @@
 
     // HYBRID TEXT ANALYZER
     async function analyzeHybridText() {
+        // 1. Cek mode mana yang sedang aktif (Type atau Upload)
         const mode = document.querySelector('input[name="textMode"]:checked').value;
-        let fileToSend = null;
-
+        const resId = 'text-result';
+        
         if (mode === 'type') {
-            // Mode Ketik: Ubah teks jadi File Virtual (.txt)
+            // --- MODE KETIK TEKS ---
             const textVal = document.getElementById('text-input-manual').value;
-            if (!textVal.trim()) return alert("Teks tidak boleh kosong!");
             
-            // Magic Javascript: Membuat File dari String
-            const blob = new Blob([textVal], { type: "text/plain" });
-            fileToSend = new File([blob], "manual_input.txt", { type: "text/plain" });
-        } else {
-            // Mode Upload: Ambil file asli
-            fileToSend = document.getElementById('doc-file').files[0];
-            if (!fileToSend) return alert("Pilih file dokumen dulu!");
-        }
+            if (!textVal.trim() || textVal.trim().length < 20) {
+                return alert("Teks terlalu pendek! Minimal 20 karakter untuk analisis yang akurat.");
+            }
 
-        doUpload('/api/analysis/text', fileToSend, 'text-result');
+            // Buat file virtual (.txt) dari teks yang diketik agar konsisten dengan API backend
+            const blob = new Blob([textVal], { type: 'text/plain' });
+            const file = new File([blob], "manual_detection.txt", { type: "text/plain" });
+
+            // Panggil fungsi upload bawaan Anda
+            doUpload('/api/analysis/text', file, resId);
+            
+        } else {
+            // --- MODE UPLOAD FILE ---
+            const fileInput = document.getElementById('text-file');
+            if (fileInput.files.length === 0) {
+                return alert("Silakan pilih file (txt/pdf/docx) terlebih dahulu!");
+            }
+
+            doUpload('/api/analysis/text', fileInput.files[0], resId);
+        }
     }
 
     // FUNGSI HUMANIZER
@@ -256,6 +264,7 @@
     }
 
     async function pollHumanize(id) {
+        // Gunakan interval untuk mengecek status setiap 2 detik
         let iv = setInterval(async () => {
             try {
                 const res = await fetch(BASE_URL + `/api/analysis/${id}`, { 
@@ -265,23 +274,39 @@
 
                 if (d.status === 'COMPLETED') {
                     clearInterval(iv);
-                    const resultText = d.result.humanized_text;
                     
-                    // Tampilkan area hasil dan isi teksnya
-                    document.getElementById('humanize-output-area').style.display = 'block';
-                    document.getElementById('text-output-humanized').value = resultText;
+                    // Ambil teks dari result_summary yang dikirim worker
+                    // Sesuai dengan dictionary {"humanized_text": ...} di Python
+                    const resultData = d.result || {};
+                    const humanizedText = resultData.humanized_text || "Teks tidak ditemukan.";
+
+                    // 1. Tampilkan Area Hasil Humanize
+                    const outputArea = document.getElementById('humanize-output-area');
+                    const outputText = document.getElementById('text-output-humanized');
                     
-                    document.getElementById('text-result').innerHTML = `
-                        <div class="alert alert-success">✅ Humanization Berhasil!</div>`;
-                    
-                    // Scroll otomatis ke hasil
-                    document.getElementById('humanize-output-area').scrollIntoView({ behavior: 'smooth' });
+                    if (outputArea && outputText) {
+                        outputArea.style.display = 'block';
+                        outputText.value = humanizedText;
+                        
+                        // Beri notifikasi sukses
+                        document.getElementById('text-result').innerHTML = `
+                            <div class="alert alert-success">✅ Humanization Berhasil! Teks telah diperbarui di bawah.</div>
+                        `;
+                        
+                        // Scroll otomatis agar pengguna melihat hasilnya
+                        outputArea.scrollIntoView({ behavior: 'smooth' });
+                    }
 
                 } else if (d.status === 'FAILED') {
                     clearInterval(iv);
-                    document.getElementById('text-result').innerHTML = `<div class="alert alert-danger">Error: ${d.error || 'Gagal memproses teks'}</div>`;
+                    document.getElementById('text-result').innerHTML = `
+                        <div class="alert alert-danger">❌ Gagal: ${d.error || 'Terjadi kesalahan pada model Llama'}</div>
+                    `;
                 }
-            } catch (e) { clearInterval(iv); }
+            } catch (e) {
+                clearInterval(iv);
+                console.error("Polling error:", e);
+            }
         }, 2000);
     }
 
