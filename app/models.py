@@ -43,7 +43,12 @@ class User(db.Model):
             return False
         if self.subscription_end and self.subscription_end < datetime.now(timezone.utc):
             return False
-        return True
+        
+        now = datetime.now(timezone.utc)
+        now_naive = now.replace(tzinfo=None)
+        sub_end_naive = self.subscription_end.replace(tzinfo=None)
+
+        return sub_end_naive > now_naive
 
     def __repr__(self):
         return f'<User {self.email} [{self.plan}]>'
