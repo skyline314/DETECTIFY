@@ -17,6 +17,8 @@ from torchvision import transforms
 from PIL import Image
 from timm import create_model
 import cv2
+import tensorflow as tf
+from gensim.models.doc2vec import Doc2Vec
 
 ###########################################################################################################
 # GLOBAL CONFIGURATION & PATHS
@@ -33,8 +35,10 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # TEXT
 TEXT_MODEL_DIR = os.path.join(MODEL_DIR, 'text') 
-TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'logistic_regression' ,'log_reg_model.pkl')
-TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'logistic_regression' ,'tfidf_vectorizer.pkl')
+ENGLISH_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'log_reg_model.pkl')
+ENGLISH_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'tfidf_vectorizer.pkl')
+INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.h5')
+INDONESIAN_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'doc2Vec.d2v')
 
 # IMAGE
 IMAGE_MODEL_PATH = os.path.join(MODEL_DIR, 'image', 'IMAGE_MODEL.pth')
@@ -131,8 +135,10 @@ class ModelRegistry:
         self.audio_model = None
         
         # Text Assets
-        self.text_model = None
-        self.text_vectorizer = None
+        self.en_text_model = None
+        self.en_text_vectorizer = None
+        self.id_text_model = None
+        self.id_text_vectorizer = None
 
         # Image Assets
         self.image_model = None
@@ -163,13 +169,24 @@ class ModelRegistry:
             print(f"[Core]  Error loading Audio Model: {e}")
 
     def _load_text_model(self):
+        # Load englsih model
         try:
-            if os.path.exists(TEXT_MODEL_PATH) and os.path.exists(TEXT_VECTORIZER_PATH):
-                    self.text_model = joblib.load(TEXT_MODEL_PATH)
-                    self.text_vectorizer = joblib.load(TEXT_VECTORIZER_PATH)
-                    print(f"[Core] Loaded Text Model: Logistic Regression")
+            if os.path.exists(ENGLISH_TEXT_MODEL_PATH) and os.path.exists(ENGLISH_TEXT_VECTORIZER_PATH):
+                    self.en_text_model = joblib.load(ENGLISH_TEXT_MODEL_PATH)
+                    self.en_text_vectorizer = joblib.load(ENGLISH_TEXT_VECTORIZER_PATH)
+                    print(f"[Core] Loaded Text Model: Englsih Text Detection")
         except Exception as e:
             print(f"[Core] Error loading Text Models: {e}")
+
+        # Load indonesia model
+        try:
+            if os.path.exists(INDONESIAN_TEXT_MODEL_PATH) and os.path.exists(INDONESIAN_TEXT_VECTORIZER_PATH):
+                    self.id_text_model = tf.keras.models.load_model(INDONESIAN_TEXT_MODEL_PATH)
+                    self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
+                    print(f"[Core] Loaded Text Model: Indonesian Text Detection")
+        except Exception as e:
+            print(f"[Core] Error loading Text Models: {e}")
+
     
     def _load_image_model(self):
         try:
@@ -263,9 +280,9 @@ class ModelRegistry:
             return {"error": f"Audio prediction failed: {str(e)}"}
         
     
-    def predict_text(self, model_name, raw_text):
+    def predict_text(self, raw_text, language='en'):
         """
-        Melakukan prediksi Teks Deepfake.
+        Melakukan prediksi Teks Deepfake. (ENGLSIH:en & INDONESIAN:id)
         Input: Raw String text.
         Output: Dictionary hasil prediksi.
         """
@@ -275,26 +292,46 @@ class ModelRegistry:
         if not self.text_model or not self.text_vectorizer: return {"error": "Model Teks tidak tersedia."}
 
         # Predict
-        try:
-            processed_text = clean_text(raw_text)
-            text_vectorized = self.text_vectorizer.transform([processed_text])
-            prediction = self.text_model.predict(text_vectorized)[0]
-            probabilities = self.text_model.predict_proba(text_vectorized)[0]
-            
-            # Mapping: 0 = Human/REAL, 1 = AI/FAKE
-            label = "FAKE" if prediction == 1 else "REAL"
-            confidence = probabilities[1] if prediction == 1 else probabilities[0]
+        if language == 'en':
+            try:
+                processed_text = clean_text(raw_text)
+                text_vectorized = self.en_text_vectorizer.transform([processed_text])
+                prediction = self.en_text_model.predict(text_vectorized)[0]
+                probabilities = self.en_text_model.predict_proba(text_vectorized)[0]
+                
+                # Mapping: 0 = Human/REAL, 1 = AI/FAKE
+                label = "FAKE" if prediction == 1 else "REAL"
+                confidence = probabilities[1] if prediction == 1 else probabilities[0]
 
-            return {
-                "model_used": f"Detectify_Text_Logistic_Regression",
-                "prediction": label,
-                "confidence_score": float(confidence), 
-                "probability_ai": float(probabilities[1]),
-                "probability_human": float(probabilities[0])
-            }
-        except Exception as e:
-            return {"error": f"Text prediction failed: {str(e)}"}
-        
+                return {
+                    "model_used": f"Detectify_Text_Logistic_Regression",
+                    "prediction": label,
+                    "confidence_score": float(confidence), 
+                    "probability_ai": float(probabilities[1]),
+                    "probability_human": float(probabilities[0])
+                }
+            except Exception as e:
+                return {"error": f"Text prediction failed: {str(e)}"}
+        elif language == 'id':
+            try: 
+                vector = self.id_text_vectorizer.infer_vector(raw_text.split())
+                vector = np.expand_dims(vector, axis=0)
+                
+                prediction = self.id_text_model.predict(vector)[0][0]
+                label = "FAKE" if prediction >= 0.5 else "REAL"
+                confidence = prediction if label == "FAKE" else 1 - prediction
+                
+                return {
+                    "prediction": label,
+                    "confidence_score": round(float(confidence) * 100, 2),
+                    "model_used": "Indo_BiLSTM_Doc2Vec",
+                    "language": "Indonesian"
+                }
+            except Exception as e:
+                return {"error": f"Text prediction failed: {str(e)}"}
+        else:
+            return {"error": "Language not supported"}
+                
 
     def predict_image(self, image_path):
         """
@@ -396,6 +433,11 @@ class ModelRegistry:
             payload = {"model": "llama3", "prompt": prompt, "stream": False}
             response = requests.post(OLLAMA_URL, json=payload, timeout=120)
             result_text = response.json().get("response", "").strip()
+
+            prefixes = ["Here is the rewritten text:", "Here's the rewritten version:", "Tentu, ini hasilnya:"]
+            for p in prefixes:
+                if result_text.lower().startswith(p.lower()):
+                    result_text = result_text[len(p):].strip()
             
             # Mengembalikan dictionary agar konsisten dengan polling di console.html
             return {"humanized_text": result_text}
