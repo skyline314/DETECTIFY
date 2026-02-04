@@ -11,7 +11,8 @@ class AnalysisService:
         'AUDIO': {'mp3', 'wav', 'flac'},
         'TEXT': {'txt', 'pdf', 'docx'},
         'IMAGE': {'jpg', 'jpeg', 'png'},
-        'VIDEO': {'mp4', 'avi', 'mov'}
+        'VIDEO': {'mp4', 'avi', 'mov'},
+        'HUMANIZE': {'input'}
     }
 
     @staticmethod
@@ -136,6 +137,9 @@ class AnalysisService:
             elif job.analysis_type == 'VIDEO':
                 from celery_worker.tasks_video import process_video_task
                 process_video_task.apply_async(args=[job.analysis_id])
+            elif job.analysis_type == 'HUMANIZE':
+                from celery_worker.tasks_humanize import process_humanize_task
+                process_humanize_task.apply_async(args=[job.analysis_id])
         except Exception as e:
             current_app.logger.error(f"Celery Dispatch Error: {e}")
 

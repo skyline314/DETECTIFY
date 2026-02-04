@@ -101,10 +101,17 @@
                         </div>
 
                         <div class="tab-pane fade" id="pills-text">
-                            <div class="btn-group w-100 mb-3" role="group">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Select Language:</label>
+                                <select id="text-lang" class="form-select form-select-sm">
+                                    <option value="en">English</option>
+                                    <option value="id">Bahasa Indonesia</option>
+                                </select>
+                            </div>
+
+                            <div class="btn-group w-100 mb-3">
                                 <input type="radio" class="btn-check" name="textMode" id="mode-type" value="type" checked onclick="toggleTextMode()">
                                 <label class="btn btn-outline-primary" for="mode-type">✍️ Type Text</label>
-
                                 <input type="radio" class="btn-check" name="textMode" id="mode-upload" value="upload" onclick="toggleTextMode()">
                                 <label class="btn btn-outline-primary" for="mode-upload">📂 Upload File</label>
                             </div>
@@ -113,12 +120,15 @@
                                 <textarea id="text-input-manual" class="form-control mb-3" rows="5" placeholder="Paste or type article text here..."></textarea>
                             </div>
 
-                            <div id="input-area-upload" style="display:none;">
-                                <div class="alert alert-info py-2"><small>Supported: <strong>.txt, .pdf, .docx</strong></small></div>
-                                <input type="file" id="doc-file" class="form-control mb-3" accept=".txt,.pdf,.docx,.doc">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <button class="btn btn-dark w-100" onclick="analyzeHybridText()">🔍 Analyze</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button id="btn-humanize" class="btn btn-primary w-100" onclick="startHumanize()">✨ Humanize</button>
+                                </div>
                             </div>
-                            
-                            <button class="btn btn-dark w-100" onclick="analyzeHybridText()">Analyze Content</button>
+
                             <div class="mt-3" id="text-result"></div>
                         </div>
                     </div>
@@ -219,6 +229,44 @@
         }
 
         doUpload('/api/analysis/text', fileToSend, 'text-result');
+    }
+    
+    // FUNGSI HUMANIZER
+    async function startHumanize() {
+        const textVal = document.getElementById('text-input-manual').value;
+        const lang = document.getElementById('text-lang').value;
+        if (!textVal.trim()) return alert("Teks tidak boleh kosong!");
+
+        document.getElementById('text-result').innerHTML = '<div class="alert alert-info">⏳ Humanizing text...</div>';
+        try {
+            const res = await fetch(BASE_URL + '/api/analysis/humanize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${JWT_TOKEN}` },
+                body: JSON.stringify({ text: textVal, language: lang })
+            });
+            const d = await res.json();
+            if (d.analysis_id) pollHumanize(d.analysis_id);
+            else document.getElementById('text-result').innerHTML = `<div class="alert alert-danger">Error: ${d.error}</div>`;
+        } catch (e) { alert("Err: " + e); }
+    }
+
+    // POLLING KHUSUS HUMANIZER UNTUK AUTO-VALIDASI
+    async function pollHumanize(id) {
+        let iv = setInterval(async () => {
+            const res = await fetch(BASE_URL + `/api/analysis/${id}`, { headers: { 'Authorization': `Bearer ${JWT_TOKEN}` } });
+            const d = await res.json();
+            if (d.status === 'COMPLETED') {
+                clearInterval(iv);
+                const humanizedText = d.result.humanized_text;
+                document.getElementById('text-input-manual').value = humanizedText;
+                document.getElementById('text-result').innerHTML = '<div class="alert alert-success">✅ Humanized! Now auto-validating...</div>';
+                // Jalankan analisis otomatis untuk validasi
+                analyzeHybridText();
+            } else if (d.status === 'FAILED') {
+                clearInterval(iv);
+                document.getElementById('text-result').innerHTML = `<div class="alert alert-danger">Humanization Failed: ${d.error}</div>`;
+            }
+        }, 2000);
     }
 
     async function doUpload(endpoint, fileObj, resId) {

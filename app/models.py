@@ -88,7 +88,7 @@ class AnalysisHistory(db.Model):
     )
     
     analysis_type = db.Column(
-        ENUM('AUDIO', 'VIDEO', 'TEXT', 'IMAGE', name='analysis_type_enum'), 
+        ENUM('AUDIO', 'VIDEO', 'TEXT', 'IMAGE', 'HUMANIZE', name='analysis_type_enum'), 
         nullable=False
     )
     
