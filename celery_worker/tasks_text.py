@@ -31,7 +31,10 @@ def process_text_task(analysis_id):
             if not raw_text or len(raw_text.strip()) < 10:
                 raise ValueError("Teks tidak ditemukan atau terlalu pendek untuk dianalisis.")
             
-            result_data = ml_registry.predict_text('LogReg', raw_text)
+            # Deteksi bahasa dari prefix nama file (id_ atau en_)
+            lang = 'id' if job.file_name_original.startswith('id_') else 'en'
+            
+            result_data = ml_registry.predict_text(raw_text, language=lang)
 
             if "error" in result_data:
                 raise ValueError(result_data["error"])

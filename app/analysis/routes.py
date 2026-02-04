@@ -39,7 +39,10 @@ def upload_text():
         return jsonify({"error": "Tidak ada file dokumen yang dikirim"}), 400
         
     file = request.files['file']
+    language = request.form.get('language', 'en')
     user_id = get_jwt_identity()
+
+    file.filename = f"{language}_{file.filename}"
 
     try:
         # Panggil service dengan tipe 'TEXT'

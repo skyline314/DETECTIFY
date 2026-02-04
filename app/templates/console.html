@@ -102,6 +102,14 @@
                         </div>
 
                         <div class="tab-pane fade" id="pills-text">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Pilih Bahasa Deteksi:</label>
+                                <select id="text-detect-lang" class="form-select border-primary">
+                                    <option value="id" selected>Bahasa Indonesia (Bi-LSTM)</option>
+                                    <option value="en">English (Logistic Regression)</option>
+                                </select>
+                            </div>
+
                             <div class="btn-group w-100 mb-3">
                                 <input type="radio" class="btn-check" name="textMode" id="mode-type" value="type" checked onclick="toggleTextMode()">
                                 <label class="btn btn-outline-primary" for="mode-type">✍️ Ketik Teks</label>
@@ -221,20 +229,39 @@
     // HYBRID TEXT ANALYZER
     async function analyzeHybridText() {
         const mode = document.querySelector('input[name="textMode"]:checked').value;
+        const lang = document.getElementById('text-detect-lang').value;
         const resId = 'text-result';
-        
+        let fileObj;
+
         if (mode === 'type') {
             const textVal = document.getElementById('text-input-manual').value;
             if (textVal.trim().length < 20) return alert("Teks terlalu pendek!");
             
             const blob = new Blob([textVal], { type: 'text/plain' });
-            const file = new File([blob], "manual_input.txt", { type: "text/plain" });
-            doUpload('/api/analysis/text', file, resId);
+            fileObj = new File([blob], "manual_input.txt", { type: "text/plain" });
         } else {
             const fileInput = document.getElementById('text-file');
             if (fileInput.files.length === 0) return alert("Pilih file!");
-            doUpload('/api/analysis/text', fileInput.files[0], resId);
+            fileObj = fileInput.files[0];
         }
+
+        // Gunakan FormData untuk mengirim file dan parameter bahasa
+        const fd = new FormData();
+        fd.append('file', fileObj);
+        fd.append('language', lang);
+
+        document.getElementById(resId).innerHTML = '<div class="alert alert-warning">⏳ Menganalisis Konten...</div>';
+        
+        try {
+            const res = await fetch(BASE_URL + '/api/analysis/text', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${JWT_TOKEN}` },
+                body: fd
+            });
+            const d = await res.json();
+            if (d.analysis_id) poll(d.analysis_id, resId);
+            else document.getElementById(resId).innerHTML = `<div class="alert alert-danger">Error: ${d.error}</div>`;
+        } catch (e) { document.getElementById(resId).innerHTML = "Error: " + e; }
     }
 
     // FUNGSI HUMANIZER
@@ -261,16 +288,21 @@
     async function pollHumanize(id) {
         let iv = setInterval(async () => {
             try {
-                const res = await fetch(BASE_URL + `/api/analysis/${id}`, { headers: { 'Authorization': `Bearer ${JWT_TOKEN}` } });
+                const res = await fetch(BASE_URL + `/api/analysis/${id}`, { 
+                    headers: { 'Authorization': `Bearer ${JWT_TOKEN}` } 
+                });
                 const d = await res.json();
 
                 if (d.status === 'COMPLETED') {
                     clearInterval(iv);
-                    const resultText = d.result.humanized_text || d.result;
+                    // Ambil kunci humanized_text dari dictionary
+                    const resultData = d.result || {};
+                    const humanizedText = resultData.humanized_text || d.result || "Gagal memuat teks.";
                     
                     document.getElementById('humanize-output-area').style.display = 'block';
-                    document.getElementById('text-output-humanized').value = resultText;
+                    document.getElementById('text-output-humanized').value = humanizedText;
                     document.getElementById('humanize-result').innerHTML = '<div class="alert alert-success">✅ Selesai!</div>';
+                    document.getElementById('humanize-output-area').scrollIntoView({ behavior: 'smooth' });
                 } else if (d.status === 'FAILED') {
                     clearInterval(iv);
                     document.getElementById('humanize-result').innerHTML = `<div class="alert alert-danger">Gagal: ${d.error}</div>`;
@@ -289,8 +321,12 @@
 
     function moveToInput() {
         const resText = document.getElementById("text-output-humanized").value;
-        document.getElementById("text-input-manual").value = resText;
-        alert("Teks dipindahkan ke input. Anda sekarang bisa menekan tombol 'Deteksi AI'.");
+        // Pindahkan ke tab Text Detection
+        document.getElementById('text-input-manual').value = resText;
+        document.querySelector('button[data-bs-target="#pills-text"]').click();
+        document.getElementById('mode-type').checked = true;
+        toggleTextMode();
+        alert("Teks dipindahkan ke tab Deteksi. Anda bisa langsung menekan tombol 'Deteksi AI Content'.");
     }
 
     async function doUpload(endpoint, fileObj, resId) {
