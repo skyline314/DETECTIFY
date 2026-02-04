@@ -368,19 +368,40 @@ class ModelRegistry:
         import requests
         OLLAMA_URL = "http://localhost:11434/api/generate" 
         
-        # Prompt Berdasarkan Bahasa
+        # Penyesuaian instruksi agar hasil hanya berupa teks mentah
         if language == 'id':
-            prompt = f"Anda adalah editor profesional. Ubah teks berikut agar terdengar alami, manusiawi, dan tidak kaku (Bahasa Indonesia). Pertahankan makna asli:\n\n{text}"
+            prompt = f"""
+            Anda adalah editor profesional dan penulis berpengalaman.
+            Tugas Anda adalah menulis ulang teks berikut agar terdengar alami, lancar, dan manusiawi dalam Bahasa Indonesia.
+            Gunakan gaya bahasa yang natural (tidak kaku, tidak terkesan AI), pertahankan makna asli, dan jangan menambahkan informasi baru.
+
+            PENTING: Tampilkan hasil tulis ulang saja secara langsung. Jangan sertakan kalimat pembuka, penjelasan, atau penutup apa pun.
+
+            Teks:
+            {text}
+            """
         else:
-            prompt = f"You are a professional editor. Rewrite the following text to sound natural and human (English). Avoid robotic wording:\n\n{text}"
+            prompt = f"""
+            You are a professional editor and experienced writer.
+            Rewrite the following text so it sounds natural, fluent, and human-written in English.
+            Avoid robotic or AI-like phrasing. Preserve the original meaning and do not add new information.
+
+            IMPORTANT: Provide only the rewritten text directly. Do not include any introductory remarks, explanations, or conversational filler.
+
+            Text:
+            {text}
+            """
 
         try:
             payload = {"model": "llama3", "prompt": prompt, "stream": False}
             response = requests.post(OLLAMA_URL, json=payload, timeout=120)
-            return response.json().get("response", "").strip()
+            result_text = response.json().get("response", "").strip()
+            
+            # Mengembalikan dictionary agar konsisten dengan polling di console.html
+            return {"humanized_text": result_text}
+            
         except Exception as e:
-            return f"Humanizer Error: {str(e)}"
-
+            return {"error": f"Humanizer Error: {str(e)}", "humanized_text": "Gagal memproses teks."}
 
 # Global Registry Instance  
 ml_registry = ModelRegistry()
