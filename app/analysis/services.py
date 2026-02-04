@@ -12,7 +12,7 @@ class AnalysisService:
         'TEXT': {'txt', 'pdf', 'docx'},
         'IMAGE': {'jpg', 'jpeg', 'png'},
         'VIDEO': {'mp4', 'avi', 'mov'},
-        'HUMANIZE': {'input'}
+        'HUMANIZE': {'txt'}
     }
 
     @staticmethod
