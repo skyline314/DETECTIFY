@@ -119,7 +119,7 @@ def humanize_text():
 
     # Buat file virtual dengan nama manual_text.input sesuai sistem sebelumnya
     # Tambahkan prefix bahasa agar task bisa mendeteksi
-    filename = f"{language}_Humanize.input"
+    filename = f"{language}_Humanize.txt"
     file_obj = BytesIO(text_content.encode('utf-8'))
     file_obj.filename = filename
 
