@@ -27,18 +27,21 @@ from gensim.models.doc2vec import Doc2Vec
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 MODEL_DIR = os.path.join(ASSETS_DIR, 'models')
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # AUDIO
 AUDIO_MODEL_PATH = os.path.join(MODEL_DIR, 'audio', 'AUDIO_MODEL.pth')
 AUDIO_MODEL = None
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # TEXT
 TEXT_MODEL_DIR = os.path.join(MODEL_DIR, 'text') 
 ENGLISH_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'log_reg_model.pkl')
 ENGLISH_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'tfidf_vectorizer.pkl')
+
 INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.h5')
 INDONESIAN_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'doc2Vec.d2v')
+tf.config.set_visible_devices([], 'GPU')
+
 
 # IMAGE
 IMAGE_MODEL_PATH = os.path.join(MODEL_DIR, 'image', 'IMAGE_MODEL.pth')
@@ -181,8 +184,9 @@ class ModelRegistry:
         # Load indonesia model
         try:
             if os.path.exists(INDONESIAN_TEXT_MODEL_PATH) and os.path.exists(INDONESIAN_TEXT_VECTORIZER_PATH):
-                    self.id_text_model = tf.keras.models.load_model(INDONESIAN_TEXT_MODEL_PATH)
-                    self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
+                    with tf.device('/CPU:0'):
+                        self.id_text_model = tf.keras.models.load_model(INDONESIAN_TEXT_MODEL_PATH)
+                        self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
                     print(f"[Core] Loaded Text Model: Indonesian Text Detection")
         except Exception as e:
             print(f"[Core] Error loading Text Models: {e}")
@@ -314,10 +318,12 @@ class ModelRegistry:
                 return {"error": f"Text prediction failed: {str(e)}"}
         elif language == 'id':
             try: 
-                vector = self.id_text_vectorizer.infer_vector(raw_text.split())
-                vector = np.expand_dims(vector, axis=0)
-                
-                prediction = self.id_text_model.predict(vector)[0][0]
+                with tf.device('/CPU:0'):
+                    vector = self.id_text_vectorizer.infer_vector(raw_text.split())
+                    vector = np.expand_dims(vector, axis=0)
+                    
+                    prediction = self.id_text_model.predict(vector)[0][0]
+                    
                 label = "FAKE" if prediction >= 0.5 else "REAL"
                 confidence = prediction if label == "FAKE" else 1 - prediction
                 
