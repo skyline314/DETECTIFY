@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Humanize Text • DetectiFy</title>
+
+  <!-- Anti-flicker tema (mengikuti index.html) -->
+  <script>
+    (function () {
+      const KEY = "detectify_theme";
+      const saved = localStorage.getItem(KEY);
+      const prefersDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      const theme = (saved === "light" || saved === "dark")
+        ? saved
+        : (prefersDark ? "dark" : "light");
+
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- TOPBAR (konsisten dengan index.html) -->
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="index.html#top" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light"
+                 src="assets/light-logo.png"
+                 width="34" height="34"
+                 alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"
+                 src="assets/dark-logo.png"
+                 width="34" height="34"
+                 alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name" id="brandName">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html#home">Home</a>
+              <a class="nav__link" href="index.html#app">Application</a>
+              <a class="nav__link" href="index.html#features">Features</a>
+            </nav>
+
+            <a class="btn btn--primary" href="login.html">Get Started</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="index.html#home">Home</a>
+          <a class="mobile-link" href="index.html#app">Application</a>
+          <a class="mobile-link" href="index.html#features">Features</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="tool-page">
+    <section class="container tool-hero" aria-label="Humanize text hero">
+      <h1 class="tool-title">Humanize Text</h1>
+      <p class="tool-subtitle">Make your text more “human” for every kind of situation</p>
+
+      <div class="tool-shell" aria-label="Humanize Text workspace">
+        <!-- Sidebar -->
+        <aside class="tool-side">
+          <div class="side-top">
+            <span class="side-dot" aria-hidden="true"></span>
+            <button class="side-link" type="button" id="usageBtn">usage guides</button>
+          </div>
+
+          <div class="side-block">
+            <div class="side-label">Your plan:</div>
+            <div class="side-value">Free</div>
+          </div>
+
+          <div class="side-cards" role="group" aria-label="quota cards">
+            <div class="quota">
+              <div class="quota__title">AI detector</div>
+              <div class="quota__value"><span id="detectorLimit">500</span> words</div>
+            </div>
+            <div class="quota">
+              <div class="quota__title">AI humanizer</div>
+              <div class="quota__value"><span id="humanizerLimit">500</span> words</div>
+            </div>
+          </div>
+
+          <div class="side-actions">
+            <a class="btn btn--block" href="login.html">Start for Free</a>
+            <a class="btn btn--primary btn--block" href="#" id="upgradeBtn">Upgrade Plan</a>
+          </div>
+        </aside>
+
+        <!-- Center: Editor -->
+        <section class="tool-main" aria-label="Input editor">
+          <div class="main-top">
+            <div class="mode">
+              <span class="mode__label">Mode</span>
+              <div class="mode__tabs" role="tablist" aria-label="Mode">
+                <button class="mode__tab is-active" data-mode="casual" role="tab" aria-selected="true">Casual</button>
+                <button class="mode__tab" data-mode="academic" role="tab" aria-selected="false">Academic</button>
+                <button class="mode__tab" data-mode="professional" role="tab" aria-selected="false">Profesional</button>
+              </div>
+            </div>
+
+            <div class="main-tools">
+              <input id="txtInput" type="file" accept=".txt,text/plain" hidden />
+              <button class="mini-btn" type="button" id="btnUploadTxt">Upload .txt</button>
+              <div class="counter" id="counter">0 / 500 words</div>
+            </div>
+          </div>
+
+          <div class="editor">
+            <textarea id="inputText" placeholder="Paste your text here..." aria-label="Input text"></textarea>
+
+            <div class="editor-hint" id="editorHint" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
+            <div class="main-actions">
+              <button class="mini-btn" type="button" id="btnCheck">Check for AI</button>
+              <button class="mini-btn mini-btn--primary" type="button" id="btnHumanize">Humanize</button>
+            </div>
+
+            <div class="statusline" id="status" role="status" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <!-- Right: Output -->
+        <section class="tool-out" aria-label="Output panel">
+          <div class="out-top">
+            <div class="out-title">Output</div>
+            <button class="mini-btn" type="button" id="btnCopy" disabled>Copy</button>
+          </div>
+
+          <div class="out-box" id="outputBox">
+            <div class="out-placeholder" id="outPlaceholder">Your humanized content will appear here.</div>
+            <pre class="out-text" id="outputText" hidden></pre>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="theme.js" defer></script>
+  <script src="text-tool.js" defer></script>
+</body>
+</html>

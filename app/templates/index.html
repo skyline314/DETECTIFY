@@ -1,29 +1,404 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detectify - Welcome</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: #f8f9fa; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .hero-card { padding: 3rem; border-radius: 20px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 500px; }
-        .btn-custom { padding: 12px 25px; border-radius: 50px; font-weight: bold; width: 100%; margin-bottom: 10px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DetectiFy</title>
+
+  <!-- Anti-flicker: tentukan tema sebelum CSS dirender -->
+  <script>
+    (function () {
+      const KEY = "detectify_theme";
+      const saved = localStorage.getItem(KEY);
+      const prefersDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      const theme = (saved === "light" || saved === "dark")
+        ? saved
+        : (prefersDark ? "dark" : "light");
+
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-    <div class="hero-card">
-        <h1 class="display-5 fw-bold text-primary mb-3">Detectify</h1>
-        <p class="text-muted mb-4">Pilih menu untuk memulai deteksi AI.</p>
-        
-        <div class="d-grid gap-2">
-            <a href="/auth/console" class="btn btn-primary btn-custom shadow">Buka Developer Console</a>
-            
-            <a href="/auth/login" class="btn btn-outline-dark btn-custom">Login User</a>
-            
-            <hr>
-            <p class="small text-secondary">Server Status: <span class="text-success">Online</span></p>
+  <!-- TOPBAR -->
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <!-- Brand -->
+          <a class="brand" href="#top" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light"
+                 src="assets/light-logo.png"
+                 width="34" height="34"
+                 alt="DetectiFy"
+                 decoding="async"
+                 loading="eager" />
+            <img class="brand__logo brand__logo--dark"
+                 src="assets/dark-logo.png"
+                 width="34" height="34"
+                 alt="DetectiFy"
+                 decoding="async"
+                 loading="eager" />
+            <span class="brand__name" id="brandName">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <!-- Theme toggle -->
+              <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+
+              <!-- Mobile hamburger -->
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Desktop nav -->
+            <nav class="nav__links" id="desktopNav" aria-label="Primary navigation"></nav>
+
+            <a class="btn btn--primary" id="navCta" href="#">Get Started</a>
+          </div>
         </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" id="mobileNav" aria-label="Mobile navigation"></nav>
+        <a class="btn btn--primary btn--block" id="mobileCta" href="#">Get Started</a>
+      </div>
     </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home" aria-label="Hero">
+      <div class="hero__bg" id="heroBg" role="img" aria-label="Hero background"></div>
+
+      <div class="container hero__content">
+        <!-- Center pack: CTA + subtitle -->
+        <div class="hero__center">
+          <a class="hero__cta" id="heroCta" href="#">
+            <span id="heroCtaText">Get Started</span>
+            <span class="hero__ctaIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </a>
+
+          <p class="hero__sub" id="heroSubtitle"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section section--features" id="features">
+      <div class="container">
+        <h2 class="section__title section__title--big" id="featuresTitle">Our Features</h2>
+        <p class="section__desc" id="featuresDesc"></p>
+
+        <!-- Interactive hub -->
+        <div class="features-hub" id="featuresHub">
+          <!-- Menu (tabs/pills) -->
+          <div class="features-menu" id="featuresMenu" role="tablist" aria-label="Feature menu"></div>
+
+          <!-- Content panel (dynamic) -->
+          <div class="feature-panel" id="featurePanel" aria-live="polite"></div>
+        </div>
+
+        <!-- Cards grid (each div/card is clickable & linked to the menu) -->
+        <div class="features" id="featuresGrid" aria-label="Feature cards"></div>
+      </div>
+    </section>
+
+
+    <!-- CONTENT -->
+    <section class="section section--content" id="app">
+      <div class="container content-stack">
+        <!-- Overview -->
+        <article class="content-block">
+          <div class="content-head">
+            <span class="content-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5a2.1 2.1 0 013 3L8 18l-4 1 1-4 11.5-11.5Z"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <h3 class="content-title" id="overviewTitle">Overview</h3>
+          </div>
+
+          <p class="content-text" id="overviewText"></p>
+          <div class="bullets" id="overviewBullets"></div>
+        </article>
+
+        <!-- About -->
+        <article class="content-block">
+          <div class="content-head">
+            <span class="content-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16.5 3.5a2.1 2.1 0 013 3L8 18l-4 1 1-4 11.5-11.5Z"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <h3 class="content-title" id="aboutTitle">About Us</h3>
+          </div>
+
+          <p class="content-text" id="aboutText1"></p>
+          <p class="content-text" id="aboutText2"></p>
+          <div class="chips" id="aboutChips"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand">
+            <a class="brand brand--footer" href="#top" aria-label="Back to top">
+              <img class="brand__logo brand__logo--light"
+                   src="assets/light-logo.png"
+                   width="34" height="34"
+                   alt="DetectiFy"
+                   decoding="async"
+                   loading="lazy" />
+              <img class="brand__logo brand__logo--dark"
+                   src="assets/dark-logo.png"
+                   width="34" height="34"
+                   alt="DetectiFy"
+                   decoding="async"
+                   loading="lazy" />
+              <span class="brand__name" id="footerBrandName">DetectiFy</span>
+            </a>
+            <p class="footer__desc" id="footerDesc"></p>
+          </div>
+
+          <div class="footer__col">
+            <h4 class="footer__title" id="footerQuickTitle">Quick Links</h4>
+            <ul class="footer__links" id="footerQuickLinks"></ul>
+          </div>
+
+          <div class="footer__col">
+            <h4 class="footer__title" id="footerFeaturesTitle">Features</h4>
+            <ul class="footer__links" id="footerFeatureLinks"></ul>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <span id="footerCopyright"></span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Load JSON content -->
+  <script>
+    async function loadContent() {
+      const res = await fetch("./data.json");
+      const data = await res.json();
+
+      document.title = data.site.title;
+      document.getElementById("brandName").textContent = data.site.brand;
+      document.getElementById("footerBrandName").textContent = data.site.brand;
+
+      // Nav links
+      const desktopNav = document.getElementById("desktopNav");
+      const mobileNav = document.getElementById("mobileNav");
+
+      desktopNav.innerHTML = data.nav.links
+        .map(l => `<a class="nav__link" href="${l.href}">${l.label}</a>`)
+        .join("");
+
+      mobileNav.innerHTML = data.nav.links
+        .map(l => `<a class="mobile-link" href="${l.href}">${l.label}</a>`)
+        .join("");
+
+      // CTA
+      const navCta = document.getElementById("navCta");
+      const mobileCta = document.getElementById("mobileCta");
+      const heroCta = document.getElementById("heroCta");
+
+      navCta.textContent = data.nav.cta.label;
+      navCta.href = data.nav.cta.href;
+
+      mobileCta.textContent = data.nav.cta.label;
+      mobileCta.href = data.nav.cta.href;
+
+      document.getElementById("heroCtaText").textContent = data.hero.cta.label;
+      heroCta.href = data.hero.cta.href;
+
+      // Hero bg + subtitle
+      document.getElementById("heroSubtitle").textContent = data.hero.subtitle || "";
+      const heroBg = document.getElementById("heroBg");
+      heroBg.style.backgroundImage = `url("${data.hero.backgroundImage}")`;
+
+      // Features
+      document.getElementById("featuresTitle").textContent = data.features.title;
+      document.getElementById("featuresDesc").textContent = data.features.description || "";
+
+      const grid = document.getElementById("featuresGrid");
+
+      // mapping icon -> halaman tujuan
+      const FEATURE_ROUTES = {
+        text: "text.html",
+        image: "image.html",
+        video: "video.html",
+        audio: "audio.html",
+      };
+
+      grid.innerHTML = data.features.items.map(item => `
+        <article
+          class="feature-card is-link"
+          data-feature="${item.icon}"
+          tabindex="0"
+          role="link"
+          aria-label="Open ${item.title} page"
+        >
+          <div class="feature-card__icon" aria-hidden="true">${getFeatureIcon(item.icon)}</div>
+          <h4 class="feature-card__title">${item.title}</h4>
+          <p class="feature-card__desc">${item.description}</p>
+        </article>
+      `).join("");
+
+      // Klik untuk navigasi (event delegation)
+      grid.addEventListener("click", (e) => {
+        const card = e.target.closest(".feature-card.is-link");
+        if (!card) return;
+
+        const key = card.dataset.feature;
+        const href = FEATURE_ROUTES[key];
+        if (href) window.location.href = href;
+      });
+
+      // Enter / Space untuk navigasi (aksesibilitas)
+      grid.addEventListener("keydown", (e) => {
+        const card = e.target.closest(".feature-card.is-link");
+        if (!card) return;
+
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          const key = card.dataset.feature;
+          const href = FEATURE_ROUTES[key];
+          if (href) window.location.href = href;
+        }
+      });
+
+      // Overview
+      document.getElementById("overviewTitle").textContent = data.overview.title;
+      document.getElementById("overviewText").textContent = data.overview.text;
+
+      const bullets = document.getElementById("overviewBullets");
+      bullets.innerHTML = data.overview.bullets.map(b => `
+        <div class="bullet">
+          <span class="bullet__icon" aria-hidden="true">${getCheckIcon()}</span>
+          <div class="bullet__content">
+            <div class="bullet__title">${b.title}</div>
+            <div class="bullet__desc">${b.description}</div>
+          </div>
+        </div>
+      `).join("");
+
+      // About
+      document.getElementById("aboutTitle").textContent = data.about.title;
+      document.getElementById("aboutText1").textContent = data.about.paragraphs[0] || "";
+      document.getElementById("aboutText2").textContent = data.about.paragraphs[1] || "";
+
+      const chips = document.getElementById("aboutChips");
+      chips.innerHTML = data.about.chips.map(c => `<span class="chip">${c}</span>`).join("");
+
+      // Footer
+      document.getElementById("footerDesc").textContent = data.footer.description;
+      document.getElementById("footerQuickTitle").textContent = data.footer.quickLinksTitle;
+      document.getElementById("footerFeaturesTitle").textContent = data.footer.featureLinksTitle;
+
+      document.getElementById("footerQuickLinks").innerHTML =
+        data.footer.quickLinks.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join("");
+
+      document.getElementById("footerFeatureLinks").innerHTML =
+        data.footer.featureLinks.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join("");
+
+      document.getElementById("footerCopyright").textContent =
+        data.footer.copyright;
+
+      // Close mobile menu after clicking a link
+      mobileNav.querySelectorAll("a").forEach(a => {
+        a.addEventListener("click", () => {
+          const btn = document.getElementById("menuToggle");
+          if (btn && btn.getAttribute("aria-expanded") === "true") btn.click();
+        });
+      });
+    }
+
+    function getCheckIcon() {
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+    }
+
+    function getFeatureIcon(name) {
+      const icons = {
+      text: `
+        <svg class="feature-icon feature-icon--text" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 2v6h6"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+
+      image: `
+        <svg class="feature-icon feature-icon--image" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="2"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 14l2-2 4 4 2-2 3 3"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
+        </svg>`,
+
+      video: `
+        <svg class="feature-icon feature-icon--video" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <rect x="3" y="6" width="14" height="12" rx="2"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17 10l4-2v8l-4-2z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+
+      audio: `
+        <svg class="feature-icon feature-icon--audio" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <path d="M8 18V6l12-2v12"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="6" cy="18" r="3"
+            stroke="currentColor" stroke-width="2"/>
+          <circle cx="18" cy="16" r="3"
+            stroke="currentColor" stroke-width="2"/>
+        </svg>`
+      };
+      return icons[name] || icons.text;
+    }
+
+    loadContent().catch(err => console.error("Failed to load data.json:", err));
+  </script>
+
+  <script src="theme.js" defer></script>
 </body>
 </html>
