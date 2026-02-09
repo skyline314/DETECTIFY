@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DetectiFy - Success Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Variabel Warna Dasar */
+        :root {
+            --nav-bg: rgba(255, 255, 255, 0.7);
+            --text-color: #1a1a1a;
+            --border-color: rgba(255, 255, 255, 0.3);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --knob-bg: #ffffff; /* SAYA UBAH: Putih di mode terang agar ikon biru kelihatan */
+        }
+
+        /* Variabel Saat Dark Mode Aktif */
+        [data-theme="dark"] {
+            --nav-bg: rgba(20, 20, 20, 0.6);
+            --text-color: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --knob-bg: #112233; /* SAYA UBAH: Gelap di mode gelap agar ikon kuning kelihatan */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('assets/hero-bg.jpg') no-repeat center center/cover;
+            filter: blur(1px);
+            z-index: -1;
+        }
+
+        /* --- NAVBAR / TOPBAR STYLE --- */
+        .topbar {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav {
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 25px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .brand__logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .brand__name {
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        .nav__right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Theme Toggle Switch */
+        .theme-switch {
+            background: rgba(100, 100, 100, 0.2);
+            border: none;
+            padding: 4px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+
+        .theme-switch .icon {
+            color: var(--text-color);
+            z-index: 2; /* SAYA UBAH: Pastikan ikon di atas bulatan */
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .switch-knob {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--knob-bg); /* SAYA UBAH: Menggunakan variabel agar warna dinamis */
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            left: 4px;
+            z-index: 1; /* SAYA UBAH: Bulatan di bawah ikon */
+        }
+
+        [data-theme="dark"] .switch-knob {
+            transform: translateX(28px);
+        }
+
+        .nav__link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .btn--primary {
+            background: #112233;
+            color: white !important;
+            padding: 10px 22px;
+            border-radius: 10px;
+        }
+
+        [data-theme="dark"] .btn--primary {
+            background: #62B6FF;
+            color: #112233 !important;
+        }
+
+        /* --- SUCCESS CARD STYLE --- */
+        .overlay {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            width: 400px;
+            padding: 50px 30px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #62B6FF;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 25px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(98, 182, 255, 0.4);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        .cta-text {
+            cursor: pointer;
+            transition: color 0.3s;
+            font-weight: 600;
+        }
+
+        .cta-text:hover {
+            color: #62B6FF;
+        }
+
+        /* Warna Ikon */
+        .sun-icon {
+            stroke: #FFD700 !important; 
+            fill: #FFD700;
+        }
+
+        .moon-icon {
+            stroke: #62B6FF !important; 
+            fill: #62B6FF;
+        }
+
+        .theme-switch .icon svg {
+            transition: all 0.3s ease;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+      <div class="container">
+        <div class="topbar__shell">
+          <div class="nav">
+            <a class="brand" href="index.html">
+              <img class="brand__logo" src="assets/light-logo.png" alt="DetectiFy" />
+              <span class="brand__name">DetectiFy</span>
+            </a>
+
+            <div class="nav__right">
+                <button class="theme-switch" id="themeBtn">
+                    <div class="switch-knob"></div>
+                    <div class="icon">
+                        <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </div>
+                    <div class="icon">
+                        <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </div>
+                </button>
+
+                <a class="nav__link" href="index.html#features">Home</a>
+                <a class="nav__link" href="#">Application</a>
+                <a class="btn--primary nav__link" href="signup.html">Get Started</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="overlay">
+        <div class="card">
+            <div class="success-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h1>Successful</h1>
+            <p>Congratulations! Your account is ready.</p>
+            <p class="cta-text">Click to continue to home page</p>
+        </div>
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('detectify_theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('detectify_theme', newTheme);
+        });
+    </script>
+</body>
+</html>
