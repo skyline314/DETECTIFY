@@ -1,0 +1,192 @@
+<!DOCTYPE html>  
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DetectiFy — Application</title>
+
+    <!-- Ensure theme is applied before first paint -->
+    <script src="theme-init.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="apps-page">
+    <!-- TOPBAR -->
+    <header class="topbar" id="top">
+        <div class="container">
+        <div class="topbar__shell">
+            <div class="nav">
+            <!-- Brand -->
+            <a class="brand" href="#top" aria-label="Back to top">
+                <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+                <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+                <span class="brand__name">DetectiFy</span>
+            </a>
+
+            <div class="nav__right">
+                <div class="nav__icons" aria-label="Quick actions">
+                <!-- Theme toggle -->
+                <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                    <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+                </button>
+
+                <!-- Mobile hamburger -->
+                <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                </div>
+
+                <!-- Desktop nav -->
+                <nav class="nav__links" aria-label="Primary navigation">
+                <a class="nav__link" href="index.html">Home</a>
+                <a class="nav__link" href="apps.html">Application</a>
+                </nav>
+
+                <a class="btn btn--primary" href="get-started.html">Get Started</a>
+            </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="mobile-menu" id="mobileMenu" hidden>
+            <nav class="mobile-menu__links" aria-label="Mobile navigation">
+            <a class="mobile-link" href="index.html">Home</a>
+            <a class="mobile-link" href="apps.html">Application</a>
+            </nav>
+            <a class="btn btn--primary btn--block" href="get-started.html">Get Started</a>
+        </div>
+        </div>
+    </header>
+
+    <main class="apps" id="main">
+    <!-- HERO -->
+    <section class="apps-hero" aria-label="Apps hero">
+        <div class="container apps-hero__inner">
+        <p class="apps-hero__kicker">Worried everything’s all fake?</p>
+
+        <h1 class="apps-hero__title">
+            Verify Reality,<br />
+            Faster.
+        </h1>
+
+        <p class="apps-hero__desc">
+            Try our new AI Deepfake Video Detection (and many more),<br />
+            get to verify what’s real in seconds.
+        </p>
+        </div>
+    </section>
+
+    <!-- =======================
+        FEATURES PREVIEW (APPS)
+    ======================= -->
+
+    <!-- VIDEO -->
+    <section class="feature-band feature-band--video" aria-label="AI Video Detection">
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Video<br />Detection</h2>
+            <p>Instantly spot AI-generated or manipulated videos </p>
+            <a class="feature-band__btn" href="video.html">Try now</a>
+            </div>
+
+            <!-- 1 frame besar (ambil ~setengah section) -->
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- IMAGE (reverse contoh: teks kanan, frame kiri) -->
+    <section class="feature-band feature-band--image feature-band--reverse" aria-label="AI Image Detection">
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Image<br />Detection</h2>
+            <p>Reveal whether an image is AI-made or edited</p>
+            <a class="feature-band__btn" href="image.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- AUDIO -->
+    <section class="feature-band feature-band--audio" aria-label="AI Audio Detection">
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Audio<br />Detection</h2>
+            <p>Instantly check whether an audio clip is AI-generated or edited</p>
+            <a class="feature-band__btn" href="audio.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- TEXT (reverse) -->
+    <section class="feature-band feature-band--text feature-band--reverse" aria-label="AI Text Detection">
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Text<br />Detection</h2>
+            <p>Uncover whether text is human-written or AI-generated</p>
+            <a class="feature-band__btn" href="text.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- HUMANIZER -->
+    <section class="feature-band feature-band--humanizer" aria-label="Text Humanizer">
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">Text<br />Humanizer</h2>
+            <p>Refine AI-written text into natural, human-sounding writing</p>
+            <a class="feature-band__btn" href="humanize.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer" aria-label="Website footer">
+      <div class="container footer__grid">
+        <div class="footer__brand">
+          <div class="footer__logoRow">
+            <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+            <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+            <strong class="footer__name">DetectiFy</strong>
+          </div>
+          <p class="footer__desc">
+            Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+          </p>
+        </div>
+
+        <nav class="footer__col" aria-label="Quick links">
+          <h3 class="footer__heading">Quick Links</h3>
+          <a class="footer__link" href="#home">Home</a>
+          <a class="footer__link" href="apps.html">Application</a>
+          <a class="footer__link" href="pricing.html">Pricing</a>
+        </nav>
+
+        <nav class="footer__col" aria-label="Features">
+          <h3 class="footer__heading">Features</h3>
+          <a class="footer__link" href="text.html">Text Detection</a>
+          <a class="footer__link" href="image.html">Image Detection</a>
+          <a class="footer__link" href="video.html">Video Detection</a>
+          <a class="footer__link" href="audio.html">Audio Detection</a>
+          <a class="footer__link" href="humanize.html">Text Humanization</a>
+        </nav>
+      </div>
+
+      <div class="container footer__bottom">
+        <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+      </div>
+    </footer>
+    </main>
+
+    <script src="theme.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

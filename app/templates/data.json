@@ -1,0 +1,64 @@
+{
+  "site": {
+    "title": "DetectiFy - Humanize AI Content",
+    "brand": "DetectiFy"
+  },
+  "nav": {
+    "links": [
+      { "label": "Home", "href": "#home" },
+      { "label": "Application", "href": "#app" },
+      { "label": "Features", "href": "#features" }
+    ],
+    "cta": { "label": "Get Started", "href": "login.html" }
+  },
+  "hero": {
+    "backgroundImage": "assets/hero-bg.jpg",
+    "cta": { "label": "Get Started", "href": "login.html" },
+    "subtitle": "Transform AI-generated content into naturally human-like results."
+  },
+  "features": {
+    "title": "Our Features",
+    "description": "One platform to refine text, images, video, and audio into more natural outputs.",
+    "items": [
+      { "icon": "text", "title": "Text", "description": "Convert robotic AI text into natural, conversational language"},
+      { "icon": "image", "title": "Image", "description": "Add organic imperfections to AI-generated images" },
+      { "icon": "video", "title": "Video", "description": "Enhance AI videos with natural motion and timing" },
+      { "icon": "audio", "title": "Audio", "description": "Create authentic-sounding voices and natural intonation"}
+    ]
+  },
+  "overview": {
+    "title": "Overview",
+    "text": "In today's digital landscape, AI-generated content has become increasingly prevalent. However, this content often lacks the subtle nuances and imperfections that make human-created work feel authentic. DetectiFy bridges this gap by intelligently processing your AI-generated content to add those natural, human-like qualities.",
+    "bullets": [
+      { "title": "Advanced Processing", "description": "Utilizes sophisticated algorithms to analyze and enhance your content" },
+      { "title": "Fast & Efficient", "description": "Get your humanized results in seconds with our optimized processing" },
+      { "title": "Multi-Format Support", "description": "Works seamlessly with text, videos, and audio files" },
+      { "title": "Easy to Use", "description": "Simple upload, process, and download workflow for all content types" }
+    ]
+  },
+  "about": {
+    "title": "About Us",
+    "paragraphs": [
+      "We are a team of AI researchers, developers, and creative professionals passionate about bridging the gap between artificial and human intelligence. Our mission is to make AI-generated content more accessible and authentic by adding the subtle human touches that make content truly engaging.",
+      "Founded in 2025, DetectiFy has quickly become the go-to solution for content creators, marketers, and businesses looking to enhance their AI-generated assets. We believe the future of content creation lies not in replacing humans with AI, but in blending AI efficiency with human creativity."
+    ],
+    "chips": ["Innovation", "Quality", "Authenticity"]
+  },
+  "footer": {
+    "description": "Transform AI-generated content into naturally human-like results",
+    "quickLinksTitle": "Quick Links",
+    "featureLinksTitle": "Features",
+    "quickLinks": [
+      { "label": "Home", "href": "#home" },
+      { "label": "Application", "href": "#app" },
+      { "label": "Features", "href": "#features" }
+    ],
+    "featureLinks": [
+      { "label": "Text Humanization", "href": "text.html" },
+      { "label": "Image Enhancement", "href": "image.html" },
+      { "label": "Video Processing", "href": "video.html" },
+      { "label": "Audio Conversion", "href": "audio.html" }
+    ],
+    "copyright": "© 2025 DetectiFy. All rights reserved."
+  }
+}
