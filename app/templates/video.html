@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Video Detection • DetectiFy</title>
+  <script src="theme-init.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- TOPBAR (konsisten dengan index.html) -->
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="index.html#top" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light"
+                 src="assets/light-logo.png"
+                 width="75" height="45"
+                 alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"
+                 src="assets/dark-logo.png"
+                 width="75" height="45"
+                 alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name" id="brandName">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html#home">Home</a>
+              <a class="nav__link" href="index.html#app">Application</a>
+              <a class="nav__link" href="index.html#features">Features</a>
+            </nav>
+
+            <a class="btn btn--primary" href="login.html">Get Started</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="index.html#home">Home</a>
+          <a class="mobile-link" href="index.html#app">Application</a>
+          <a class="mobile-link" href="index.html#features">Features</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-page">
+    <section class="container app-hero" aria-label="Video detection">
+      <h1 class="app-title">AI Video Detection</h1>
+      <p class="app-subtitle">Find out whether your video is real or AI generated</p>
+
+      <div class="upload-card">
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload video file">
+          <input
+            id="fileInput"
+            class="dropzone__input"
+            type="file"
+            accept=".mp4,.mov,.mpeg,video/mp4,video/quicktime,video/mpeg"
+          />
+
+          <div class="dropzone__inner">
+            <div class="dropzone__icon dropzone__icon--video" aria-hidden="true">
+              <img
+                src="assets/video-folder.png"
+                alt=""
+                class="dropzone__iconImg"
+                decoding="async"
+                loading="eager"
+              />
+            </div>
+
+            <div class="dropzone__title">Drag &amp; drop your video here</div>
+
+            <div class="dropzone__subtitle">
+              Or
+              <button type="button" class="dropzone__browse" id="browseBtn">browse files</button>
+              on your computer
+            </div>
+
+            <div class="meta-pills" aria-label="file constraints">
+              <span class="pill">File format: <b>mp4, mov, mpeg</b></span>
+              <span class="dot" aria-hidden="true">•</span>
+              <span class="pill">Max Size: <b>100 MB</b></span>
+            </div>
+            <div class="dropzone__hint">Tips: use a clear, high-resolution video for better results.</div>
+          </div>
+          
+        </div>
+
+        <div class="upload-actions">
+          <div class="file-info" id="fileInfo" hidden>
+            <div class="file-info__name" id="fileName">—</div>
+            <div class="file-info__meta" id="fileMeta">—</div>
+          </div>
+
+          <div class="actions-row">
+            <button class="btn" type="button" id="btnRemove" disabled>Remove</button>
+            <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
+          </div>
+
+          <div class="progress" id="progressWrap" hidden aria-label="upload progress">
+            <div class="progress__bar" id="progressBar" style="width:0%"></div>
+          </div>
+
+          <div class="status" id="status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+<!-- FOOTER -->
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <strong class="footer__name">DetectiFy</strong>
+        </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="#home">Home</a>
+        <a class="footer__link" href="apps.html">Application</a>
+        <a class="footer__link" href="pricing.html">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="text.html">Text Detection</a>
+        <a class="footer__link" href="image.html">Image Detection</a>
+        <a class="footer__link" href="video.html">Video Detection</a>
+        <a class="footer__link" href="audio.html">Audio Detection</a>
+        <a class="footer__link" href="humanize.html">Text Humanization</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="theme.js" defer></script>
+  <script src="upload-video.js" defer></script>
+</body>
+</html>

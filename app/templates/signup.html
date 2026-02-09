@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account • DetectiFy</title>
+  <script src="theme-init.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="index.html#top" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light"
+                 src="assets/light-logo.png"
+                 width="75" height="45"
+                 alt="DetectiFy"
+                 decoding="async"
+                 loading="eager" />
+            <img class="brand__logo brand__logo--dark"
+                 src="assets/dark-logo.png"
+                 width="75" height="45"
+                 alt="DetectiFy"
+                 decoding="async"
+                 loading="eager" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <a class="btn" href="login.html">Login</a>
+            <a class="btn btn--primary" href="index.html#features">Explore</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth">
+    <div class="container">
+      <section class="auth__shell" aria-label="Create account">
+        <div class="auth__card">
+          <h1 class="auth__title">Create your account.</h1>
+          <p class="auth__desc">Daftar untuk mulai menggunakan DetectiFy.</p>
+
+          <form id="signupForm" class="auth__form" novalidate>
+            <div class="field">
+              <label for="signupName">Full name</label>
+              <input id="signupName" name="name" type="text" autocomplete="name" placeholder="Nama lengkap" required />
+            </div>
+
+            <div class="field">
+              <label for="signupEmail">Email</label>
+              <input id="signupEmail" name="email" type="email" autocomplete="email" placeholder="Email" required />
+            </div>
+
+            <div class="field">
+              <label for="signupPassword">Password</label>
+              <div class="field__row">
+                <input id="signupPassword" name="password" type="password" autocomplete="new-password" placeholder="Minimal 6 karakter" required />
+                <button class="field__icon" type="button" id="toggleSignupPw" aria-label="Show password">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button class="btn btn--primary btn--block auth__submit" type="submit">
+              Create Account
+            </button>
+
+            <div id="authStatus" class="auth__status" role="status" aria-live="polite"></div>
+
+            <p class="auth__bottom">
+              Already have an account?
+              <a class="link" href="login.html">Login</a>
+            </p>
+          </form>
+        </div>
+
+        <aside class="auth__media" aria-hidden="true">
+          <div class="auth__mediaInner auth__mediaInner--alt"></div>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <script src="theme.js" defer></script>
+  <script type="module" src="auth.js"></script>
+</body>
+</html>
