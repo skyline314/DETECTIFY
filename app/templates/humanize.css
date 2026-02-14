@@ -1,0 +1,729 @@
+/* =========================================================
+   HUMANIZE PAGE — CLEAN (LIGHT + DARK)
+   Matches reference layout
+   ========================================================= */
+
+/* ---------- THEME TOKENS (LIGHT default) ---------- */
+:root{
+  --bg-body: #0f172a;
+  --text-main: #ffffff;
+  --muted: rgba(255,255,255,.72);
+
+  --blue-outline: rgba(57,185,238,.55);
+  --blue-panel: #0f2235;
+  --blue-panel-2: #12304b;
+
+  --card-surface: rgba(0,0,0,.16);
+  --card-border: rgba(255,255,255,.16);
+
+  --btn: #5AA5CD;
+  --btn-text: #020617;
+
+  --accent: rgba(57,185,238,.18);
+  --accent-border: rgba(57,185,238,.28);
+}
+
+/* ---------- DARK OVERRIDES ---------- */
+[data-theme="light"]{
+   --bg-body: #f4f7f6;
+  --text-main: #1a1a1a;
+  --muted: rgba(26,26,26,.70);
+
+  /* panel */
+  --blue-outline: rgba(0,0,0,.20);
+  --blue-panel: #dff3ff;
+  --blue-panel-2: #cfeeff;
+
+  /* surfaces inside panel */
+  --card-surface: rgba(255,255,255,.55);
+  --card-border: rgba(0,0,0,.12);
+
+  /* buttons */
+  --btn: #022e5a;
+  --btn-text: #ffffff;
+
+  /* accents */
+  --accent: rgba(58, 175, 224, .35);
+  --accent-border: rgba(58, 175, 224, .45);
+}
+
+/* ---------- BASE ---------- */
+*{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg-body);
+  color: var(--text-main);
+  transition: background .25s ease, color .25s ease;
+}
+
+/* wrapper sama pola halaman kamu */
+.page{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 18px 0;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{
+  text-align: center;
+  padding: 26px 0 10px;
+}
+
+.hero h1{
+  margin: 6px 0 6px;
+  font-size: 44px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.hero p{
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+.app-panel{
+  margin: 18px auto 0;
+  border: 1px solid var(--blue-outline);
+  background: var(--blue-panel);
+  padding: 14px;
+  border-radius: 15px;
+}
+
+.panel-grid{
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 14px;
+  min-height: 460px;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+.sidebar{
+  background: transparent;
+  border-right: 2px solid rgba(0,0,0,.10);
+  padding: 10px 12px;
+}
+[data-theme="dark"] .sidebar{
+  border-right: 2px solid rgba(255,255,255,.14);
+}
+
+.side-title{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.side-card{
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: var(--card-surface);
+  padding: 10px;
+}
+
+.plan{
+  font-size: 12px;
+  opacity: .85;
+  margin: 0 0 10px;
+}
+
+.quota-row{
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 12px;
+}
+
+.quota-pill{
+  flex: 1;
+  text-align: center;
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: rgba(58, 175, 224, .18);
+  border: 1px solid var(--card-border);
+  font-size: 12px;
+  font-weight: 800;
+}
+[data-theme="dark"] .quota-pill{
+  background: rgba(57,185,238,.14);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.side-btn{
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: #ffffff;
+  color: var(--text-main);
+  cursor: pointer;
+  font-weight: 700;
+  margin-top: 10px;
+}
+[data-theme="dark"] .side-btn{
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.16);
+  color: #fff;
+}
+
+.side-btn.primary{
+  background: var(--btn);
+  color: var(--btn-text);
+  border-color: rgba(0,0,0,.08);
+}
+
+/* =========================================================
+   CONTENT TOP ROW
+   ========================================================= */
+.content{
+  padding: 8px 6px 6px 6px;
+}
+
+.top-row{
+  display: flex;
+  align-items: center;              /* <— biar rapi */
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.mode-block{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mode-label{
+  font-weight: 900;
+  font-size: 13px;
+}
+
+/* tabs look like reference */
+.tabs{
+  display: flex;
+  gap: 8px;
+  background: var(--blue-panel-2);
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 999px;
+  padding: 4px;
+}
+[data-theme="dark"] .tabs{
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.12);
+}
+
+.tab{
+  border: 0;
+  background: transparent;
+  color: rgba(0,0,0,.65);
+  font-size: 12px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+}
+[data-theme="dark"] .tab{
+  color: rgba(255,255,255,.72);
+}
+
+.tab.active{
+  background: var(--accent);
+  color: var(--text-main);
+  border: 1px solid var(--accent-border);
+}
+
+/* Output label + copy (rapi tanpa gap 265px) */
+.output-bar{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+  justify-content: space-between;   /* Output kiri, Copy kanan */
+}
+
+.copy-btn{
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--btn);
+  color: var(--btn-text);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+/* =========================================================
+   INPUT / OUTPUT BOXES
+   ========================================================= */
+.io-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.box{
+  position: relative;
+  background: var(--card-surface);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea{
+  width: 100%;
+  flex: 1;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 13px;
+  line-height: 1.55;
+}
+textarea::placeholder{
+  opacity: .55;
+}
+
+/* upload icon: posisi bawah kiri seperti referensi */
+.upload-icon{
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: rgba(255,255,255,.35);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: .85;
+}
+[data-theme="dark"] .upload-icon{
+  background: rgba(0,0,0,.12);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.upload-icon:hover{ opacity: 1; }
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+.actions{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.action-btn{
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 12px;
+  background: var(--btn);
+  color: var(--btn-text);
+  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 980px){
+  .panel-grid{ grid-template-columns: 1fr; }
+  .sidebar{
+    border-right: 0;
+    border-bottom: 2px solid rgba(0,0,0,.10);
+  }
+  [data-theme="dark"] .sidebar{
+    border-bottom: 2px solid rgba(255,255,255,.14);
+  }
+  .io-grid{ grid-template-columns: 1fr; }
+}
+
+.hz-title{
+  align-content: center;
+  margin: 14px 0 6px;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900;
+  letter-spacing: -0.8px;
+}
+
+.hz-subtitle{
+  align-content: center;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.hero{
+  max-width: 1120px;   /* ikut lebar .page */
+  margin: 0 auto;
+  padding: 26px 18px 10px; /* biar align sama padding page */
+  text-align: center;
+}
+
+.hero h1, .hero p{
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-panel{
+  max-width: 1180px;    /* turunin kalau mau lebih kecil, misal 1080px */
+  margin: 18px auto 0;
+}
+
+/* Panel layout: sidebar sedikit lebih kecil */
+.panel-grid{
+  grid-template-columns: 240px 1fr;  /* sebelumnya 260px */
+  min-height: 400px;                 /* sebelumnya 460px */
+}
+
+/* Box (textarea area) lebih pendek */
+.box{
+  min-height: 260px;                 /* sebelumnya 320px */
+}
+
+/* Textarea ikut lebih pendek biar gak memaksa box tinggi */
+textarea{
+  min-height: 220px;
+}
+
+.hz-title, .hz-subtitle{
+  text-align:center;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.quota-pill{
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* rata tengah horizontal */
+  justify-content: center;  /* rata tengah vertikal */
+  text-align: center;
+
+  gap: 2px;
+  line-height: 1.15;
+  padding: 12px 10px;       /* sedikit lebih lega */
+}
+
+.output-bar{
+  justify-content: space-between; /* biar Copy tetap kanan */
+}
+
+/* baris Output + Copy */
+.output-bar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* label Output harus nempel kiri */
+.output-bar .mode-label,
+.output-bar span,
+.output-bar p,
+.output-bar h3{
+  margin-right: auto;
+  text-align: left !important;
+}
+
+/* Samakan header row dengan grid kolom input/output */
+.top-row{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;  /* sama kayak .io-grid */
+  align-items: center;
+  gap: 14px;                       /* sama kayak .io-grid */
+}
+
+/* Mode block tetap di kolom kiri */
+.mode-block{
+  grid-column: 1;
+}
+
+/* Output + Copy pindah ke kolom kanan */
+.output-bar{
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Biar teks Output bener-bener nempel kiri kolom output */
+.output-bar .mode-label{
+  margin: 0;
+  text-align: left !important;
+}
+
+#outputText{
+  text-align: left !important;
+}
+
+.quota-pill{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* Jarak panel analisis ke footer */
+.app-panel{
+  margin-bottom: 48px; /* atur 32–80px sesuai selera */
+}
+
+/* Kalau footer masih nempel karena wrapper kecil */
+.page{
+  padding-bottom: 48px;
+}
+
+.top-row{ display:grid; grid-template-columns:1fr 1fr; column-gap:14px; align-items:center; }
+.output-bar{ width:100%; display:flex; justify-content:space-between; align-items:center; }
+
+.quota-pill{ display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+
+.hz-main{ padding-bottom:72px; }
+
+/* =========================
+   THEME-SAFE BUTTON COLORS
+   (Fix: Start For Free jadi "blank")
+   ========================= */
+
+/* Light: tombol ghost putih dengan teks gelap */
+:root[data-theme="light"] .side-btn{
+  background: #ffffff !important;
+  color: #0b2136 !important;
+  border: 1px solid rgba(0,0,0,.15) !important;
+}
+
+/* Dark: tombol ghost gelap dengan teks putih */
+:root[data-theme="dark"] .side-btn{
+  background: rgba(255,255,255,.06) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+}
+
+/* Primary tetap kontras */
+:root[data-theme="light"] .side-btn.primary{
+  background: #022e5a !important;
+  color: #fff !important;
+}
+
+:root[data-theme="dark"] .side-btn.primary{
+  background: #5AA5CD !important;
+  color: #020617 !important;
+}
+
+/* =========================================================
+   HUMANIZE — THEME CONSISTENCY OVERRIDES (PASTE LAST)
+   Fix: page kadang "auto light" / warna campur
+   ========================================================= */
+
+/* 1) Theme tokens — JANGAN define warna global di :root tanpa scope */
+:root[data-theme="light"]{
+  --hz-bg: #f3f5f4;
+  --hz-text: #0b2136;
+  --hz-muted: rgba(11,33,54,.70);
+
+  --hz-panel: #dff3ff;
+  --hz-panel-2: #cfeeff;
+  --hz-outline: rgba(0,0,0,.14);
+
+  --hz-surface: rgba(255,255,255,.65);
+  --hz-border: rgba(0,0,0,.14);
+
+  --hz-btn: #022e5a;
+  --hz-btn-text: #fff;
+  --hz-btn-ghost-bg: #ffffff;
+  --hz-btn-ghost-text: #0b2136;
+  --hz-btn-ghost-border: rgba(0,0,0,.15);
+
+  --hz-tab-active: rgba(124,200,240,.9);
+}
+
+:root[data-theme="dark"]{
+  --hz-bg:
+    radial-gradient(900px 450px at 50% 10%, rgba(110,170,255,.30), transparent 60%),
+    linear-gradient(180deg, #0b1440, #0a0f2e);
+  --hz-text: #ffffff;
+  --hz-muted: rgba(255,255,255,.72);
+
+  --hz-panel: #0f2235;
+  --hz-panel-2: #12304b;
+  --hz-outline: rgba(57,185,238,.45);
+
+  --hz-surface: rgba(0,0,0,.16);
+  --hz-border: rgba(255,255,255,.16);
+
+  --hz-btn: #5AA5CD;
+  --hz-btn-text: #020617;
+  --hz-btn-ghost-bg: rgba(255,255,255,.06);
+  --hz-btn-ghost-text: #ffffff;
+  --hz-btn-ghost-border: rgba(255,255,255,.18);
+
+  --hz-tab-active: rgba(57,185,238,.22);
+}
+
+/* 2) Apply tokens ke page humanize (biar gak ganggu page lain) */
+body.humanize-page{
+  background: var(--hz-bg) !important;
+  color: var(--hz-text) !important;
+}
+
+/* hero text */
+body.humanize-page .hero p{
+  color: var(--hz-muted) !important;
+  opacity: 1 !important;
+}
+
+/* main panel */
+body.humanize-page .app-panel{
+  background: var(--hz-panel) !important;
+  border: 1px solid var(--hz-outline) !important;
+}
+
+/* tabs track */
+body.humanize-page .tabs{
+  background: var(--hz-panel-2) !important;
+  border: 1px solid var(--hz-border) !important;
+}
+body.humanize-page .tab{
+  color: var(--hz-muted) !important;
+}
+body.humanize-page .tab.active{
+  background: var(--hz-tab-active) !important;
+  color: var(--hz-text) !important;
+  border: 1px solid var(--hz-border) !important;
+}
+
+/* sidebar surface */
+body.humanize-page .side-card,
+body.humanize-page .box{
+  background: var(--hz-surface) !important;
+  border: 1px solid var(--hz-border) !important;
+}
+
+/* textarea */
+body.humanize-page textarea{
+  color: var(--hz-text) !important;
+  text-align: left !important;
+}
+body.humanize-page textarea::placeholder{
+  color: rgba(127,140,160,.75) !important; /* netral */
+}
+
+/* buttons */
+body.humanize-page .copy-btn,
+body.humanize-page .action-btn,
+body.humanize-page .side-btn.primary{
+  background: var(--hz-btn) !important;
+  color: var(--hz-btn-text) !important;
+}
+
+/* Fix tombol ghost (Start For Free) biar gak blank */
+body.humanize-page .side-btn{
+  background: var(--hz-btn-ghost-bg) !important;
+  color: var(--hz-btn-ghost-text) !important;
+  border: 1px solid var(--hz-btn-ghost-border) !important;
+}
+
+/* 3) Rapihin output header biar gak ketarik kanan */
+body.humanize-page .top-row{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+  align-items: center !important;
+}
+body.humanize-page .output-bar{
+  justify-content: space-between !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+/* 4) Ratain text quota pill (AI Detector 500 Words) */
+body.humanize-page .quota-pill{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+
+/* 5) Kalau kamu mau HILANGKAN upload icon dari UI */
+body.humanize-page .upload-icon{ display: none !important; }
+
+/* =========================================================
+   FIX: band/strip gradient kosong sebelum footer
+   ========================================================= */
+
+/* 1) Balikin margin panel (jangan bikin body background kebuka terlalu banyak) */
+body.humanize-page .app-panel{
+  margin-bottom: 0 !important;
+}
+
+/* 2) Kasih jarak ke footer lewat padding wrapper (lebih rapi) */
+body.humanize-page .page{
+  padding-bottom: 56px !important; /* atur 32–80px */
+}
+
+/* 3) Pastikan footer nyatu sama background page (biar ga kelihatan "patah") */
+body.humanize-page footer,
+body.humanize-page .footer{
+  background: transparent !important;
+}
+
+/* Kalau footer kamu default-nya putih dan bikin patah di dark mode,
+   pakai warna gelap ini (pilih salah satu pendekatan): */
+:root[data-theme="dark"] body.humanize-page footer,
+:root[data-theme="dark"] body.humanize-page .footer{
+  background: #0f172a !important; /* atau samain dengan panel: #0f2235 */
+}
+/* =========================================
+   FIX: gap/padding kosong sebelum footer
+   (footer tetap tampil)
+   ========================================= */
+
+/* 1) Hilangkan semua gap bawah yang bikin ruang kosong kebuka */
+body.humanize-page .page{
+  padding-bottom: 0 !important;
+}
+
+body.humanize-page main{
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* 2) Panel cukup kasih jarak kecil ke footer (biar rapi) */
+body.humanize-page .app-panel{
+  margin-bottom: 32px !important;  /* ganti 0 / 12 / 16 sesuai selera */
+}
+
+/* 3) Kalau footer punya margin-top bawaan, kecilin */
+body.humanize-page footer,
+body.humanize-page .footer,
+body.humanize-page .site-footer{
+  margin-top: 0 !important;
+}
+
+
+

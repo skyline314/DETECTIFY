@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Started • DetectiFy</title>
+
+  <!-- Init theme awal biar logo/navbar ga kedip salah -->
+  <script>
+    (function () {
+      const KEY = "detectify_theme";
+      const saved = localStorage.getItem(KEY);
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = (saved === "light" || saved === "dark") ? saved : (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="index.html" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true">
+                  <!-- SUN (light) -->
+                  <svg class="theme-ico theme-ico--sun" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41
+                            M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+
+                  <!-- MOON (dark) -->
+                  <svg class="theme-ico theme-ico--moon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z"
+                          fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </button>
+
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
+            </nav>
+
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="auth">
+    <div class="container">
+      <section class="auth__shell auth-slider" id="authSlider" aria-label="Authentication">
+
+        <!-- STATUS -->
+        <p class="auth__status" id="authStatus" aria-live="polite"></p>
+
+        <!-- LOGIN -->
+        <div class="auth__card auth__panel auth__panel--login">
+          <h1 class="auth__title">Log in to your account.</h1>
+          <p class="auth__desc">Login to continue to DetectiFy.</p>
+
+          <form id="loginForm" class="auth__form">
+            <div class="field">
+              <label for="loginEmail">Email</label>
+              <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required />
+            </div>
+
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required />
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit">Login</button>
+          </form>
+        </div>
+
+        <!-- SIGNUP -->
+        <div class="auth__card auth__panel auth__panel--signup">
+          <h1 class="auth__title">Create your account.</h1>
+          <p class="auth__desc">Create your account to use DetectiFy.</p>
+
+          <form id="signupForm" class="auth__form">
+            <div class="field">
+              <label for="signupName">Username</label>
+              <input id="signupName" type="text" placeholder="Username" autocomplete="username" required />
+            </div>
+
+            <div class="field">
+              <label for="signupEmail">Email</label>
+              <input id="signupEmail" type="email" placeholder="Email" autocomplete="email" required />
+            </div>
+
+            <div class="field">
+              <label for="signupPassword">Password</label>
+              <input id="signupPassword" type="password" placeholder="Password" autocomplete="new-password" required />
+            </div>
+
+            <div class="field">
+              <label for="signupConfirm">Confirm Password</label>
+              <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password" required />
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit">Create Account</button>
+          </form>
+        </div>
+
+        <!-- MEDIA SLIDE (satu-satunya switch login/signup) -->
+        <aside class="auth__media auth__panel-media" aria-hidden="true">
+          <div class="auth__mediaInner"></div>
+
+          <div class="auth__media-content media-content--login">
+            <h2 class="auth__media-title">Don't have an account?</h2>
+            <a href="#" class="btn--outline-white" data-auth-toggle="signup">Sign Up</a>
+          </div>
+
+          <div class="auth__media-content media-content--signup">
+            <h2 class="auth__media-title">Already have an account?</h2>
+            <a href="#" class="btn--outline-white" data-auth-toggle="login">Log In</a>
+          </div>
+        </aside>
+
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER (punya kamu) -->
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <strong class="footer__name">DetectiFy</strong>
+        </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="index.html">Home</a>
+        <a class="footer__link" href="apps.html">Application</a>
+        <a class="footer__link" href="pricing.html">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="text.html">Text Detection</a>
+        <a class="footer__link" href="image.html">Image Detection</a>
+        <a class="footer__link" href="video.html">Video Detection</a>
+        <a class="footer__link" href="audio.html">Audio Detection</a>
+        <a class="footer__link" href="humanize.html">Text Humanization</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="theme.js" defer></script>
+  <script src="auth.js" defer></script>
+</body>
+</html>

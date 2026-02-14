@@ -1,9 +1,9 @@
 /* theme.js
-   Handles theme toggle + mobile menu behavior.
-
-   Notes:
-   - Initial theme is set in theme-init.js (runs before CSS paints).
-   - This file only *toggles* theme and persists user choice.
+   - Single source of truth untuk theme (JANGAN duplikasi di auth.js)
+   - Render icon sun/moon ke #themeIcon
+   - Toggle data-theme di <html>
+   - Simpan pilihan ke localStorage
+   - Optional: mobile menu handler (kalau ada)
 */
 (() => {
   "use strict";
@@ -11,8 +11,15 @@
   const THEME_KEY = "detectify_theme";
   const root = document.documentElement;
 
-  const themeToggle = document.getElementById("themeToggle");
-  const themeIcon = document.getElementById("themeIcon");
+  // Support id yang kamu pakai sekarang:
+  const themeToggle =
+    document.getElementById("themeToggle") ||
+    document.getElementById("themeBtn") ||
+    document.querySelector("[data-theme-toggle]");
+
+  const themeIcon =
+    document.getElementById("themeIcon") ||
+    (themeToggle ? themeToggle.querySelector(".icon-btn__icon") : null);
 
   const ICONS = {
     dark: `
@@ -42,10 +49,20 @@
     }
   };
 
+  function computeInitialTheme() {
+    const saved = safeStorage.get(THEME_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+    return prefersDark ? "dark" : "light";
+  }
+
   function renderThemeIcon(theme) {
     if (!themeIcon || !themeToggle) return;
-
     const isDark = theme === "dark";
+
+    // Kalau dark, tampilkan icon "moon"
+    // Kalau light, tampilkan icon "sun"
     themeIcon.innerHTML = isDark ? ICONS.dark : ICONS.light;
 
     themeToggle.setAttribute("aria-pressed", isDark ? "true" : "false");
@@ -58,11 +75,11 @@
     renderThemeIcon(theme);
   }
 
-  // Sync icon to current theme on load
-  const currentTheme = root.getAttribute("data-theme") || "light";
-  renderThemeIcon(currentTheme);
+  // Init theme (kalau belum ada attribute)
+  const initial = root.getAttribute("data-theme") || computeInitialTheme();
+  setTheme(initial, { persist: false });
 
-  // If user never explicitly set a theme, keep following OS changes.
+  // Kalau user belum set manual, ikuti OS changes
   const mql = window.matchMedia?.("(prefers-color-scheme: dark)");
   if (mql && !safeStorage.has(THEME_KEY)) {
     mql.addEventListener?.("change", (e) => {
@@ -70,6 +87,7 @@
     });
   }
 
+  // Toggle click
   if (themeToggle) {
     themeToggle.addEventListener("click", () => {
       const now = root.getAttribute("data-theme") || "light";
@@ -78,7 +96,7 @@
   }
 
   // -------------------------
-  // Mobile menu
+  // Mobile menu (optional)
   // -------------------------
   const menuToggle = document.getElementById("menuToggle");
   const mobileMenu = document.getElementById("mobileMenu");
@@ -90,14 +108,12 @@
     mobileMenu.hidden = false;
     mobileMenu.classList.add("is-open");
     menuToggle.setAttribute("aria-expanded", "true");
-    menuToggle.setAttribute("aria-label", "Close menu");
   }
 
   function closeMenu() {
     if (!menuToggle || !mobileMenu) return;
     mobileMenu.classList.remove("is-open");
     menuToggle.setAttribute("aria-expanded", "false");
-    menuToggle.setAttribute("aria-label", "Open menu");
 
     clearTimeout(hideTimer);
     hideTimer = window.setTimeout(() => {
@@ -114,7 +130,6 @@
     document.addEventListener("click", (e) => {
       const expanded = menuToggle.getAttribute("aria-expanded") === "true";
       if (!expanded) return;
-
       const t = e.target;
       const inside = mobileMenu.contains(t) || menuToggle.contains(t);
       if (!inside) closeMenu();

@@ -4,156 +4,133 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Humanize Text • DetectiFy</title>
-  <script src="theme-init.js"></script>
+  <!-- <script src="theme-init.js"></script> -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  
+  <script src="theme-init.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="humanize.css">
 </head>
 
-<body>
-  <!-- TOPBAR (konsisten dengan index.html) -->
+<body class="humanize-page">
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
-          <a class="brand" href="index.html#top" aria-label="Back to home">
-            <img class="brand__logo brand__logo--light"
-                 src="assets/light-logo.png"
-                 width="75" height="45"
-                 alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"
-                 src="assets/dark-logo.png"
-                 width="75" height="45"
-                 alt="DetectiFy" decoding="async" loading="eager" />
-            <span class="brand__name" id="brandName">DetectiFy</span>
+          <!-- Brand -->
+          <a class="brand" href="#top" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name">DetectiFy</span>
           </a>
 
           <div class="nav__right">
             <div class="nav__icons" aria-label="Quick actions">
-              <button class="icon-btn" id="themeToggle" type="button"
-                aria-label="Toggle theme" aria-pressed="false">
+              <!-- Theme toggle -->
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
               </button>
 
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
-                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <!-- Mobile hamburger -->
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </button>
             </div>
 
+            <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html#home">Home</a>
-              <a class="nav__link" href="index.html#app">Application</a>
-              <a class="nav__link" href="index.html#features">Features</a>
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
             </nav>
 
-            <a class="btn btn--primary" href="login.html">Get Started</a>
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
           </div>
         </div>
       </div>
 
+      <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html#home">Home</a>
-          <a class="mobile-link" href="index.html#app">Application</a>
-          <a class="mobile-link" href="index.html#features">Features</a>
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
       </div>
     </div>
   </header>
 
-  <main class="tool-page">
-    <section class="container tool-hero" aria-label="Humanize text hero">
-      <h1 class="tool-title">Humanize Text</h1>
-      <p class="tool-subtitle">Make your text more “human” for every kind of situation</p>
+  <main class="hz-main">
+    <!-- HERO (pendek, rapat) -->
+    <section class="hz-hero" aria-label="Humanize Text Hero">
+      <h1 class="hz-title">Humanize Text</h1>
+      <p class="hz-subtitle">Make your text more “human” for every kind of situation</p>
+    </section>
 
-      <div class="tool-shell" aria-label="Humanize Text workspace">
+    <!-- PANEL -->
+    <section class="app-panel" aria-label="Humanize Text Panel">
+      <div class="panel-grid">
         <!-- Sidebar -->
-        <aside class="tool-side">
-          <div class="side-top">
-            <span class="side-dot" aria-hidden="true"></span>
-            <button class="side-link" type="button" id="usageBtn">usage guides</button>
+        <aside class="sidebar">
+          <div class="side-title">
+            <span aria-hidden="true">ⓘ</span>
+            <span>Usage Guides</span>
           </div>
 
-          <div class="side-block">
-            <div class="side-label">Your plan:</div>
-            <div class="side-value">Free</div>
-          </div>
+          <div class="side-card">
+            <p class="plan">Your plan:<br><b>Free</b></p>
 
-          <div class="side-cards" role="group" aria-label="quota cards">
-            <div class="quota">
-              <div class="quota__title">AI detector</div>
-              <div class="quota__value"><span id="detectorLimit">500</span> words</div>
+            <div class="quota-row">
+              <div class="quota-pill">AI Detector<br>500 Words</div>
+              <div class="quota-pill">AI Humanizer<br>500 Words</div>
             </div>
-            <div class="quota">
-              <div class="quota__title">AI humanizer</div>
-              <div class="quota__value"><span id="humanizerLimit">500</span> words</div>
-            </div>
-          </div>
 
-          <div class="side-actions">
-            <a class="btn btn--block" href="login.html">Start for Free</a>
-            <a class="btn btn--primary btn--block" href="#" id="upgradeBtn">Upgrade Plan</a>
+            <button class="side-btn" id="startBtn" type="button">Start For Free</button>
+            <button class="side-btn primary" id="upgradeBtn" type="button">Upgrade Plan</button>
+
           </div>
         </aside>
 
-        <!-- Center: Editor -->
-        <section class="tool-main" aria-label="Input editor">
-          <div class="main-top">
-            <div class="mode">
-              <span class="mode__label">Mode</span>
-              <div class="mode__tabs" role="tablist" aria-label="Mode">
-                <button class="mode__tab is-active" data-mode="casual" role="tab" aria-selected="true">Casual</button>
-                <button class="mode__tab" data-mode="academic" role="tab" aria-selected="false">Academic</button>
-                <button class="mode__tab" data-mode="professional" role="tab" aria-selected="false">Profesional</button>
+        <!-- Content -->
+        <div class="content">
+          <div class="top-row">
+            <div class="mode-block">
+              <div class="mode-label">Mode</div>
+              <div class="tabs" role="tablist" aria-label="Mode">
+                <button class="tab active" data-mode="casual" aria-selected="true">Casual</button>
+                <button class="tab" data-mode="academic" aria-selected="false">Academic</button>
+                <button class="tab" data-mode="professional" aria-selected="false">Professional</button>
               </div>
             </div>
 
-            <div class="main-tools">
-              <input id="txtInput" type="file" accept=".txt,text/plain" hidden />
-              <button class="mini-btn" type="button" id="btnUploadTxt">Upload .txt</button>
-              <div class="counter" id="counter">0 / 500 words</div>
+            <div class="output-bar">
+              <span class="mode-label">Output</span>
+              <button class="copy-btn" id="copyBtn" type="button">Copy</button>
             </div>
           </div>
 
-          <div class="editor">
-            <textarea id="inputText" placeholder="Paste your text here..." aria-label="Input text"></textarea>
-
-            <div class="editor-hint" id="editorHint" aria-hidden="true">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
+          <div class="io-grid">
+            <!-- Input -->
+            <div class="box">
+              <textarea id="inputText" placeholder="Paste your text here."></textarea>
             </div>
 
-            <div class="main-actions">
-              <button class="mini-btn" type="button" id="btnCheck">Check for AI</button>
-              <button class="mini-btn mini-btn--primary" type="button" id="btnHumanize">Humanize</button>
+            <!-- Output -->
+            <div class="box box--output">
+              <textarea id="outputText" readonly placeholder="Your humanized content will appear here."></textarea>
             </div>
-
-            <div class="statusline" id="status" role="status" aria-live="polite"></div>
-          </div>
-        </section>
-
-        <!-- Right: Output -->
-        <section class="tool-out" aria-label="Output panel">
-          <div class="out-top">
-            <div class="out-title">Output</div>
-            <button class="mini-btn" type="button" id="btnCopy" disabled>Copy</button>
           </div>
 
-          <div class="out-box" id="outputBox">
-            <div class="out-placeholder" id="outPlaceholder">Your humanized content will appear here.</div>
-            <pre class="out-text" id="outputText" hidden></pre>
+          <div class="actions">
+            <button class="action-btn" id="checkBtn" type="button">Check for AI</button>
+            <button class="action-btn" id="humanizeBtn" type="button">Humanize</button>
           </div>
-        </section>
+        </div>
       </div>
     </section>
   </main>
@@ -174,7 +151,7 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
-        <a class="footer__link" href="#home">Home</a>
+        <a class="footer__link" href="index.html">Home</a>
         <a class="footer__link" href="apps.html">Application</a>
         <a class="footer__link" href="pricing.html">Pricing</a>
       </nav>
@@ -194,14 +171,8 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById("upgradeBtn")?.addEventListener("click", (e) => {
-      e.preventDefault();
-      location.href = "pricing.html";
-    });
-  </script>
-
   <script src="theme.js" defer></script>
+  <script src="humanize.js" defer></script>
   <script src="text-tool.js" defer></script>
 </body>
 </html>
