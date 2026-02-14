@@ -13,57 +13,50 @@
 </head>
 
 <body>
-  <!-- TOPBAR (konsisten dengan index) -->
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
-          <a class="brand" href="index.html#top" aria-label="Back to home">
-            <img class="brand__logo brand__logo--light"
-                 src="assets/light-logo.png"
-                 width="75" height="45"
-                 alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"
-                 src="assets/dark-logo.png"
-                 width="75" height="45"
-                 alt="DetectiFy" decoding="async" loading="eager" />
-            <span class="brand__name" id="brandName">DetectiFy</span>
+          <!-- Brand -->
+          <a class="brand" href="#top" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name">DetectiFy</span>
           </a>
 
           <div class="nav__right">
             <div class="nav__icons" aria-label="Quick actions">
-              <button class="icon-btn" id="themeToggle" type="button"
-                aria-label="Toggle theme" aria-pressed="false">
+              <!-- Theme toggle -->
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
               </button>
 
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
-                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <!-- Mobile hamburger -->
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </button>
             </div>
 
-            <nav class="nav__links" id="desktopNav" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html#home">Home</a>
-              <a class="nav__link" href="index.html#app">Application</a>
-              <a class="nav__link" href="index.html#features">Features</a>
+            <!-- Desktop nav -->
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
             </nav>
 
-            <a class="btn btn--primary" href="login.html">Get Started</a>
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
           </div>
         </div>
       </div>
 
+      <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html#home">Home</a>
-          <a class="mobile-link" href="index.html#app">Application</a>
-          <a class="mobile-link" href="index.html#features">Features</a>
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
       </div>
     </div>
   </header>
@@ -156,7 +149,7 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
-        <a class="footer__link" href="#home">Home</a>
+        <a class="footer__link" href="index.html">Home</a>
         <a class="footer__link" href="apps.html">Application</a>
         <a class="footer__link" href="pricing.html">Pricing</a>
       </nav>
