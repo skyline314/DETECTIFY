@@ -12,7 +12,7 @@ from flask_cors import CORS
 import os
 
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
-static_dir = os.path.abspath(os.path.join(template_dir, 'static'))
+static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static'))
 
 def create_app(config_name='default'):
     app = Flask(__name__, 
