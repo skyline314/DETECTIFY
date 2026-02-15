@@ -15,10 +15,7 @@ template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'template
 static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static'))
 
 def create_app(config_name='default'):
-    app = Flask(__name__, 
-            template_folder=template_dir, 
-            static_folder=static_dir, 
-            static_url_path='/static')
+    app = Flask(__name__)
     
     CORS(app, resources={r"/*": {"origins": "*"}})
     app.config.from_object(config[config_name])
