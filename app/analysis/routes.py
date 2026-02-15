@@ -4,9 +4,42 @@ from . import analysis_bp
 from .services import AnalysisService 
 from app.decorators import premium_required
 from io import BytesIO
+from flask import render_template
+
+@analysis_bp.route('/')
+def index():
+    # Menampilkan file app/templates/index.html
+    return render_template('index.html')
+
+@analysis_bp.route('/application')
+def apps():
+    # Menampilkan file app/templates/apps.html
+    return render_template('apps.html')
+
+@analysis_bp.route('/audio-detection')
+def audio_ui():
+    # Menampilkan file app/templates/audio.html
+    return render_template('audio.html')
+
+@analysis_bp.route('/image-detection')
+def image_ui():
+    return render_template('image.html')
+
+@analysis_bp.route('/video-detection')
+def video_ui():
+    return render_template('video.html')
+
+@analysis_bp.route('/text-detection')
+def text_ui():
+    return render_template('text.html')
+
+@analysis_bp.route('/humanize')
+def humanize_ui():
+    return render_template('humanize.html')
+
 
 # ENDPOINT UPLOAD AUDIO 
-@analysis_bp.route('/analysis/audio', methods=['POST'])
+@analysis_bp.route('/audio', methods=['POST'])
 @jwt_required()
 def upload_audio():
     # Cek apakah user mengirim file
@@ -31,7 +64,7 @@ def upload_audio():
 
 
 # ENDPOINT UPLOAD TEXT
-@analysis_bp.route('/analysis/text', methods=['POST'])
+@analysis_bp.route('/text', methods=['POST'])
 @jwt_required()
 def upload_text():
     # Cek apakah user mengirim file
@@ -60,7 +93,7 @@ def upload_text():
     
 
 # ENDPOINT UPLOAD IMAGE    
-@analysis_bp.route('/analysis/image', methods=['POST'])
+@analysis_bp.route('/image', methods=['POST'])
 @jwt_required()
 def upload_image():
     # Cek apakah user mengirim file
@@ -85,7 +118,7 @@ def upload_image():
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
 # ENDPOINT UPLOAD VIDEO
-@analysis_bp.route('/analysis/video', methods=['POST'])
+@analysis_bp.route('/video', methods=['POST'])
 @jwt_required()
 def upload_video():
     # Cek apakah user mengirim file
@@ -109,7 +142,7 @@ def upload_video():
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
 # ENDPOINT HUMANIZE
-@analysis_bp.route('/analysis/humanize', methods=['POST'])
+@analysis_bp.route('/humanize', methods=['POST'])
 @jwt_required()
 def humanize_text():
     data = request.get_json()
@@ -145,7 +178,7 @@ def get_history():
         return jsonify({"error": "Gagal mengambil riwayat", "details": str(e)}), 500
 
 # ENDPOINT STATUS
-@analysis_bp.route('/analysis/<string:analysis_id>', methods=['GET'])
+@analysis_bp.route('/status/<string:analysis_id>', methods=['GET'])
 @jwt_required()
 def get_analysis_status(analysis_id):
     user_id = get_jwt_identity()

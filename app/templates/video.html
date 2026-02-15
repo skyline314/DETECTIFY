@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Video Detection • DetectiFy</title>
-  <script src="theme-init.js"></script>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
@@ -19,9 +19,9 @@
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
-          <a class="brand" href="#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}" width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark"  src="{{ url_for('static', filename='assets/dark-logo.png') }}"  width="75" height="45" alt="DetectiFy" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -42,11 +42,11 @@
 
             <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
             </nav>
 
-            <a class="btn btn--primary" href="auth.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
@@ -54,10 +54,10 @@
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
@@ -79,7 +79,7 @@
           <div class="dropzone__inner">
             <div class="dropzone__icon dropzone__icon--video" aria-hidden="true">
               <img
-                src="assets/video-folder.png"
+                src="{{ url_for('static', filename='assets/video-folder.png') }}"
                 alt=""
                 class="dropzone__iconImg"
                 decoding="async"
@@ -130,8 +130,8 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <div class="footer__logoRow">
-          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}" alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}" alt="DetectiFy logo" />
           <strong class="footer__name">DetectiFy</strong>
         </div>
         <p class="footer__desc">
@@ -141,18 +141,18 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
-        <a class="footer__link" href="index.html">Home</a>
-        <a class="footer__link" href="apps.html">Application</a>
-        <a class="footer__link" href="pricing.html">Pricing</a>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
       </nav>
 
       <nav class="footer__col" aria-label="Features">
         <h3 class="footer__heading">Features</h3>
-        <a class="footer__link" href="text.html">Text Detection</a>
-        <a class="footer__link" href="image.html">Image Detection</a>
-        <a class="footer__link" href="video.html">Video Detection</a>
-        <a class="footer__link" href="audio.html">Audio Detection</a>
-        <a class="footer__link" href="humanize.html">Text Humanization</a>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
       </nav>
     </div>
 
@@ -160,8 +160,8 @@
       <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
     </div>
   </footer>
-
-  <script src="theme.js" defer></script>
-  <script src="upload-video.js" defer></script>
+  
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/upload-video.js') }}" defer></script>
 </body>
 </html>

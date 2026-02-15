@@ -1,219 +1,104 @@
-(() => {
-  const MAX_MB = 100;
-  const MAX_BYTES = MAX_MB * 1024 * 1024;
+document.addEventListener("DOMContentLoaded", () => {
+  // CONFIG: Sesuai backend services.py
+  const CONFIG = {
+    API_URL: "/api/analysis/audio", 
+    VALID_EXTS: /\.(mp3|wav|flac)$/i, // Sesuai services.py
+    MAX_SIZE: 50 * 1024 * 1024 // 50MB
+  };
+  
+  setupUploader(CONFIG);
+});
 
-  const ALLOWED_MIME = ["video/mp4", "video/quicktime", "video/mpeg"];
-  const ALLOWED_EXT = [".mp4", ".mov", ".mpeg"];
-
-  // Isi kalau sudah ada backend (contoh: https://api.domain.com/upload-video)
-  const UPLOAD_ENDPOINT = ""; // kosong = simulasi
-
-  const dropzone = document.getElementById("dropzone");
+// --- GENERIC UPLOADER LOGIC (DRY) ---
+function setupUploader(conf) {
   const fileInput = document.getElementById("fileInput");
-  const browseBtn = document.getElementById("browseBtn");
-
-  const fileInfo = document.getElementById("fileInfo");
-  const fileName = document.getElementById("fileName");
-  const fileMeta = document.getElementById("fileMeta");
-
-  const btnRemove = document.getElementById("btnRemove");
   const btnUpload = document.getElementById("btnUpload");
-
-  const statusEl = document.getElementById("status");
-  const progressWrap = document.getElementById("progressWrap");
+  const browseBtn = document.getElementById("browseBtn");
+  const dropzone = document.getElementById("dropzone");
+  const fileName = document.getElementById("fileName");
+  const fileInfo = document.getElementById("fileInfo");
+  const btnRemove = document.getElementById("btnRemove");
   const progressBar = document.getElementById("progressBar");
-
+  
   let selectedFile = null;
-  let uploading = false;
 
-  function setStatus(msg = "", type = "info") {
-    statusEl.textContent = msg;
-    statusEl.dataset.type = type;
+  function handleFile(file) {
+      if(!conf.VALID_EXTS.test(file.name)) return alert("Format file tidak didukung.");
+      if(file.size > conf.MAX_SIZE) return alert("File terlalu besar.");
+      selectedFile = file;
+      fileName.textContent = file.name;
+      fileInfo.hidden = false;
+      btnUpload.disabled = false;
+      btnRemove.disabled = false;
   }
 
-  function prettySize(bytes) {
-    const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(mb >= 10 ? 0 : 1)} MB`;
-  }
-
-  function isAllowed(file) {
-    const name = (file?.name || "").toLowerCase();
-    const okExt = ALLOWED_EXT.some(ext => name.endsWith(ext));
-    const okType = ALLOWED_MIME.includes(file.type) || okExt;
-    return okType;
-  }
-
-  function resetUI() {
-    selectedFile = null;
-    fileInput.value = "";
-    fileInfo.hidden = true;
-
-    btnRemove.disabled = true;
-    btnUpload.disabled = true;
-
-    progressWrap.hidden = true;
-    progressBar.style.width = "0%";
-
-    setStatus("");
-  }
-
-  function applyFile(file) {
-    if (!file) return;
-
-    if (!isAllowed(file)) {
-      setStatus("Format tidak didukung. Gunakan MP4, MOV, atau MPEG.", "err");
-      resetUI();
-      return;
-    }
-
-    if (file.size > MAX_BYTES) {
-      setStatus(`Ukuran file terlalu besar. Maksimal ${MAX_MB} MB.`, "err");
-      resetUI();
-      return;
-    }
-
-    selectedFile = file;
-
-    fileInfo.hidden = false;
-    fileName.textContent = file.name;
-    fileMeta.textContent = `${prettySize(file.size)} • ${file.type || "video"}`;
-
-    btnRemove.disabled = false;
-    btnUpload.disabled = false;
-
-    setStatus("File siap diunggah.", "ok");
-  }
-
-  function openPicker() {
-    if (uploading) return;
-    fileInput.click();
-  }
-
-  // Browse files link/button
-  browseBtn?.addEventListener("click", (e) => {
-    e.preventDefault();
-    openPicker();
+  if(browseBtn) browseBtn.addEventListener("click", () => fileInput.click());
+  if(fileInput) fileInput.addEventListener("change", (e) => {
+      if(e.target.files.length) handleFile(e.target.files[0]);
   });
-
-  // Click dropzone also opens picker
-  dropzone.addEventListener("click", (e) => {
-    // biar klik tombol "browse files" tidak double-trigger
-    if (e.target === browseBtn) return;
-    openPicker();
-  });
-
-  dropzone.addEventListener("keydown", (e) => {
-    if (uploading) return;
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      openPicker();
-    }
-  });
-
-  fileInput.addEventListener("change", () => {
-    if (uploading) return;
-    applyFile(fileInput.files?.[0]);
-  });
-
-  // Drag & drop
-  ["dragenter", "dragover"].forEach(evt => {
-    dropzone.addEventListener(evt, (e) => {
-      e.preventDefault();
+  if(btnRemove) btnRemove.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (!uploading) dropzone.classList.add("is-drag");
-    });
+      selectedFile = null;
+      fileInfo.hidden = true;
+      btnUpload.disabled = true;
+      fileInput.value = "";
   });
 
-  ["dragleave", "drop"].forEach(evt => {
-    dropzone.addEventListener(evt, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropzone.classList.remove("is-drag");
-    });
-  });
+  if(btnUpload) btnUpload.addEventListener("click", () => {
+      if(!selectedFile) return;
+      const token = localStorage.getItem("detectify_token");
+      if(!token) return window.location.href = "/auth/get-started";
 
-  dropzone.addEventListener("drop", (e) => {
-    if (uploading) return;
-    applyFile(e.dataTransfer?.files?.[0]);
-  });
+      btnUpload.disabled = true;
+      btnUpload.textContent = "Uploading...";
+      document.getElementById("progressWrap").hidden = false;
 
-  btnRemove.addEventListener("click", () => {
-    if (uploading) return;
-    resetUI();
-  });
+      const fd = new FormData();
+      fd.append("file", selectedFile);
 
-  btnUpload.addEventListener("click", async () => {
-    if (!selectedFile || uploading) return;
-
-    uploading = true;
-    btnUpload.disabled = true;
-    btnRemove.disabled = true;
-
-    progressWrap.hidden = false;
-    progressBar.style.width = "0%";
-    setStatus("Uploading…", "info");
-
-    try {
-      if (!UPLOAD_ENDPOINT) {
-        await simulateUpload((p) => (progressBar.style.width = `${p}%`));
-        setStatus("Upload selesai (simulasi). Isi UPLOAD_ENDPOINT untuk upload real.", "ok");
-      } else {
-        await realUpload(selectedFile, UPLOAD_ENDPOINT, (p) => {
-          progressBar.style.width = `${p}%`;
-        });
-        setStatus("Upload berhasil.", "ok");
-      }
-    } catch (err) {
-      setStatus(err?.message || "Upload gagal. Coba lagi.", "err");
-      progressBar.style.width = "0%";
-    } finally {
-      uploading = false;
-      btnRemove.disabled = !selectedFile;
-      btnUpload.disabled = !selectedFile;
-    }
-  });
-
-  function simulateUpload(onProgress) {
-    return new Promise((resolve) => {
-      let p = 0;
-      const t = setInterval(() => {
-        p += Math.random() * 12 + 6;
-        if (p >= 100) {
-          p = 100;
-          onProgress(p);
-          clearInterval(t);
-          setTimeout(resolve, 250);
-        } else {
-          onProgress(Math.floor(p));
-        }
-      }, 140);
-    });
-  }
-
-  function realUpload(file, endpoint, onProgress) {
-    return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      const form = new FormData();
-      form.append("file", file);
-
-      xhr.open("POST", endpoint, true);
-
-      xhr.upload.addEventListener("progress", (e) => {
-        if (!e.lengthComputable) return;
-        const pct = Math.round((e.loaded / e.total) * 100);
-        onProgress(pct);
-      });
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState !== 4) return;
-        if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.responseText);
-        else reject(new Error(`Server error (${xhr.status}).`));
+      xhr.open("POST", conf.API_URL);
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+      
+      xhr.upload.onprogress = (e) => {
+          if(e.lengthComputable) {
+              const pct = (e.loaded / e.total) * 100;
+              progressBar.style.width = pct + "%";
+              if(pct >= 100) btnUpload.textContent = "Analyzing...";
+          }
       };
 
-      xhr.onerror = () => reject(new Error("Network error."));
-      xhr.send(form);
-    });
+      xhr.onload = () => {
+          try {
+             const data = JSON.parse(xhr.responseText);
+             if(data.analysis_id) pollStatus(data.analysis_id, token);
+             else showResult(data);
+          } catch(e) { alert("Error parsing response"); btnUpload.disabled = false; }
+      };
+      
+      xhr.send(fd);
+  });
+
+  function pollStatus(id, token) {
+      const interval = setInterval(async () => {
+          const res = await fetch(`/analysis/${id}`, { headers: {"Authorization": `Bearer ${token}`} });
+          const data = await res.json();
+          if(data.status === "COMPLETED") {
+              clearInterval(interval);
+              showResult(data.result);
+              btnUpload.textContent = "Analyze";
+              btnUpload.disabled = false;
+          } else if (data.status === "FAILED") {
+              clearInterval(interval);
+              alert("Gagal.");
+              btnUpload.disabled = false;
+          }
+      }, 2000);
   }
 
-  resetUI();
-})();
+  function showResult(res) {
+      const label = res.label || "Unknown";
+      const conf = ((res.confidence || res.ai_score || 0) * 100).toFixed(1);
+      alert(`Result: ${label} (${conf}%)`);
+  }
+}

@@ -5,8 +5,13 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import User, Transaction, db
 import midtransclient
+from flask import render_template
 
 payment_bp = Blueprint('payment', __name__)
+
+@payment_bp.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
 
 def get_midtrans_snap():
     """Helper untuk koneksi ke Midtrans Snap API"""

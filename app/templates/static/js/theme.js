@@ -1,9 +1,9 @@
 /* theme.js
-   - Single source of truth untuk theme (JANGAN duplikasi di auth.js)
+   - Single source of truth untuk theme
    - Render icon sun/moon ke #themeIcon
    - Toggle data-theme di <html>
    - Simpan pilihan ke localStorage
-   - Optional: mobile menu handler (kalau ada)
+   - Mobile menu handler
 */
 (() => {
   "use strict";
@@ -11,134 +11,92 @@
   const THEME_KEY = "detectify_theme";
   const root = document.documentElement;
 
-  // Support id yang kamu pakai sekarang:
-  const themeToggle =
-    document.getElementById("themeToggle") ||
-    document.getElementById("themeBtn") ||
-    document.querySelector("[data-theme-toggle]");
+  // Elemen Toggle
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
 
-  const themeIcon =
-    document.getElementById("themeIcon") ||
-    (themeToggle ? themeToggle.querySelector(".icon-btn__icon") : null);
-
+  // Ikon SVG (Fixed)
   const ICONS = {
+    // Bulan (untuk mode Gelap)
     dark: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M21 14.8A8.5 8.5 0 0 1 9.2 3a7 7 0 1 0 9.8 11.8Z"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
       </svg>`,
+    // Matahari (untuk mode Terang)
     light: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"
-          fill="none" stroke="currentColor" stroke-width="2"/>
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41
-                 M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
       </svg>`
   };
 
-  const safeStorage = {
-    get(key) {
-      try { return localStorage.getItem(key); } catch { return null; }
-    },
-    set(key, val) {
-      try { localStorage.setItem(key, val); } catch { /* ignore */ }
-    },
-    has(key) {
-      try { return localStorage.getItem(key) != null; } catch { return false; }
-    }
-  };
-
-  function computeInitialTheme() {
-    const saved = safeStorage.get(THEME_KEY);
-    if (saved === "light" || saved === "dark") return saved;
-
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-    return prefersDark ? "dark" : "light";
-  }
-
-  function renderThemeIcon(theme) {
-    if (!themeIcon || !themeToggle) return;
-    const isDark = theme === "dark";
-
-    // Kalau dark, tampilkan icon "moon"
-    // Kalau light, tampilkan icon "sun"
-    themeIcon.innerHTML = isDark ? ICONS.dark : ICONS.light;
-
-    themeToggle.setAttribute("aria-pressed", isDark ? "true" : "false");
-    themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
-  }
-
-  function setTheme(theme, { persist = true } = {}) {
+  function setTheme(theme) {
     root.setAttribute("data-theme", theme);
-    if (persist) safeStorage.set(THEME_KEY, theme);
-    renderThemeIcon(theme);
+    localStorage.setItem(THEME_KEY, theme);
+    updateIcon(theme);
   }
 
-  // Init theme (kalau belum ada attribute)
-  const initial = root.getAttribute("data-theme") || computeInitialTheme();
-  setTheme(initial, { persist: false });
-
-  // Kalau user belum set manual, ikuti OS changes
-  const mql = window.matchMedia?.("(prefers-color-scheme: dark)");
-  if (mql && !safeStorage.has(THEME_KEY)) {
-    mql.addEventListener?.("change", (e) => {
-      setTheme(e.matches ? "dark" : "light", { persist: false });
-    });
+  function updateIcon(theme) {
+    if (!themeIcon) return;
+    // Jika tema 'dark', tampilkan ikon 'light' (Matahari) agar user bisa switch ke terang
+    // Jika tema 'light', tampilkan ikon 'dark' (Bulan)
+    themeIcon.innerHTML = theme === "dark" ? ICONS.light : ICONS.dark;
   }
 
-  // Toggle click
+  function toggleTheme() {
+    const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    const next = current === "dark" ? "light" : "dark";
+    setTheme(next);
+  }
+
+  // Init
+  const initialTheme = root.getAttribute("data-theme") || "light";
+  updateIcon(initialTheme);
+
   if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-      const now = root.getAttribute("data-theme") || "light";
-      setTheme(now === "dark" ? "light" : "dark", { persist: true });
-    });
+    themeToggle.addEventListener("click", toggleTheme);
   }
 
   // -------------------------
-  // Mobile menu (optional)
+  // Mobile menu Handler
   // -------------------------
   const menuToggle = document.getElementById("menuToggle");
   const mobileMenu = document.getElementById("mobileMenu");
-  let hideTimer = 0;
 
-  function openMenu() {
+  function toggleMenu() {
     if (!menuToggle || !mobileMenu) return;
-    clearTimeout(hideTimer);
-    mobileMenu.hidden = false;
-    mobileMenu.classList.add("is-open");
-    menuToggle.setAttribute("aria-expanded", "true");
-  }
-
-  function closeMenu() {
-    if (!menuToggle || !mobileMenu) return;
-    mobileMenu.classList.remove("is-open");
-    menuToggle.setAttribute("aria-expanded", "false");
-
-    clearTimeout(hideTimer);
-    hideTimer = window.setTimeout(() => {
+    
+    const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+    
+    if (isExpanded) {
+      // Tutup Menu
       mobileMenu.hidden = true;
-    }, 160);
+      mobileMenu.classList.remove("is-open");
+      menuToggle.setAttribute("aria-expanded", "false");
+    } else {
+      // Buka Menu
+      mobileMenu.hidden = false;
+      mobileMenu.classList.add("is-open");
+      menuToggle.setAttribute("aria-expanded", "true");
+    }
   }
 
-  if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener("click", () => {
-      const expanded = menuToggle.getAttribute("aria-expanded") === "true";
-      expanded ? closeMenu() : openMenu();
-    });
-
+  if (menuToggle) {
+    menuToggle.addEventListener("click", toggleMenu);
+    
+    // Tutup menu saat klik di luar
     document.addEventListener("click", (e) => {
-      const expanded = menuToggle.getAttribute("aria-expanded") === "true";
-      if (!expanded) return;
-      const t = e.target;
-      const inside = mobileMenu.contains(t) || menuToggle.contains(t);
-      if (!inside) closeMenu();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") {
-        closeMenu();
-        menuToggle.focus();
+      const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+      if (!isExpanded) return;
+      if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        toggleMenu(); // Tutup
       }
     });
   }

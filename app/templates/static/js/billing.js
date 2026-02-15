@@ -1,172 +1,90 @@
-/* billing.js
-   Minimal plan + upgrade flow (demo) aligned with your current project:
-   - Uses auth.js pattern: login.html?next=...
-   - Stores plan in localStorage
-   - Updates pricing UI when plan changes
-*/
-(() => {
-  "use strict";
+/**
+ * billing.js
+ * Prinsip: KISS - Cek localStorage, Request Transaksi, Redirect.
+ */
 
-  const PLAN_KEY = "detectify_plan"; // "free" | "pro"
-  const DEFAULT_PLAN = "free";
+document.addEventListener("DOMContentLoaded", () => {
+  const API_TRANSACTION = "/api/payment/create-transaction"; // Perhatikan /api
+  
+  const upgradeBtn = document.getElementById("upgradeToProBtn"); // Tombol di card Pro
+  const modal = document.getElementById("upgradeModal");
+  const confirmBtn = document.getElementById("confirmUpgradeBtn"); // Tombol di Modal
+  const closeBtns = document.querySelectorAll("[data-modal-close]");
 
-  const safeStorage = {
-    get(key) {
-      try { return localStorage.getItem(key); } catch { return null; }
-    },
-    set(key, val) {
-      try { localStorage.setItem(key, val); } catch { /* ignore */ }
-    },
-    del(key) {
-      try { localStorage.removeItem(key); } catch { /* ignore */ }
+  // 1. Cek Status User (UI Logic)
+  function checkStatus() {
+    const userStr = localStorage.getItem("detectify_user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      // Asumsi backend kirim 'plan_type' di object user saat login
+      if (user.plan_type === 'premium') { 
+        updateUI('pro');
+      }
+    }
+  }
+
+  function updateUI(plan) {
+    const proCta = document.querySelector(".plan--pro .plan__cta");
+    if (plan === 'pro' && proCta) {
+      proCta.textContent = "Current Plan";
+      proCta.classList.add("plan__cta--current");
+      proCta.href = "javascript:void(0)";
+      proCta.style.pointerEvents = "none";
+    }
+  }
+
+  // 2. Handle Upgrade (Midtrans)
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", async () => {
+      const token = localStorage.getItem("detectify_token");
+      if (!token) return (window.location.href = "/auth/login-page");
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "Processing...";
+
+      try {
+        const res = await fetch(API_TRANSACTION, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.redirect_url) {
+          window.location.href = data.redirect_url; // Redirect ke Midtrans
+        } else {
+          alert("Gagal: " + (data.error || "Unknown error"));
+        }
+      } catch (e) {
+        alert("Connection error");
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "Continue";
+      }
+    });
+  }
+
+  // Modal Handlers
+  const toggleModal = (show) => {
+    if (modal) {
+        modal.hidden = !show;
+        modal.classList.toggle("is-open", show);
     }
   };
 
-  function getPlan() {
-    const p = (safeStorage.get(PLAN_KEY) || "").toLowerCase();
-    return (p === "pro" || p === "free") ? p : DEFAULT_PLAN;
+  if (upgradeBtn) {
+      upgradeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("detectify_token");
+        if (!token) window.location.href = "/auth/login-page";
+        else toggleModal(true);
+      });
   }
+  
+  closeBtns.forEach(b => b.addEventListener("click", () => toggleModal(false)));
 
-  function setPlan(plan) {
-    const p = (plan || "").toLowerCase();
-    safeStorage.set(PLAN_KEY, (p === "pro") ? "pro" : "free");
-  }
-
-  // ---------------------------------
-  // Upgrade redirect using auth.js
-  // ---------------------------------
-  function goLoginThenReturnToUpgrade() {
-    // after login, user returns here and we activate pro in demo
-    const next = "pricing.html?plan=pro&upgraded=1";
-    location.href = `login.html?next=${encodeURIComponent(next)}`;
-  }
-
-  // ---------------------------------
-  // Modal
-  // ---------------------------------
-  const modal = document.getElementById("upgradeModal");
-  const openBtn = document.getElementById("upgradeToProBtn");
-  const confirmBtn = document.getElementById("confirmUpgradeBtn");
-
-  let lastFocused = null;
-
-  function openModal() {
-    if (!modal) return;
-    lastFocused = document.activeElement;
-
-    modal.hidden = false;
-    document.body.classList.add("modal-open");
-    document.addEventListener("keydown", onKeydown);
-
-    // focus primary action
-    confirmBtn?.focus();
-  }
-
-  function closeModal() {
-    if (!modal) return;
-    modal.hidden = true;
-    document.body.classList.remove("modal-open");
-    document.removeEventListener("keydown", onKeydown);
-
-    // restore focus
-    if (lastFocused && typeof lastFocused.focus === "function") {
-      lastFocused.focus();
-    }
-  }
-
-  function onKeydown(e) {
-    if (e.key === "Escape") closeModal();
-  }
-
-  // click-to-close overlay / close buttons
-  modal?.addEventListener("click", (e) => {
-    const t = e.target;
-    if (t?.matches?.("[data-modal-close]")) closeModal();
-  });
-
-  openBtn?.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (getPlan() === "pro") return; // already pro
-    openModal();
-  });
-
-  confirmBtn?.addEventListener("click", () => {
-    // In a real app: call backend checkout -> return_url to pricing.html?...
-    // For this build: use login redirect and then "activate" Pro
-    goLoginThenReturnToUpgrade();
-  });
-
-  // ---------------------------------
-  // Apply upgrade if returned from login
-  // ---------------------------------
-  function applyUpgradeFromQuery() {
-    const url = new URL(location.href);
-    const plan = (url.searchParams.get("plan") || "").toLowerCase();
-    const upgraded = url.searchParams.get("upgraded");
-
-    if (upgraded === "1" && plan === "pro") {
-      setPlan("pro");
-
-      // clean the URL so it looks nice
-      url.searchParams.delete("plan");
-      url.searchParams.delete("upgraded");
-      history.replaceState({}, "", url.pathname + (url.search ? url.search : "") + url.hash);
-    }
-  }
-
-  // ---------------------------------
-  // Update Pricing UI (Free vs Pro)
-  // ---------------------------------
-  function updatePricingUI() {
-    const plan = getPlan();
-
-    const proCta = document.getElementById("upgradeToProBtn");
-    const freeCard = document.querySelector(".plan--free");
-    const proCard = document.querySelector(".plan--pro");
-
-    // If your Free CTA has a class, we can grab it safely:
-    const freeCta = freeCard?.querySelector(".plan__cta");
-
-    if (plan === "pro") {
-      // Pro becomes current
-      if (proCta) {
-        proCta.textContent = "Your current plan";
-        proCta.setAttribute("aria-disabled", "true");
-        proCta.style.pointerEvents = "none";
-        proCta.style.filter = "grayscale(0.1)";
-        proCta.style.opacity = "0.92";
-      }
-
-      // Free offers downgrade (optional)
-      if (freeCta) {
-        freeCta.textContent = "Downgrade to Free";
-        freeCta.classList.remove("plan__cta--current");
-        freeCta.href = "#";
-        freeCta.addEventListener("click", (e) => {
-          e.preventDefault();
-          setPlan("free");
-          // quick refresh of UI only
-          updatePricingUI();
-        }, { once: true });
-      }
-    } else {
-      // Free is current (default)
-      if (proCta) {
-        proCta.textContent = "Upgrade to Pro";
-        proCta.removeAttribute("aria-disabled");
-        proCta.style.pointerEvents = "";
-        proCta.style.filter = "";
-        proCta.style.opacity = "";
-      }
-
-      if (freeCta) {
-        freeCta.textContent = "Your current plan";
-        freeCta.classList.add("plan__cta--current");
-      }
-    }
-  }
-
-  // init
-  applyUpgradeFromQuery();
-  updatePricingUI();
-})();
+  checkStatus();
+});

@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Image Detection • DetectiFy</title>
 
-  <script src="theme-init.js"></script>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
@@ -20,9 +20,9 @@
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
-          <a class="brand" href="#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}" width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark"  src="{{ url_for('static', filename='assets/dark-logo.png') }}"  width="75" height="45" alt="DetectiFy" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -43,11 +43,11 @@
 
             <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
             </nav>
 
-            <a class="btn btn--primary" href="auth.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
@@ -55,75 +55,59 @@
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
   <main class="app-page">
     <section class="container app-hero" aria-label="Image detection">
       <h1 class="app-title">AI Image Detection</h1>
-      <p class="app-subtitle">Find out whether your image is real or AI generated</p>
+      <p class="app-subtitle">Temukan apakah gambar Anda asli atau buatan AI</p>
+
 
       <div class="upload-card">
-        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload image file">
-          <input
-            id="fileInput"
-            class="dropzone__input"
-            type="file"
-            accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
-          />
+          <div class="dropzone" id="dropzone" role="button" tabindex="0">
+              <input id="fileInput" class="dropzone__input" type="file" accept="image/*" hidden />
+              
+              <div class="dropzone__inner">
+                  <img id="imagePreview" src="" alt="Preview" style="display: none; max-width: 100%; max-height: 250px; border-radius: 10px; margin-bottom: 1.5rem; object-fit: contain;">
+                  
+                  <div id="dropzoneIcon" class="dropzone__icon dropzone__icon--image">
+                      <img src="{{ url_for('static', filename='assets/image-upload.png') }}" class="dropzone__iconImg" />
+                  </div>
 
-          <div class="dropzone__inner">
-            <div class="dropzone__icon dropzone__icon--image" aria-hidden="true">
-              <!-- image icon -->
-              <img
-                src="assets/image-upload.png"
-                alt=""
-                class="dropzone__iconImg"
-                decoding="async"
-                loading="eager"
-              />
-            </div>
-
-            <div class="dropzone__title">Drag &amp; drop your image here</div>
-
-            <div class="dropzone__subtitle">
-              Or
-              <button type="button" class="dropzone__browse" id="browseBtn">browse files</button>
-              on your computer
-            </div>
-
-            <div class="meta-pills" aria-label="file constraints">
-              <span>File format: <b>(png, jpg, jpeg, webp)</b></span>
-              <span class="dot">•</span>
-              <span>Max Size: <b>10 MB</b></span>
-            </div>
-
-            <div class="dropzone__hint">Tips: use a clear, high-resolution image for better results.</div>
-          </div>
-        </div>
-
-        <div class="upload-actions">
-          <div class="file-info" id="fileInfo" hidden>
-            <div class="file-info__name" id="fileName">-</div>
-            <div class="file-info__meta" id="fileMeta">-</div>
+                  <div class="dropzone__title">Seret & letakkan gambar di sini</div>
+                  <div class="dropzone__subtitle">
+                      Atau <button type="button" class="dropzone__browse" id="browseBtn">cari file</button> dari komputer
+                  </div>
+              </div>
           </div>
 
-          <div class="actions-row">
-            <button class="btn btn--ghost" type="button" id="btnRemove" disabled>Remove</button>
-            <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
-          </div>
+          <div class="upload-actions">
+              <div class="file-info" id="fileInfo" hidden>
+                  <div class="file-info__name" id="fileName">-</div>
+              </div>
 
-          <div class="progress" id="progressWrap" hidden aria-label="upload progress">
-            <div class="progress__bar" id="progressBar"></div>
-          </div>
+              <div class="actions-row">
+                  <button class="btn btn--ghost" type="button" id="btnRemove" disabled>Remove</button>
+                  <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
+              </div>
 
-          <div class="status" id="status" role="status" aria-live="polite"></div>
-        </div>
+              <div class="progress" id="progressWrap" hidden>
+                  <div class="progress__bar" id="progressBar" style="width: 0%"></div>
+              </div>
+
+              <div id="resultCard" class="result-card" style="display: none; margin-top: 2rem; text-align: center;">
+                  <h2 id="resultLabel" style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase;">-</h2>
+                  <p>Confidence Score: <strong id="resultScore">0%</strong></p>
+                  <button type="button" class="btn btn--ghost" id="btnReset" style="margin-top: 1rem;">Coba Lagi</button>
+              </div>
+          </div>
       </div>
+
     </section>
   </main>
   <!-- FOOTER -->
@@ -131,8 +115,8 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <div class="footer__logoRow">
-          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}" alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}" alt="DetectiFy logo" />
           <strong class="footer__name">DetectiFy</strong>
         </div>
         <p class="footer__desc">
@@ -142,18 +126,18 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
-        <a class="footer__link" href="index.html">Home</a>
-        <a class="footer__link" href="apps.html">Application</a>
-        <a class="footer__link" href="pricing.html">Pricing</a>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
       </nav>
 
       <nav class="footer__col" aria-label="Features">
         <h3 class="footer__heading">Features</h3>
-        <a class="footer__link" href="text.html">Text Detection</a>
-        <a class="footer__link" href="image.html">Image Detection</a>
-        <a class="footer__link" href="video.html">Video Detection</a>
-        <a class="footer__link" href="audio.html">Audio Detection</a>
-        <a class="footer__link" href="humanize.html">Text Humanization</a>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
       </nav>
     </div>
 
@@ -162,7 +146,7 @@
     </div>
   </footer>
 
-  <script src="theme.js" defer></script>
-  <script src="upload-image.js" defer></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/upload-image.js') }}" defer></script>
 </body>
 </html>

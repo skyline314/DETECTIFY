@@ -11,10 +11,15 @@ from .extensions import (
 from flask_cors import CORS
 import os
 
-def create_app(config_name='default'):
-    template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
-    app = Flask(__name__, template_folder=template_dir)
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
+static_dir = os.path.abspath(os.path.join(template_dir, 'static'))
 
+def create_app(config_name='default'):
+    app = Flask(__name__, 
+            template_folder=template_dir, 
+            static_folder=static_dir, 
+            static_url_path='/static')
+    
     CORS(app, resources={r"/*": {"origins": "*"}})
     app.config.from_object(config[config_name])
 
@@ -34,20 +39,10 @@ def create_app(config_name='default'):
 
     # 2. Blueprint Analysis
     from .analysis import analysis_bp
-    app.register_blueprint(analysis_bp, url_prefix='/api')
+    app.register_blueprint(analysis_bp, url_prefix='')
 
     # 3. Blueprint Payment
     from app.payment.routes import payment_bp
     app.register_blueprint(payment_bp, url_prefix='/api/payment')
-
-    @app.route('/hello')
-    def hello():
-        return "Hello, World! Factory is working."
-    
-    @app.route('/')
-    def index():
-        # Ini akan mencari file app/templates/index.html
-        return render_template('index.html')
-    
 
     return app

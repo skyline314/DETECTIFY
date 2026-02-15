@@ -17,8 +17,8 @@
       --moon:#62B6FF;
 
       /* ===== AUTH SLIDER IMAGES (GANTI SESUAI FILE KAMU) ===== */
-      --media-login: url("assets/hero-bg.jpg");
-      --media-signup: url("assets/hero-bg.jpg");
+      --media-login: url("../assets/hero-bg.jpg");
+      --media-signup: url("../assets/hero-bg.jpg");
       --auth-h: 560px; /* tinggi box auth, kamu boleh ubah */
     }
 

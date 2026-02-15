@@ -11,6 +11,12 @@ import resend
 import os
 
 
+@auth_bp.route('/get-started')
+def auth_page():
+    # Menampilkan file app/templates/auth.html
+    return render_template('auth.html')
+
+
 def generate_confirmation_token(email):
     """Membuat token aman yang berisi email user."""
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -269,8 +275,3 @@ def reset_password():
         db.session.rollback()
         print(f"Error Reset Password: {e}")
         return jsonify({"error": "Terjadi kesalahan internal"}), 500
-    
-
-@auth_bp.route('/console')
-def developer_console():
-    return render_template('console.html')
