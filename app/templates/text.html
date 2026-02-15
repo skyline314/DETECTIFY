@@ -47,6 +47,16 @@
             <nav class="nav__links">
               <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
               <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
             <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
@@ -59,6 +69,12 @@
         <nav class="mobile-menu__links">
           <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
           <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
         <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>

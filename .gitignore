@@ -38,3 +38,4 @@ celery_worker/assets/models/
 *.d2v
 *.npy
 *.h5
+*.fig

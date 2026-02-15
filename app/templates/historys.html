@@ -1,0 +1,292 @@
+    <!doctype html>
+    <html lang="id">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DetectiFy — History</title>
+
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="historys.css">
+    </head>
+
+    
+
+    <body>
+    <div class="page">
+    <!-- TOP NAV -->
+    <header class="topbar" id="top">
+        <div class="container">
+        <div class="topbar__shell">
+            <div class="nav">
+            <!-- Brand -->
+            <a class="brand" href="#top" aria-label="Back to top">
+                <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+                <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+                <span class="brand__name">DetectiFy</span>
+            </a>
+
+            <div class="nav__right">
+                <div class="nav__icons" aria-label="Quick actions">
+                <!-- Theme toggle -->
+                <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                    <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+                </button>
+
+                <!-- Mobile hamburger -->
+                <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                </div>
+
+                <!-- Desktop nav -->
+                <nav class="nav__links" aria-label="Primary navigation">
+                <a class="nav__link" href="index.html">Home</a>
+                <a class="nav__link" href="apps.html">Application</a>
+                </nav>
+<button type="button" class="nav-profile" id="openProfilePopup" aria-label="Profile">
+  <svg viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+    <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2"/>
+  </svg>
+</button>
+
+
+            </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="mobile-menu" id="mobileMenu" hidden>
+            <nav class="mobile-menu__links" aria-label="Mobile navigation">
+            <a class="mobile-link" href="index.html">Home</a>
+            <a class="mobile-link" href="apps.html">Application</a>
+            </nav>
+            <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        </div>
+        </div>
+    </header>
+
+        <h1 class="title">History</h1>
+        <p class="subtitle">Keep track of all your past checks in one place</p>
+        <!-- MAIN PANEL -->
+        <section class="panel">
+        <!-- LEFT -->
+        <aside class="sidebar">
+            <div class="search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" stroke="currentColor" stroke-width="2"/>
+                <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Search</span>
+            </div>
+
+            <div class="filelist" role="listbox" aria-label="History file list">
+            <div class="file active" role="option" aria-selected="true">
+                tralala_tralelo.jpg
+            </div>
+            <div class="file">Function-UseCase Point - week 6</div>
+            <div class="file">WhatsApp Image 2025-10-30 a ...</div>
+            <div class="file">temanfinancial (1).mp4</div>
+            <div class="file">koruptor jadi kurban.mp4</div>
+            <div class="file">theo_analysis.txt</div>
+            <div class="file">ganash selfie.png</div>
+            <div class="file">trump_speech.mp3</div>
+            </div>
+
+            <div class="side-actions">
+            <button class="side-btn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 21a8 8 0 0 0-16 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" stroke="white" stroke-width="2"/>
+                </svg>
+                Account Information
+            </button>
+<button class="side-btn secondary" type="button" id="upgradePlanBtn">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M4 18h16l-1 3H5l-1-3z" fill="rgba(255,255,255,.25)"/>
+    <path d="M5 18l-2-9 6 4 3-7 3 7 6-4-2 9" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+  Upgrade Plan
+</button>
+
+            </div>
+        </aside>
+
+        <!-- CENTER -->
+        <main class="content">
+            <div class="result-card">
+            <div class="filename" id="fileTitle">tralala_tralelo.jpg</div>
+            <div class="risk" id="riskText">LOW RISK</div>
+
+
+            <!-- Shield -->
+            <svg class="shield" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0" stop-color="#22c55e"/>
+                    <stop offset="1" stop-color="#16a34a"/>
+                </linearGradient>
+                </defs>
+                <path d="M64 10l42 18v36c0 30-20 52-42 54C42 116 22 94 22 64V28l42-18z" fill="url(#g)"/>
+                <path d="M45 65l12 12 28-32" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+
+<div class="probs">
+  <div class="prob green">
+    <div class="num" id="humanProb">88%</div>
+    <div class="label">Human Probability</div>
+  </div>
+
+  <div class="prob red">
+    <div class="num" id="aiProb">12%</div>
+    <div class="label">AI Probability</div>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="bar-fill" id="probBar"></div>
+</div>
+
+
+            </main>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+        <div class="footer-grid">
+            <div>
+            <div class="footer-brand">
+            <div class="footer-logo">
+    <img src="./assets/light-logo.png" alt="DetectiFy Logo" />
+    </div>
+
+                <div>
+                <div style="font-weight:700;">DetectiFy</div>
+                <small>Transform AI-generated content into naturally human-like results</small>
+                </div>
+            </div>
+            </div>
+
+            <div>
+            <h4>Quick Links</h4>
+            <a href="#">Home</a>
+            <a href="#">Application</a>
+            </div>
+
+            <div>
+            <h4>Features</h4>
+            <a href="#">Text Humanization</a>
+            <a href="#">Image Enhancement</a>
+            <a href="#">Video Processing</a>
+            <a href="#">Audio Conversion</a>
+            </div>
+        </div>
+
+        <div class="copyright">© 2024 DetectiFy. All rights reserved.</div>
+        </footer>
+    </div>
+    <!-- =========================
+     PROFILE POPUP (MODAL)
+     ========================= -->
+<div id="profilePopupOverlay" class="profile-modal" hidden aria-hidden="true">
+  <div class="profile-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <button type="button" class="profile-modal__close" id="closeProfilePopup" aria-label="Close profile">
+      &times;
+    </button>
+
+    <h1 id="profileModalTitle" class="profile-title">My Account</h1>
+
+    <div class="profile-panel">
+      <!-- Username -->
+      <div class="profile-label">Username</div>
+      <div class="profile-field">
+        <input id="usernameInput" class="profile-value" type="text" value="Joy Rochelle" autocomplete="username" />
+
+        <button id="copyUsernameBtn" class="profile-icon-btn" type="button" aria-label="Copy username">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+            <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Email -->
+      <div class="profile-label">Email</div>
+      <div class="profile-field">
+        <input id="emailInput" class="profile-value" type="email" value="joyrochelle08@gmail.com" autocomplete="email" />
+        <button id="copyEmailBtn" class="profile-icon-btn" type="button" aria-label="Copy email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+            <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Current Plan (opsional, tapi kamu udah punya di profiled) -->
+      <div class="profile-label">Current Plan</div>
+      <div class="profile-plan-card">
+        <div class="profile-plan-left">
+          <div class="profile-plan-name">Free Plan</div>
+          <div class="profile-quota">1 of 5 uses left today</div>
+        </div>
+
+        <button class="profile-upgrade-btn" type="button" id="upgradeBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 7l4.5 4L12 5l4.5 6L21 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"
+                  fill="#f5c542" stroke="#c08a1a" stroke-width="1"/>
+            <path d="M6 19h12" stroke="#c08a1a" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Upgrade Plan</span>
+          <svg class="profile-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Security -->
+      <div class="profile-label">Security</div>
+      <div class="profile-security">
+        <div class="profile-sec-item" role="button" tabindex="0" id="changePasswordBtn">
+          <div class="profile-sec-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+              <path d="M8 11V8a4 4 0 1 1 8 0v3"></path>
+            </svg>
+            <span>Change Password</span>
+          </div>
+          <svg class="profile-chev" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="profile-sec-item" role="button" tabindex="0" id="logoutBtn">
+          <div class="profile-sec-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 17l-1 0a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h1"></path>
+              <path d="M16 7l5 5-5 5"></path>
+              <path d="M21 12H9"></path>
+            </svg>
+            <span>Log out</span>
+          </div>
+          <svg class="profile-chev" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+    <script src="historys.js"></script>
+
+    </body>
+    </html>
