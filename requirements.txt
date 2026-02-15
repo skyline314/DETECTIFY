@@ -32,5 +32,4 @@ midtransclient
 resend
 opencv-python-headless
 requests
-tensorflow
 gensim

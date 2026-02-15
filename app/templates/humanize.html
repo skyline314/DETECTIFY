@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Humanize Text • DetectiFy</title>
+  <!-- <script src="theme-init.js"></script> -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="theme-init.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="humanize.css">
+</head>
+
+<body class="humanize-page">
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <!-- Brand -->
+          <a class="brand" href="#top" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <!-- Theme toggle -->
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+
+              <!-- Mobile hamburger -->
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Desktop nav -->
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
+            </nav>
+
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="hz-main">
+    <!-- HERO (pendek, rapat) -->
+    <section class="hz-hero" aria-label="Humanize Text Hero">
+      <h1 class="hz-title">Humanize Text</h1>
+      <p class="hz-subtitle">Make your text more “human” for every kind of situation</p>
+    </section>
+
+    <!-- PANEL -->
+    <section class="app-panel" aria-label="Humanize Text Panel">
+      <div class="panel-grid">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="side-title">
+            <span aria-hidden="true">ⓘ</span>
+            <span>Usage Guides</span>
+          </div>
+
+          <div class="side-card">
+            <p class="plan">Your plan:<br><b>Free</b></p>
+
+            <div class="quota-row">
+              <div class="quota-pill">AI Detector<br>500 Words</div>
+              <div class="quota-pill">AI Humanizer<br>500 Words</div>
+            </div>
+
+            <button class="side-btn" id="startBtn" type="button">Start For Free</button>
+            <button class="side-btn primary" id="upgradeBtn" type="button">Upgrade Plan</button>
+
+          </div>
+        </aside>
+
+        <!-- Content -->
+        <div class="content">
+          <div class="top-row">
+            <div class="mode-block">
+              <div class="mode-label">Mode</div>
+              <div class="tabs" role="tablist" aria-label="Mode">
+                <button class="tab active" data-mode="casual" aria-selected="true">Casual</button>
+                <button class="tab" data-mode="academic" aria-selected="false">Academic</button>
+                <button class="tab" data-mode="professional" aria-selected="false">Professional</button>
+              </div>
+            </div>
+
+            <div class="output-bar">
+              <span class="mode-label">Output</span>
+              <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+            </div>
+          </div>
+
+          <div class="io-grid">
+            <!-- Input -->
+            <div class="box">
+              <textarea id="inputText" placeholder="Paste your text here."></textarea>
+            </div>
+
+            <!-- Output -->
+            <div class="box box--output">
+              <textarea id="outputText" readonly placeholder="Your humanized content will appear here."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="action-btn" id="checkBtn" type="button">Check for AI</button>
+            <button class="action-btn" id="humanizeBtn" type="button">Humanize</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <strong class="footer__name">DetectiFy</strong>
+        </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="index.html">Home</a>
+        <a class="footer__link" href="apps.html">Application</a>
+        <a class="footer__link" href="pricing.html">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="text.html">Text Detection</a>
+        <a class="footer__link" href="image.html">Image Detection</a>
+        <a class="footer__link" href="video.html">Video Detection</a>
+        <a class="footer__link" href="audio.html">Audio Detection</a>
+        <a class="footer__link" href="humanize.html">Text Humanization</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="theme.js" defer></script>
+  <script src="humanize.js" defer></script>
+  <script src="text-tool.js" defer></script>
+</body>
+</html>

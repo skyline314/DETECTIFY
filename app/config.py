@@ -67,8 +67,7 @@ class DevelopmentConfig(Config):
     Mewarisi (inherits) dari Config dasar.
     """
     DEBUG = True
-    # bisa override DB di sini jika perlu, misal menunjuk ke DB lokal
-    # SQLALCHEMY_DATABASE_URI = "sqlite:///dev.db" 
+    DATABASE_URL="sqlite:///detectify_local.db"
 
 
 class ProductionConfig(Config):
@@ -81,11 +80,18 @@ class ProductionConfig(Config):
     # DB_USER = os.getenv('PROD_DB_USER')
     # ... dll
 
+class TestingConfig(Config):
+    """Konfigurasi khusus untuk Unit Testing."""
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_ENGINE_OPTIONS = {}
 
 # Dictionary untuk memetakan string ke class Konfigurasi
 # Ini akan digunakan oleh Application Factory (di __init__.py)
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'testing': TestingConfig,  
     'default': DevelopmentConfig
 }

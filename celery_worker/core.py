@@ -17,8 +17,9 @@ from torchvision import transforms
 from PIL import Image
 from timm import create_model
 import cv2
-import tensorflow as tf
 from gensim.models.doc2vec import Doc2Vec
+from gensim.utils import simple_preprocess
+import boto3
 
 ###########################################################################################################
 # GLOBAL CONFIGURATION & PATHS
@@ -38,9 +39,9 @@ TEXT_MODEL_DIR = os.path.join(MODEL_DIR, 'text')
 ENGLISH_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'log_reg_model.pkl')
 ENGLISH_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'tfidf_vectorizer.pkl')
 
-INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.h5')
+INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.pth')
 INDONESIAN_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'doc2Vec.d2v')
-tf.config.set_visible_devices([], 'GPU')
+# tf.config.set_visible_devices([], 'GPU')
 
 
 # IMAGE
@@ -65,6 +66,36 @@ def clean_text(text):
     # Remove words containing numbers
     text = re.sub(r'\w*\d\w*', '', text)
     return text
+
+def text_preprocessing_id(text):
+    """Preprocessing khusus Bahasa Indonesia"""
+    text = text.replace('-', ' ')
+    text = re.sub(r'[\r\xa0\t]', '', text)
+    text = re.sub(r"http\S+|www\S+", '', text)
+    text = re.sub(r'\b\w*\.com\w*\b', '', text)
+    text = re.sub(r'\[.*?\]|\(.*?\}|\{.*?\}', '', text)
+    text = re.sub(r'\b(\w+)/(\w+)\b', r'\1 atau \2', text)
+    text = re.sub(r'@[A-Za-z0-9]+|#[A-Za-z0-9]+', '', text)
+    text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    return text.strip()
+
+def ensure_model_exists(s3_key, local_path):
+    """Fungsi untuk mengunduh model dari AWS S3 jika tidak ada di lokal."""
+    if not os.path.exists(local_path):
+        print(f"[S3] Mengunduh aset dari S3: {s3_key} -> {local_path}...")
+        try:
+            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            s3 = boto3.client(
+                's3',
+                aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+            )
+            s3.download_file(os.getenv('AWS_S3_BUCKET_NAME'), s3_key, local_path)
+            print(f"[S3] Selesai mengunduh ke {local_path}")
+        except Exception as e:
+            print(f"[S3] Gagal mengunduh {s3_key}: {e}")
 
 ###########################################################################################################
 
@@ -124,6 +155,27 @@ class EfficientNetV2(nn.Module):
         features = self.base_model.forward_features(x)
         out = self.classifier(features)
         return out.squeeze(1)
+    
+
+class BiLSTM(nn.Module):
+    def __init__(self, hidden_dim=50, num_layers=4, dropout=0.2):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=1,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            dropout=dropout,
+            bidirectional=True,
+            batch_first=True
+        )
+        self.fc = nn.Linear(hidden_dim * 2, 1)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        out = out[:, -1, :]  # Ambil output dari timestep terakhir
+        out = self.fc(out)
+        return self.sigmoid(out)
 
 ###########################################################################################################
 # REGISTRY CORE
@@ -162,6 +214,7 @@ class ModelRegistry:
 
     # --- Loader Sub-methods ---
     def _load_audio_model(self):
+        ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH)
         try:
             if os.path.exists(AUDIO_MODEL_PATH):
                 print(f"[Core] Loading Audio Model from: {AUDIO_MODEL_PATH}")
@@ -173,6 +226,8 @@ class ModelRegistry:
 
     def _load_text_model(self):
         # Load englsih model
+        ensure_model_exists("assets/models/text/English/logistic_regression/log_reg_model.pkl", ENGLISH_TEXT_MODEL_PATH)
+        ensure_model_exists("assets/models/text/English/logistic_regression/tfidf_vectorizer.pkl", ENGLISH_TEXT_VECTORIZER_PATH)
         try:
             if os.path.exists(ENGLISH_TEXT_MODEL_PATH) and os.path.exists(ENGLISH_TEXT_VECTORIZER_PATH):
                     self.en_text_model = joblib.load(ENGLISH_TEXT_MODEL_PATH)
@@ -183,17 +238,30 @@ class ModelRegistry:
 
         # Load indonesia model
         try:
+            ensure_model_exists("assets/models/text/Indonesia/bi_lstm.pth", INDONESIAN_TEXT_MODEL_PATH)
+            ensure_model_exists("assets/models/text/Indonesia/doc2Vec.d2v", INDONESIAN_TEXT_VECTORIZER_PATH)
+            
+            # PENTING: Download file .npy pendamping Doc2Vec
+            ensure_model_exists("assets/models/text/Indonesia/doc2vec.d2v.wv.vectors.npy", INDONESIAN_TEXT_VECTORIZER_PATH + ".wv.vectors.npy")
+            ensure_model_exists("assets/models/text/Indonesia/doc2vec.d2v.syn1neg.npy", INDONESIAN_TEXT_VECTORIZER_PATH + ".syn1neg.npy")
             if os.path.exists(INDONESIAN_TEXT_MODEL_PATH) and os.path.exists(INDONESIAN_TEXT_VECTORIZER_PATH):
-                    with tf.device('/CPU:0'):
-                        self.id_text_model = tf.keras.models.load_model(INDONESIAN_TEXT_MODEL_PATH)
-                        self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
-                    print(f"[Core] Loaded Text Model: Indonesian Text Detection")
+                    # Load Doc2Vec
+                    self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
+                    
+                    # Load PyTorch Model
+                    self.id_text_model = BiLSTM().to(DEVICE)
+                    self.id_text_model.load_state_dict(torch.load(INDONESIAN_TEXT_MODEL_PATH, map_location=DEVICE, weights_only=True))
+                    self.id_text_model.eval()
+                    
+                    print(f"[Core] Loaded PyTorch Text Model: Indonesian Text Detection")
         except Exception as e:
             print(f"[Core] Error loading Text Models: {e}")
 
     
     def _load_image_model(self):
         try:
+            ensure_model_exists("assets/models/image/IMAGE_MODEL.pth", IMAGE_MODEL_PATH)
+            
             if os.path.exists(IMAGE_MODEL_PATH):
                 self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
                 checkpoint = torch.load(IMAGE_MODEL_PATH, map_location=DEVICE, weights_only=True)
@@ -293,10 +361,11 @@ class ModelRegistry:
         if not self._is_loaded: self.load_assets()
         if not raw_text or len(raw_text.strip()) < 10:
             return {"error": "Teks terlalu pendek (Minimal 10 karakter)."}
-        if not self.text_model or not self.text_vectorizer: return {"error": "Model Teks tidak tersedia."}
 
         # Predict
         if language == 'en':
+            if not getattr(self, 'en_text_model', None) or not getattr(self, 'en_text_vectorizer', None):
+                return {"error": "Model Teks English tidak tersedia."}
             try:
                 processed_text = clean_text(raw_text)
                 text_vectorized = self.en_text_vectorizer.transform([processed_text])
@@ -311,27 +380,46 @@ class ModelRegistry:
                     "model_used": f"Detectify_Text_Logistic_Regression",
                     "prediction": label,
                     "confidence_score": float(confidence), 
+                    "language": "English",
                     "probability_ai": float(probabilities[1]),
                     "probability_human": float(probabilities[0])
                 }
             except Exception as e:
                 return {"error": f"Text prediction failed: {str(e)}"}
         elif language == 'id':
+            if not getattr(self, 'id_text_model', None) or not getattr(self, 'id_text_vectorizer', None):
+                return {"error": "Model Teks Indonesia tidak tersedia."}
             try: 
-                with tf.device('/CPU:0'):
-                    vector = self.id_text_vectorizer.infer_vector(raw_text.split())
-                    vector = np.expand_dims(vector, axis=0)
-                    
-                    prediction = self.id_text_model.predict(vector)[0][0]
-                    
-                label = "FAKE" if prediction >= 0.5 else "REAL"
-                confidence = prediction if label == "FAKE" else 1 - prediction
+                # 1. Preprocessing
+                clean_txt = text_preprocessing_id(raw_text)
+                words = simple_preprocess(clean_txt)
+
+                # 2. Vectorization (Doc2Vec)
+                vector = self.id_text_vectorizer.infer_vector(words, epochs=20)
+
+                # 3. Reshape untuk LSTM (Batch, Seq_Len, Input_Dim) -> (1, 1000, 1)
+                vector_tensor = torch.tensor(vector, dtype=torch.float32).view(1, 1000, 1).to(DEVICE)
+
+                # 4. Inference
+                with torch.no_grad():
+                    prob_ai = self.id_text_model(vector_tensor).item()
                 
+                prob_human = 1.0 - prob_ai
+
+                # 5. Penentuan Label
+                label = "FAKE" if prob_ai >= 0.5 else "REAL"
+                
+                # 6. Hitung Confidence Score (mengambil probabilitas tertinggi)
+                confidence = prob_ai if label == "FAKE" else prob_human
+
+                # Output disamakan persis dengan format English
                 return {
+                    "model_used": "Detectify_Text_BiLSTM_PyTorch",
                     "prediction": label,
-                    "confidence_score": round(float(confidence) * 100, 2),
-                    "model_used": "Indo_BiLSTM_Doc2Vec",
-                    "language": "Indonesian"
+                    "confidence_score": float(confidence), 
+                    "language": "Indonesian",
+                    "probability_ai": float(prob_ai),
+                    "probability_human": float(prob_human)
                 }
             except Exception as e:
                 return {"error": f"Text prediction failed: {str(e)}"}

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login • DetectiFy</title>
+  <script src="theme-init.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- TOPBAR (mengikuti struktur index.html) -->
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="index.html#top" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light"
+                 src="assets/light-logo.png"
+                 width="75" height="45"
+                 alt="DetectiFy"
+                 decoding="async"
+                 loading="eager" />
+            <img class="brand__logo brand__logo--dark"
+                 src="assets/dark-logo.png"
+                 width="75" height="45"
+                 alt="DetectiFy"
+                 decoding="async"
+                 loading="eager" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <a class="btn" href="index.html#features">Features</a>
+            <a class="btn btn--primary" href="signup.html">Create Account</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth">
+    <div class="container">
+      <section class="auth__shell" aria-label="Login">
+        <!-- LEFT: CARD -->
+        <div class="auth__card">
+          <h1 class="auth__title">Log in to your account.</h1>
+          <p class="auth__desc">Masuk untuk melanjutkan ke aplikasi DetectiFy.</p>
+
+          <form id="loginForm" class="auth__form" novalidate>
+            <div class="field">
+              <label for="loginEmail">Email</label>
+              <input id="loginEmail" name="email" type="email" autocomplete="email" placeholder="Email" required />
+            </div>
+
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <div class="field__row">
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Password" required />
+                <button class="field__icon" type="button" id="toggleLoginPw" aria-label="Show password">
+                  <!-- eye icon -->
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="auth__row">
+              <label class="check">
+                <input type="checkbox" id="rememberMe" />
+                <span>Remember me</span>
+              </label>
+
+              <button class="link" type="button" id="forgotPassword">Forgot your password?</button>
+            </div>
+
+            <button class="btn btn--primary btn--block auth__submit" type="submit">
+              Login
+            </button>
+
+            <div id="authStatus" class="auth__status" role="status" aria-live="polite"></div>
+
+            <div class="auth__divider">
+              <span>Or login with</span>
+            </div>
+
+            <div class="auth__social" role="group" aria-label="Social login buttons">
+              <button type="button" class="social-btn" id="btnGoogle" aria-label="Continue with Google">
+                <!-- Google -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21.35 11.1H12v2.9h5.35c-.55 3.2-3.2 4.6-5.35 4.6A6.6 6.6 0 1 1 12 5.4c1.8 0 3.05.75 3.75 1.4l2-2A9.1 9.1 0 1 0 12 21.1c5.25 0 9.05-3.7 9.05-8.9 0-.6-.05-1.05-.15-1.1Z" fill="currentColor"/>
+                </svg>
+              </button>
+
+              <button type="button" class="social-btn" id="btnFacebook" aria-label="Continue with Facebook">
+                <!-- Facebook -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.6 1.7-1.6h1.5V4.8c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V11H7.6v3H10v8h3.5Z" fill="currentColor"/>
+                </svg>
+              </button>
+
+              <button type="button" class="social-btn" id="btnApple" aria-label="Continue with Apple">
+                <!-- Apple -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M16.7 13.2c0-2 1.6-3 1.7-3.1-1-1.4-2.5-1.6-3-1.6-1.3-.1-2.5.7-3.2.7-.7 0-1.7-.7-2.8-.7-1.4 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.4 1 8.5.7 1 1.5 2.1 2.6 2.1 1 0 1.4-.6 2.7-.6 1.3 0 1.6.6 2.8.6 1.2 0 1.9-1 2.6-2 .8-1.2 1.1-2.4 1.1-2.5-.1 0-2-.8-2-3.6ZM14.9 6.5c.6-.8 1-1.9.9-3-1 .1-2.2.7-2.9 1.5-.6.7-1.1 1.9-1 2.9 1.1.1 2.3-.6 3-1.4Z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+
+            <p class="auth__bottom">
+              Don’t have an account?
+              <a class="link" href="signup.html">Create Account</a>
+            </p>
+          </form>
+        </div>
+
+        <!-- RIGHT: IMAGE -->
+        <aside class="auth__media" aria-hidden="true">
+          <div class="auth__mediaInner"></div>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <!-- Theme + menu handler (dipakai juga di index) -->
+  <script src="theme.js" defer></script>
+
+  <!-- Auth logic -->
+  <script type="module" src="auth.js"></script>
+</body>
+</html>

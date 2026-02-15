@@ -1,0 +1,248 @@
+:root {
+      --bg-body: #f4f7f6;
+      --bg-card: #f2f2f2;
+      --text-main: #1a1a1a;
+      --nav-bg: rgba(255, 255, 255, 0.7);
+      --nav-text: #1a1a1a;
+      --nav-border: rgba(255, 255, 255, 0.3);
+      --knob-bg: #ffffff;
+      --input-bg: #ffffff;
+      --input-border: #ddd;
+
+      /* toggle vars */
+      --navy:#112233;
+      --switch-bg:#e6f7ff;
+      --switch-border:#d7d7d7;
+      --sun:#FFD700;
+      --moon:#62B6FF;
+
+      /* ===== AUTH SLIDER IMAGES (GANTI SESUAI FILE KAMU) ===== */
+      --media-login: url("assets/hero-bg.jpg");
+      --media-signup: url("assets/hero-bg.jpg");
+      --auth-h: 560px; /* tinggi box auth, kamu boleh ubah */
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #ffffff;
+      --nav-bg: rgba(20, 20, 20, 0.6);
+      --nav-text: #ffffff;
+      --nav-border: rgba(255, 255, 255, 0.1);
+      --knob-bg: #112233;
+      --input-bg: #2d3748;
+      --input-border: #4a5568;
+
+      --switch-bg:#0b1220;
+      --switch-border: rgba(255,255,255,.20);
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      animation: fadeIn 0.4s ease-in-out;
+      transition: background 0.3s ease, color 0.3s ease;
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .auth__card { background-color: var(--bg-card); color: var(--text-main); transition: background 0.3s ease; }
+    .auth__title, .auth__desc, .field label, .auth__bottom, .auth__bottom a { color: var(--text-main); }
+
+    .field input {
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text-main);
+      transition: background 0.3s ease, border 0.3s ease;
+    }
+
+    .auth__media {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      text-align: center;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+    .auth__media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+      z-index: 1;
+      pointer-events: none;
+    }
+    .auth__media-content { position: relative; z-index: 2; padding: 2rem; }
+    .auth__media-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+    .btn--outline-white {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      color: white;
+      padding: 0.8rem 3rem;
+      border-radius: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn--outline-white:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.02); }
+
+    /* jarak navbar ke box auth */
+    .auth { margin-top: 60px !important; }
+
+/* ======================================================
+       AUTH SLIDER (GAMBAR SAJA SLIDE)
+       ====================================================== */
+    .auth__shell.auth-slider{
+      position: relative;
+      min-height: var(--auth-h);
+      overflow: hidden;
+    }
+
+    /* panel form */
+    .auth__shell.auth-slider .auth__panel{
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      z-index: 2;
+      transition: opacity .25s ease;
+    }
+    .auth__shell.auth-slider .auth__panel--login{
+      left: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .auth__shell.auth-slider .auth__panel--signup{
+      left: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* media: ini yang slide */
+    .auth__shell.auth-slider .auth__panel-media{
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      z-index: 3;
+      transition: transform .55s ease;
+      transform: translateX(0);
+      overflow: hidden;
+    }
+
+    /* background login */
+    .auth__shell.auth-slider .auth__mediaInner{
+      position: absolute;
+      inset: 0;
+      background-image: var(--media-login);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* background signup overlay */
+    .auth__shell.auth-slider .auth__mediaInner::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image: var(--media-signup);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+
+    .auth__shell.auth-slider .media-content--signup{ display:none; }
+
+    /* state signup */
+    .auth__shell.auth-slider.is-signup .auth__panel-media{
+      transform: translateX(-100%);
+    }
+    .auth__shell.auth-slider.is-signup .auth__panel--login{
+      opacity: 0;
+      pointer-events: none;
+    }
+    .auth__shell.auth-slider.is-signup .auth__panel--signup{
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .auth__shell.auth-slider.is-signup .media-content--login{ display:none; }
+    .auth__shell.auth-slider.is-signup .media-content--signup{ display:block; }
+    .auth__shell.auth-slider.is-signup .auth__mediaInner::after{ opacity: 1; }
+
+    /* mobile stack */
+    @media (max-width: 768px){
+      .auth__shell.auth-slider{
+        position: static;
+        min-height: auto;
+      }
+      .auth__shell.auth-slider .auth__panel,
+      .auth__shell.auth-slider .auth__panel-media{
+        position: static;
+        width: 100%;
+        transform: none !important;
+      }
+      .auth__shell.auth-slider .auth__panel--signup{
+        left: auto;
+        opacity: 1;        /* biar bisa kebaca kalau kamu scroll */
+        pointer-events: auto;
+      }
+    }
+
+    /* slider gambar saja */
+.media-slider{
+  position: absolute;
+  inset: 0;
+  width: 200%;
+  display: flex;
+  transition: transform .7s cubic-bezier(.77,0,.18,1);
+}
+
+.auth--signup .media-slider{
+  transform: translateX(-50%);
+}
+
+.media-slide{
+  width: 50%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== BUTTON AUTH (LOGIN & SIGNUP) ===== */
+.btn--primary{
+  background: #022e5a;   /* warna biru light mode */
+  color: #ffffff;
+}
+
+[data-theme="dark"] .btn--primary{
+  background: #5AA5CD;   /* warna dark mode */
+  color: #ffffff;
+}
+/* === LOGO THEME SWITCH (FINAL) === */
+.logo-light {
+  display: inline-block;
+}
+
+.logo-dark {
+  display: none;
+}
+
+[data-theme="dark"] .logo-light {
+  display: none;
+}
+
+[data-theme="dark"] .logo-dark {
+  display: inline-block;
+}

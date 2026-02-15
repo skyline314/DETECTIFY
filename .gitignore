@@ -27,4 +27,14 @@ tests/
 instance/
 test_detectify.sqlite
 .pytest_cache
+pytest.ini
+run_benchmark.py
 
+
+# Ignore all ML models and vectorizers
+celery_worker/assets/models/
+*.pth
+*.pkl
+*.d2v
+*.npy
+*.h5
