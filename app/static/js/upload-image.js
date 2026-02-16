@@ -95,8 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 3. UPLOAD & POLLING ---
     btnUpload.addEventListener("click", async () => {
         const fileObj = fileInput.files[0];
+        if (!fileObj) return alert("Pilih file terlebih dahulu!");
+
+        // Login guard
+        if (!window.requireLogin || !window.requireLogin()) return;
         const token = localStorage.getItem('detectify_token');
-        if (!fileObj || !token) return alert("Pilih file atau login kembali!");
 
         btnUpload.disabled = true;
         btnUpload.textContent = "Uploading...";
@@ -123,6 +126,21 @@ document.addEventListener("DOMContentLoaded", () => {
             xhr.onload = () => {
                 try {
                     const d = JSON.parse(xhr.responseText);
+
+                    // Handle auth/limit errors
+                    if (xhr.status === 401 || xhr.status === 422) {
+                        finishProgress(); resetUI();
+                        if (window.handleApiError) window.handleApiError({ status: xhr.status }, d);
+                        else window.location.href = "/auth/get-started";
+                        return;
+                    }
+                    if (xhr.status === 403) {
+                        finishProgress(); resetUI();
+                        if (window.handleApiError) window.handleApiError({ status: 403 }, d);
+                        else alert(d.error || "Access denied");
+                        return;
+                    }
+
                     if (d.analysis_id) {
                         btnUpload.textContent = "Analyzing...";
                         progressBar.style.width = "30%";

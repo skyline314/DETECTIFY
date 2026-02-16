@@ -130,7 +130,30 @@
             </div>
 
             <button class="btn btn--primary btn--block" type="submit">Login</button>
+
+            <div style="text-align:center;margin-top:12px">
+              <a href="#" id="forgotPasswordLink" class="auth__forgot-link">Forgot Password?</a>
+            </div>
           </form>
+
+          <!-- FORGOT PASSWORD (hidden initially) -->
+          <div id="forgotPasswordPanel" style="display:none;margin-top:0">
+            <h2 class="auth__title" style="font-size:20px">Reset Your Password</h2>
+            <p class="auth__desc">Enter your email and we'll send you a reset token.</p>
+            <form id="forgotPasswordForm" class="auth__form">
+              <div class="field">
+                <label for="forgotEmail">Email</label>
+                <input id="forgotEmail" type="email" placeholder="youremail@example.com" autocomplete="email"
+                  required />
+              </div>
+              <div id="forgotMsg" style="display:none;padding:10px;border-radius:8px;font-size:13px;margin-bottom:10px">
+              </div>
+              <button class="btn btn--primary btn--block" type="submit">Send Reset Token</button>
+              <div style="text-align:center;margin-top:10px">
+                <a href="#" id="backToLoginLink" class="auth__forgot-link">← Back to Login</a>
+              </div>
+            </form>
+          </div>
         </div>
 
         <!-- SIGNUP -->
@@ -222,6 +245,7 @@
   </footer>
 
   <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
 </body>
 

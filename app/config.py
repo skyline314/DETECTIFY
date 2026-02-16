@@ -60,6 +60,10 @@ class Config:
     # PRICE
     PREMIUM_PRICE = os.environ.get('PREMIUM_PRICE')
 
+    # MIDTRANS
+    MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY')
+    MIDTRANS_IS_PRODUCTION = os.environ.get('MIDTRANS_IS_PRODUCTION', 'False') == 'True'
+
 
 class DevelopmentConfig(Config):
     """

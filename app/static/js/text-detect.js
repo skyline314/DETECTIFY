@@ -69,11 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- ANALYZE ---
   const handleAnalyze = async () => {
     const text = textInput.value.trim();
-    const token = localStorage.getItem("detectify_token");
 
     if (!selectedLang) return alert("Pilih bahasa terlebih dahulu (English / Indonesia).");
     if (!text && (!fileInput.files || fileInput.files.length === 0)) return alert("Input text atau upload file.");
-    if (!token) return (window.location.href = "/auth/get-started");
+
+    // Login guard
+    if (!window.requireLogin || !window.requireLogin()) return;
+    const token = localStorage.getItem("detectify_token");
 
     setLoading(true);
 
@@ -95,6 +97,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json();
+
+      // Handle auth/limit errors
+      if (window.handleApiError && window.handleApiError(res, data)) {
+        setLoading(false);
+        return;
+      }
       if (!res.ok) throw new Error(data.error || "Analysis failed");
 
       if (data.analysis_id) {

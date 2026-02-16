@@ -87,8 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- UPLOAD ---
     if (btnUpload) btnUpload.addEventListener("click", () => {
         if (!selectedFile) return;
+
+        // Login guard
+        if (!window.requireLogin || !window.requireLogin()) return;
         const token = localStorage.getItem("detectify_token");
-        if (!token) return (window.location.href = "/auth/get-started");
 
         btnUpload.disabled = true;
         btnUpload.textContent = "Uploading...";
@@ -113,6 +115,21 @@ document.addEventListener("DOMContentLoaded", () => {
         xhr.onload = () => {
             try {
                 const data = JSON.parse(xhr.responseText);
+
+                // Handle auth/limit errors
+                if (xhr.status === 401 || xhr.status === 422) {
+                    finishProgress(); resetUI();
+                    if (window.handleApiError) window.handleApiError({ status: xhr.status }, data);
+                    else window.location.href = "/auth/get-started";
+                    return;
+                }
+                if (xhr.status === 403) {
+                    finishProgress(); resetUI();
+                    if (window.handleApiError) window.handleApiError({ status: 403 }, data);
+                    else alert(data.error || "Access denied");
+                    return;
+                }
+
                 if (data.analysis_id) {
                     btnUpload.textContent = "Analyzing...";
                     progressBar.style.width = "30%";

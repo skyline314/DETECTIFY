@@ -65,10 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btn) {
     btn.addEventListener("click", async () => {
       const text = input.value.trim();
-      const token = localStorage.getItem("detectify_token");
 
       if (!text) return alert("Please enter text.");
-      if (!token) return (window.location.href = "/auth/get-started");
+
+      // Login guard
+      if (!window.requireLogin || !window.requireLogin()) return;
+      const token = localStorage.getItem("detectify_token");
 
       btn.disabled = true;
       btn.textContent = "Processing...";
@@ -84,6 +86,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const data = await res.json();
+
+        // Handle auth/limit errors
+        if (window.handleApiError && window.handleApiError(res, data)) {
+          resetBtn();
+          return;
+        }
         if (!res.ok) throw new Error(data.error || "Failed");
 
         if (data.analysis_id) {

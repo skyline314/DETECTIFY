@@ -11,7 +11,16 @@ payment_bp = Blueprint('payment', __name__)
 
 @payment_bp.route('/pricing')
 def pricing():
-    return render_template('pricing.html')
+    price = int(current_app.config.get('PREMIUM_PRICE', 100000))
+    limit = int(current_app.config.get('LIMIT_DAILY', 3))
+    midtrans_client_key = current_app.config.get('MIDTRANS_CLIENT_KEY', '')
+    midtrans_is_production = current_app.config.get('MIDTRANS_IS_PRODUCTION', False)
+    return render_template('pricing.html',
+        premium_price=price,
+        daily_limit=limit,
+        midtrans_client_key=midtrans_client_key,
+        midtrans_is_production=midtrans_is_production
+    )
 
 def get_midtrans_snap():
     """Helper untuk koneksi ke Midtrans Snap API"""
@@ -39,7 +48,7 @@ def create_transaction():
         return jsonify({"error": "User tidak ditemukan"}), 404
 
     # Harga Paket 
-    amount = int(current_app.config.get('PREMIUM_PRICE'))
+    amount = int(current_app.config.get('PREMIUM_PRICE') or 100000)
 
     safe_uid = str(user.user_id)[:8]
     # Format Order ID: ORDER-{UID}-{RANDOM}

@@ -37,6 +37,10 @@ def text_ui():
 def humanize_ui():
     return render_template('humanize.html')
 
+@analysis_bp.route('/history-page')
+def history_page():
+    return render_template('history.html')
+
 
 # ENDPOINT UPLOAD AUDIO 
 @analysis_bp.route('/audio', methods=['POST'])

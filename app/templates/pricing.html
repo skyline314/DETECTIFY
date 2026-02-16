@@ -130,7 +130,7 @@
             </div>
 
             <ul class="plan__list">
-              <li>Daily limit 3x per day for all features</li>
+              <li>Daily limit {{ daily_limit }}x per day for all features</li>
               <li>Text Humanizer and Detection limited to 500 words a day</li>
               <li>No workspace and business account</li>
             </ul>
@@ -142,7 +142,7 @@
               <h2 class="plan__name">Pro</h2>
 
               <div class="plan__price">
-                <div class="plan__amount">Rp 150.000,-</div>
+                <div class="plan__amount">Rp {{ "{:,.0f}".format(premium_price).replace(",", ".") }},-</div>
                 <div class="plan__per">/month</div>
               </div>
 
@@ -235,6 +235,16 @@
 
   <!-- Theme + mobile menu behavior -->
   <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+
+  <!-- Midtrans Snap.js -->
+  {% if midtrans_is_production %}
+  <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
+  {% else %}
+  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
+  {% endif %}
+
   <script src="{{ url_for('static', filename='js/billing.js') }}" defer></script>
 </body>
 
