@@ -113,16 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           localStorage.setItem("detectify_token", data.access_token);
-          setStatus("Login Berhasil! Mengalihkan...", "success", "login");
+          setStatus("Login Successful! Redirecting...", "success", "login");
           setTimeout(() => window.location.href = "/", 1000);
         } else if (res.status === 403) {
           // Unverified account
-          setStatus("Akun belum diverifikasi. Silakan cek email Anda dan klik link verifikasi.", "error", "login");
+          setStatus("Account not verified. Please check your email and click the verification link.", "error", "login");
         } else {
           setStatus(data.error || data.message || "Login Failed", "error", "login");
         }
       } catch (err) {
-        setStatus("Gagal terhubung ke server.", "error", "login");
+        setStatus("Failed to connect to server.", "error", "login");
       } finally {
         btn.disabled = false; btn.textContent = originalText;
       }

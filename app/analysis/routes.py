@@ -190,6 +190,10 @@ def humanize_text():
     try:
         result = AnalysisService.process_upload(user_id, file_obj, 'HUMANIZE')
         return jsonify(result), 202
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except PermissionError as e:
+        return jsonify({"error": str(e)}), 403
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

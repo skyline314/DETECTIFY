@@ -228,7 +228,7 @@ def forgot_password():
         data = request.get_json()
         email = data.get('email')
         if not email:
-            return jsonify({"error": "Email diperlukan"}), 400
+            return jsonify({"error": "Email is required"}), 400
 
         user = User.query.filter_by(email=email).first()
         if not user:
