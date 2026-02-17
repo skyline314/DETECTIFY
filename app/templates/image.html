@@ -74,7 +74,7 @@
   <main class="app-page">
     <section class="container app-hero" aria-label="Image detection">
       <h1 class="app-title">AI Image Detection</h1>
-      <p class="app-subtitle">Temukan apakah gambar Anda asli atau buatan AI</p>
+      <p class="app-subtitle">Find out if your image is real or AI-generated</p>
 
       <div class="upload-card">
         <div class="dropzone" id="dropzone" role="button" tabindex="0">
@@ -85,24 +85,34 @@
             <img id="imagePreview" src="" alt="Preview"
               style="display: none; max-width: 100%; max-height: 250px; border-radius: 10px; margin-bottom: 1.5rem; object-fit: contain;">
 
-            <div id="dropzoneIcon" class="dropzone__icon dropzone__icon--image">
+            <div id="dropzoneIcon" class="dropzone__icon dropzone__icon--image" aria-hidden="true">
               <img src="{{ url_for('static', filename='assets/image-upload.png') }}" class="dropzone__iconImg" />
             </div>
 
-            <div class="dropzone__title">Seret & letakkan gambar di sini</div>
+            <div class="dropzone__title">Drag &amp; drop your image here</div>
+
             <div class="dropzone__subtitle">
-              Atau <button type="button" class="dropzone__browse" id="browseBtn">cari file</button> dari komputer
+              Or <button type="button" class="dropzone__browse" id="browseBtn">browse files</button> on your computer
             </div>
+
+            <div class="meta-pills" aria-label="file constraints">
+              <span class="pill">File format: <b>jpg, png, jpeg</b></span>
+              <span class="dot" aria-hidden="true">•</span>
+              <span class="pill">Max Size: <b>10 MB</b></span>
+            </div>
+
+            <div class="dropzone__hint">Tips: use a clear, high-resolution image for better results.</div>
           </div>
         </div>
 
         <div class="upload-actions">
           <div class="file-info" id="fileInfo" hidden>
             <div class="file-info__name" id="fileName">-</div>
+            <div class="file-info__meta" id="fileMeta">-</div>
           </div>
 
           <div class="actions-row">
-            <button class="btn btn--ghost" type="button" id="btnRemove" disabled>Remove</button>
+            <button class="btn" type="button" id="btnRemove" disabled>Remove</button>
             <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
           </div>
 

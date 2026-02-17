@@ -44,10 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
     function handlePreview(file) {
         const ext = file.name.split('.').pop().toLowerCase();
         if (!['jpg', 'jpeg', 'png'].includes(ext)) return alert("Format file tidak didukung. Gunakan JPG, JPEG, atau PNG.");
+
         document.getElementById("fileName").textContent = file.name;
+
+        // Populate Meta (Size & Dimensions)
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        const metaEl = document.getElementById("fileMeta");
+        if (metaEl) metaEl.textContent = `${sizeMB} MB`;
+
         document.getElementById("fileInfo").hidden = false;
         btnUpload.disabled = false;
-        document.getElementById("btnRemove").disabled = false;
         document.getElementById("btnRemove").disabled = false;
 
         const reader = new FileReader();
@@ -55,6 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
             imagePreview.src = e.target.result;
             imagePreview.style.display = "block";
             dropzoneIcon.style.display = "none";
+
+            // Get dimensions
+            const img = new Image();
+            img.onload = () => {
+                if (metaEl) metaEl.textContent = `${sizeMB} MB • ${img.width}x${img.height}px`;
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -64,6 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         fileInput.value = "";
         document.getElementById("fileInfo").hidden = true;
+        const metaEl = document.getElementById("fileMeta");
+        if (metaEl) metaEl.textContent = "-";
         btnUpload.disabled = true;
         imagePreview.src = "";
         imagePreview.style.display = "none";
