@@ -47,7 +47,7 @@
     if (!themeIcon) return;
     // Jika tema 'dark', tampilkan ikon 'light' (Matahari) agar user bisa switch ke terang
     // Jika tema 'light', tampilkan ikon 'dark' (Bulan)
-    themeIcon.innerHTML = theme === "dark" ? ICONS.light : ICONS.dark;
+    themeIcon.innerHTML = theme === "dark" ? ICONS.dark : ICONS.light;
   }
 
   function toggleTheme() {
@@ -72,9 +72,9 @@
 
   function toggleMenu() {
     if (!menuToggle || !mobileMenu) return;
-    
+
     const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
-    
+
     if (isExpanded) {
       // Tutup Menu
       mobileMenu.hidden = true;
@@ -90,7 +90,7 @@
 
   if (menuToggle) {
     menuToggle.addEventListener("click", toggleMenu);
-    
+
     // Tutup menu saat klik di luar
     document.addEventListener("click", (e) => {
       const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
