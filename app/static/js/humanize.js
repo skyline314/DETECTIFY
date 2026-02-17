@@ -4,9 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("btn-humanize");
   const input = document.getElementById("textInput");
   const output = document.getElementById("humanizedOutput");
-  const btnPaste = document.getElementById("btn-paste");
 
-  let lang = "id";
+
+  let lang = null;
 
   // --- Language selector ---
   document.querySelectorAll(".lang-btn").forEach(b => {
@@ -24,15 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   input.addEventListener("input", updateWordCount);
 
-  // --- Paste ---
-  if (btnPaste) btnPaste.addEventListener("click", async () => {
-    try {
-      input.value = await navigator.clipboard.readText();
-      updateWordCount();
-    } catch (e) {
-      alert("Gagal paste dari clipboard.");
-    }
-  });
+
 
   // --- Copy result ---
   const btnCopy = document.getElementById("btn-copy");
@@ -66,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", async () => {
       const text = input.value.trim();
 
+      if (!lang) return alert("Please choose language first (English / Indonesia).");
       if (!text) return alert("Please enter text.");
 
       // Login guard
@@ -96,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (data.analysis_id) {
           showResultPanel("Processing...");
-          output.value = "Sedang memproses teks...";
+          output.value = "";
           poll(data.analysis_id, token);
         } else if (data.result) {
           showResultPanel("Success");

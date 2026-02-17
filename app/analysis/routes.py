@@ -121,6 +121,30 @@ def upload_image():
     except Exception as e:
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
+@analysis_bp.route('/text/extract', methods=['POST'])
+@jwt_required()
+def extract_text():
+    """Helper untuk ekstrak text dari file document (DOCX, PDF, TXT)"""
+    if 'file' not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+        
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+        
+    try:
+        # Import local utils (hindari circular import jika ada)
+        from .utils import extract_text_from_file_object
+        from io import BytesIO
+        
+        # Read file into memory to ensure it's seekable for docx/pypdf
+        file_content = BytesIO(file.read())
+        
+        text = extract_text_from_file_object(file_content, file.filename)
+        return jsonify({"text": text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ENDPOINT UPLOAD VIDEO
 @analysis_bp.route('/video', methods=['POST'])
 @jwt_required()
