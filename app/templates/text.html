@@ -97,9 +97,8 @@
             <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
               <h2 class="df-card__title">Text Detection</h2>
               <div class="df-card__actions">
-                <button class="df-pill" id="btn-paste" type="button">Paste Text</button>
-                <label class="df-pill df-pill--file" for="fileInput">Upload Doc<input id="fileInput" type="file"
-                    accept=".txt,.pdf,.docx" hidden /></label>
+                <!-- Hidden File Input -->
+                <input id="fileInput" type="file" accept=".txt,.pdf,.docx" hidden />
               </div>
             </div>
 
@@ -109,8 +108,13 @@
             </div>
           </div>
 
-          <textarea id="textInput" class="df-textarea" placeholder="Paste or type your text here..."
-            spellcheck="false"></textarea>
+          <div class="df-editor-wrapper">
+            <textarea id="textInput" class="df-textarea" spellcheck="false"></textarea>
+            <!-- Custom Placeholder / Overlay -->
+            <div class="df-editor-overlay" id="editorOverlay">
+              Paste or type your text here or <span id="triggerUpload" class="df-link-upload">upload</span>
+            </div>
+          </div>
 
           <div class="df-under">
             <div class="df-meta">
@@ -140,21 +144,15 @@
 
             <div class="df-sep"></div>
 
-            <div class="df-bars">
-              <div class="df-row">
-                <span class="df-label">AI-generated</span>
-                <div class="df-bar">
-                  <div id="barAi" class="df-bar__fill"></div>
-                </div>
-                <span id="pctAi" class="df-pct">--%</span>
+            <!-- Single Bar Result -->
+            <div class="prob-bar">
+              <div class="prob-bar__track">
+                <div class="prob-bar__fill prob-bar__fill--ai" id="barAi" style="width:0%"></div>
+                <div class="prob-bar__fill prob-bar__fill--human" id="barHuman" style="width:0%"></div>
               </div>
-
-              <div class="df-row">
-                <span class="df-label">Human-written</span>
-                <div class="df-bar">
-                  <div id="barHuman" class="df-bar__fill"></div>
-                </div>
-                <span id="pctHuman" class="df-pct">--%</span>
+              <div class="prob-bar__labels">
+                <span class="prob-bar__label--ai">AI: <strong id="pctAi">--%</strong></span>
+                <span class="prob-bar__label--human">Human: <strong id="pctHuman">--%</strong></span>
               </div>
             </div>
 

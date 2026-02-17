@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnDetect = document.getElementById("btn-detect");
   const btnPaste = document.getElementById("btn-paste");
 
+  // Overlay elements
+  const editorOverlay = document.getElementById("editorOverlay");
+  const triggerUpload = document.getElementById("triggerUpload");
+
   let selectedLang = null;
 
   // --- LANGUAGE SELECTOR ---
@@ -23,55 +27,99 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- PASTE (must choose lang first) ---
-  if (btnPaste) btnPaste.addEventListener("click", async () => {
-    if (!selectedLang) return alert("Pilih bahasa terlebih dahulu sebelum paste text.");
-    try {
-      textInput.value = await navigator.clipboard.readText();
-      updateWordCount();
-    } catch (e) {
-      alert("Gagal paste dari clipboard.");
-    }
-  });
 
-  // --- FILE UPLOAD (must choose lang first) ---
-  if (fileInput) fileInput.addEventListener("change", (e) => {
-    if (!selectedLang) {
-      alert("Pilih bahasa terlebih dahulu sebelum upload file.");
+
+  // --- OVERLAY LOGIC ---
+  function toggleOverlay() {
+    if (!textInput || !editorOverlay) return;
+    if (textInput.value.length > 0) {
+      editorOverlay.style.opacity = "0";
+      editorOverlay.style.pointerEvents = "none";
+    } else {
+      editorOverlay.style.opacity = "1";
+      editorOverlay.style.pointerEvents = "auto";
+    }
+  }
+
+  // Hide overlay on focus, show on blur if empty
+  if (textInput) {
+    textInput.addEventListener("focus", () => {
+      if (editorOverlay) editorOverlay.style.opacity = "0";
+    });
+    textInput.addEventListener("blur", toggleOverlay);
+    textInput.addEventListener("input", () => {
+      toggleOverlay();
+      updateWordCount();
+    });
+  }
+
+  // Click "upload" link -> trigger file input
+  if (triggerUpload && fileInput) {
+    triggerUpload.addEventListener("click", (e) => {
+      e.stopPropagation(); // prevent textarea focus
+      fileInput.click();
+    });
+  }
+
+  // --- FILE EXTRACTION (POST /text/extract) ---
+  if (fileInput) fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validasi ekstensi client-side simpel
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['txt', 'pdf', 'docx'].includes(ext)) {
+      alert("File format not supported. Use TXT, PDF, or DOCX.");
       fileInput.value = "";
       return;
     }
-    const file = e.target.files[0];
-    if (file) {
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (!['txt', 'pdf', 'docx'].includes(ext)) {
-        alert("Format file tidak didukung. Gunakan TXT, PDF, atau DOCX.");
-        fileInput.value = "";
-        return;
-      }
-      if (ext === 'txt') {
-        const reader = new FileReader();
-        reader.onload = (ev) => { textInput.value = ev.target.result; updateWordCount(); };
-        reader.readAsText(file);
-      } else {
-        textInput.value = `[File uploaded: ${file.name}]`;
-      }
+
+    // Show loading in textarea
+    textInput.value = "Extracting text doing...";
+    textInput.disabled = true;
+    if (editorOverlay) editorOverlay.style.opacity = "0"; // Hide overlay
+
+    try {
+      const token = localStorage.getItem("detectify_token");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/text/extract", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` }, // Optional if protected
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to extract text");
+
+      // Paste result
+      textInput.value = data.text || "";
+      updateWordCount();
+
+    } catch (err) {
+      textInput.value = ""; // Clear on error
+      alert("Error: " + err.message);
+      toggleOverlay();
+    } finally {
+      textInput.disabled = false;
+      fileInput.value = ""; // Reset input so same file can be selected again
+      textInput.focus();
     }
   });
-
   // --- WORD COUNT ---
   function updateWordCount() {
     const words = textInput.value.trim().split(/\s+/).filter(Boolean).length;
     document.getElementById("wordCount").textContent = words;
   }
-  if (textInput) textInput.addEventListener("input", updateWordCount);
+
 
   // --- ANALYZE ---
   const handleAnalyze = async () => {
     const text = textInput.value.trim();
 
-    if (!selectedLang) return alert("Pilih bahasa terlebih dahulu (English / Indonesia).");
-    if (!text && (!fileInput.files || fileInput.files.length === 0)) return alert("Input text atau upload file.");
+    if (!selectedLang) return alert("Please choose language first (English / Indonesia).");
+    if (!text) return alert("Please input text or upload a file."); // Simplified check as file content is extracted to textInput
 
     // Login guard
     if (!window.requireLogin || !window.requireLogin()) return;
@@ -83,12 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData();
       formData.append("language", selectedLang);
 
-      if (fileInput.files.length > 0 && text === "") {
-        formData.append("file", fileInput.files[0]);
-      } else {
-        const blob = new Blob([text], { type: "text/plain" });
-        formData.append("file", blob, "manual_input.txt");
-      }
+      // Always send text as blob (because we extracted file content to textInput)
+      const blob = new Blob([text], { type: "text/plain" });
+      formData.append("file", blob, "manual_input.txt");
 
       const res = await fetch(API_TEXT, {
         method: "POST",
@@ -130,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
           setLoading(false);
         } else if (data.status === "FAILED") {
           clearInterval(interval);
-          alert("Analisis gagal.");
+          alert("Analysis failed.");
           setLoading(false);
         }
       } catch (err) {
