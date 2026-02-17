@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
           setStatus(data.error || data.message || "Registration Failed", "error", "signup");
         }
       } catch (err) {
-        setStatus("Gagal terhubung ke server.", "error", "signup");
+        setStatus("Failed to connect to server.", "error", "signup");
       } finally {
         btn.disabled = false; btn.textContent = originalText;
       }
@@ -248,5 +248,51 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.textContent = originalText;
       }
     });
+  }
+
+  // --- 8. VERIFICATION MODAL (REQUIRED FOR REGISTRATION) ---
+  // DO NOT DELETE THIS FUNCTION - IT IS USED BY SIGNUP HANDLER
+  function showVerificationModal(email) {
+    // Inject Styles if needed
+    if (!document.getElementById("authModalStyle")) {
+      const css = `
+        .auth-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); animation: fadeIn 0.3s; }
+        .auth-modal { background: #1e1e2d; padding: 2.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); text-align: center; max-width: 420px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideUp 0.3s; position: relative; }
+        .auth-modal__icon { font-size: 4rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.05); width: 80px; height: 80px; line-height: 80px; border-radius: 50%; margin: 0 auto 1.5rem auto; }
+        .auth-modal__title { font-size: 1.5rem; color: #fff; margin-bottom: 0.75rem; font-weight: 700; }
+        .auth-modal__text { color: #ccc; margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem; }
+        .auth-modal__subtext { font-size: 0.85rem; color: #888; margin-bottom: 2rem; }
+        .auth-modal__btn { background: #6366f1; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; }
+        .auth-modal__btn:hover { background: #4f46e5; transform: translateY(-1px); }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+        `;
+      const style = document.createElement("style");
+      style.id = "authModalStyle";
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+
+    const overlay = document.createElement("div");
+    overlay.className = "auth-overlay";
+    overlay.innerHTML = `
+      <div class="auth-modal">
+        <div class="auth-modal__icon">✉️</div>
+        <h3 class="auth-modal__title">Verify Your Email</h3>
+        <p class="auth-modal__text">
+          We've sent a verification link to <br><strong style="color:#6366f1">${email}</strong>
+        </p>
+        <p class="auth-modal__subtext">
+          Please check your inbox (and spam folder) to activate your account.
+        </p>
+        <button class="auth-modal__btn" id="closeModalBtn">OK, I Check it</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById("closeModalBtn").onclick = () => {
+      overlay.remove();
+      setMode('login');
+    };
   }
 });

@@ -69,10 +69,10 @@ def send_email(to, subject, body):
         }
 
         resend.Emails.send(msg)
-        print(f" [EMAIL] Berhasil dikirim via API ke {to}", flush=True)
+        print(f" [EMAIL] Success sent via API to {to}", flush=True)
         return True
     except Exception as e:
-        print(f" [EMAIL] GAGAL mengirim via API ke {to}: {str(e)}", flush=True)
+        print(f" [EMAIL] Failed to send via API to {to}: {str(e)}", flush=True)
         return False
 
 
@@ -91,16 +91,32 @@ def register_user():
         if not username or not email or not password:
             return jsonify({"error": "Username, Email, and Password are required"}), 400
         
-        if User.query.filter_by(email=email).first():
-            return jsonify({"error": "Email already exists"}), 409
+        existing_email_user = User.query.filter_by(email=email).first()
+        new_user = None
+
+        if existing_email_user:
+            if existing_email_user.is_verified:
+                return jsonify({"error": "Email already exists"}), 409
+            else:
+                # User exists but NOT verified. Allow overwrite.
+                # Check if username is taken by another separate user
+                if User.query.filter(User.username == username, User.user_id != existing_email_user.user_id).first():
+                    return jsonify({"error": "Username already exists, please choose another"}), 409
+                
+                # Overwrite existing unverified user
+                new_user = existing_email_user
+                new_user.username = username
+                new_user.set_password(password)
+                new_user.updated_at = datetime.now(timezone.utc)
+        else:
+            # New User
+            if User.query.filter_by(username=username).first():
+                return jsonify({"error": "Username already exists, please choose another"}), 409
         
-        if User.query.filter_by(username=username).first():
-            return jsonify({"error": "Username already exists, please choose another"}), 409
-    
-        # 2. Simpan User Baru (Default is_verified=False)
-        new_user = User(username=username, email=email)
-        new_user.set_password(password)
-        db.session.add(new_user)
+            new_user = User(username=username, email=email)
+            new_user.set_password(password)
+            db.session.add(new_user)
+        
         db.session.commit()
 
         # 3. Proses Token & Email 
@@ -187,7 +203,7 @@ def login_user():
 
         # Cek User Ada & Password Cocok
         if not user or not user.check_password(password):
-            return jsonify({"error": "wrong email or password, please check again"}), 401 
+            return jsonify({"error": "Wrong Email or Password, please check again"}), 401 
         
         if not user.is_verified:
             return jsonify({
