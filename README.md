@@ -2,7 +2,7 @@
 
 DetectiFy is a sophisticated web application designed to identify AI-generated content across various formats. Whether it's text, images, video, or audio, DetectiFy uses advanced machine learning models to provide transparent and reliable analysis. Additionally, it offers a "Text Humanizer" to refine AI-generated text for a more natural, human-like flow.
 
-## 🚀 Features
+##  Features
 
 - **Multi-Modal Detection**:
   - **Text Detection**: Specialized models for English and Indonesian text classification.
@@ -19,7 +19,7 @@ DetectiFy is a sophisticated web application designed to identify AI-generated c
   - Profile customization (Change Username).
 - **Localized UI**: Support for English and Indonesian languages.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Flask (Python)
 - **Asynchronous Tasks**: Celery with Redis
@@ -28,7 +28,7 @@ DetectiFy is a sophisticated web application designed to identify AI-generated c
 - **Machine Learning**: PyTorch, XGBoost, Scikit-learn, Timm, Librosa.
 - **Mailing**: Resend API.
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - Python 3.9+
@@ -70,7 +70,7 @@ DetectiFy is a sophisticated web application designed to identify AI-generated c
    ```
    Access the app at `http://127.0.0.1:5000`.
 
-## 📖 How to Use
+## How to Use
 
 1. **Register**: Create an account and verify your email.
 2. **Select a Model**: Use the navigation menu to choose between Text, Image, Video, or Audio detection.
@@ -79,4 +79,4 @@ DetectiFy is a sophisticated web application designed to identify AI-generated c
 5. **Humanize**: Use the Humanizer tool to refine your AI-generated text.
 
 ---
-Developed by **[skyline314](https://github.com/skyline314)**. 🚀
+Developed by **[skyline314](https://github.com/skyline314)**.
