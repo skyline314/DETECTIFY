@@ -74,13 +74,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- 3. DOM ELEMENTS FORM ---
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
-  const authStatus = document.getElementById("authStatus");
+  const loginStatus = document.getElementById("loginStatus");
+  const signupStatus = document.getElementById("signupStatus");
 
-  function setStatus(msg, type) {
-    if (!authStatus) return;
-    authStatus.textContent = msg;
-    authStatus.className = `auth__status ${type}`;
-    authStatus.style.display = "block";
+  function setStatus(msg, type, context = "login") {
+    const el = context === "signup" ? signupStatus : loginStatus;
+    const other = context === "signup" ? loginStatus : signupStatus;
+
+    if (el) {
+      el.textContent = msg;
+      el.className = `auth__status ${type}`;
+      el.style.display = msg ? "block" : "none";
+    }
+    if (other) {
+      other.style.display = "none";
+      other.textContent = "";
+    }
   }
 
   // --- 4. HANDLER LOGIN ---
@@ -90,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const btn = loginForm.querySelector("button[type='submit']");
       const originalText = btn.textContent;
       btn.disabled = true; btn.textContent = "Processing...";
-      setStatus("", "");
+      setStatus("", "", "login");
 
       try {
         const res = await fetch(URLS.apiLogin, {
@@ -104,16 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           localStorage.setItem("detectify_token", data.access_token);
-          setStatus("Login Berhasil! Mengalihkan...", "success");
+          setStatus("Login Berhasil! Mengalihkan...", "success", "login");
           setTimeout(() => window.location.href = "/", 1000);
         } else if (res.status === 403) {
           // Unverified account
-          setStatus("Akun belum diverifikasi. Silakan cek email Anda dan klik link verifikasi.", "error");
+          setStatus("Akun belum diverifikasi. Silakan cek email Anda dan klik link verifikasi.", "error", "login");
         } else {
-          setStatus(data.error || "Login Gagal", "error");
+          setStatus(data.error || data.message || "Login Failed", "error", "login");
         }
       } catch (err) {
-        setStatus("Gagal terhubung ke server.", "error");
+        setStatus("Gagal terhubung ke server.", "error", "login");
       } finally {
         btn.disabled = false; btn.textContent = originalText;
       }
@@ -127,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const btn = signupForm.querySelector("button[type='submit']");
       const originalText = btn.textContent;
       btn.disabled = true; btn.textContent = "Processing...";
-      setStatus("", "");
+      setStatus("", "", "signup");
 
       try {
         const res = await fetch(URLS.apiRegister, {
@@ -141,16 +150,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await res.json();
 
         if (res.ok) {
-          setStatus("✅ Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.", "success");
-          setTimeout(() => {
-            setMode('login');
-            setStatus("Cek email Anda untuk link verifikasi, lalu login di sini.", "success");
-          }, 4000);
+          // Show Modal "Like Reset Password"
+          const emailVal = document.getElementById("signupEmail").value;
+          showVerificationModal(emailVal);
+
+          // Switch to login background
+          setMode('login');
         } else {
-          setStatus(data.error || "Registrasi Gagal", "error");
+          setStatus(data.error || data.message || "Registration Failed", "error", "signup");
         }
       } catch (err) {
-        setStatus("Gagal terhubung ke server.", "error");
+        setStatus("Gagal terhubung ke server.", "error", "signup");
       } finally {
         btn.disabled = false; btn.textContent = originalText;
       }

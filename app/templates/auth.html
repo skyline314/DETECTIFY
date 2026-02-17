@@ -110,7 +110,7 @@
       <section class="auth__shell auth-slider" id="authSlider" aria-label="Authentication">
 
         <!-- STATUS -->
-        <p class="auth__status" id="authStatus" aria-live="polite"></p>
+
 
         <!-- LOGIN -->
         <div class="auth__card auth__panel auth__panel--login">
@@ -128,6 +128,9 @@
               <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
                 required />
             </div>
+
+            <!-- STATUS LOGIN -->
+            <div id="loginStatus" class="auth__status"></div>
 
             <button class="btn btn--primary btn--block" type="submit">Login</button>
 
@@ -182,6 +185,9 @@
               <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password"
                 required />
             </div>
+
+            <!-- STATUS SIGNUP -->
+            <div id="signupStatus" class="auth__status"></div>
 
             <button class="btn btn--primary btn--block" type="submit">Create Account</button>
           </form>

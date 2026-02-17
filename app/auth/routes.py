@@ -81,7 +81,7 @@ def register_user():
     try:
         data = request.get_json()
         if not data or not data.get('email') or not data.get('password'):
-            return jsonify({"error": "Email dan password diperlukan"}), 400
+            return jsonify({"error": "Email and password are required"}), 400
 
         username = data.get('username')
         email = data.get('email')
@@ -89,13 +89,13 @@ def register_user():
 
         # 1. Cek apakah email sudah terdaftar dan semua sudah di isi
         if not username or not email or not password:
-            return jsonify({"error": "Username, Email, dan Password wajib diisi!"}), 400
+            return jsonify({"error": "Username, Email, and Password are required"}), 400
         
         if User.query.filter_by(email=email).first():
-            return jsonify({"error": "Email ini sudah terdaftar"}), 409
+            return jsonify({"error": "Email already exists"}), 409
         
         if User.query.filter_by(username=username).first():
-            return jsonify({"error": "Username ini sudah digunakan, pilih yang lain"}), 409
+            return jsonify({"error": "Username already exists, please choose another"}), 409
     
         # 2. Simpan User Baru (Default is_verified=False)
         new_user = User(username=username, email=email)
@@ -114,33 +114,33 @@ def register_user():
             # Kirim Email
             html_body = f"""
             <div style="max-width:480px;margin:0 auto;font-family:Arial,sans-serif;padding:20px">
-                <h2 style="color:#0ea5c7">Verifikasi Email Detectify</h2>
-                <p>Halo <strong>{new_user.username}</strong>,</p>
-                <p>Terima kasih telah mendaftar di Detectify. Klik tombol di bawah untuk memverifikasi akun Anda:</p>
+                <h2 style="color:#0ea5c7">Verify Email Detectify</h2>
+                <p>Hello <strong>{new_user.username}</strong>,</p>
+                <p>Thank you for registering with Detectify. Click the button below to verify your account:</p>
                 <div style="text-align:center;margin:24px 0">
                     <a href="{verify_url}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0ea5c7,#7c3aed);color:#fff;text-decoration:none;border-radius:999px;font-weight:bold;font-size:15px">
-                        Verifikasi Akun Saya
+                        Verify My Account
                     </a>
                 </div>
-                <p style="font-size:13px;color:#9ca3af">Link ini berlaku selama 24 jam.</p>
-                <p style="font-size:12px;color:#9ca3af">— Tim Detectify</p>
+                <p style="font-size:13px;color:#9ca3af">This link is valid for 24 hours.</p>
+                <p style="font-size:12px;color:#9ca3af">— Detectify Team</p>
             </div>
             """
-            send_email(new_user.email, "Verifikasi Email Detectify", html_body)
+            send_email(new_user.email, "Verify Email Detectify", html_body)
             
         except Exception as e:
             # Jika email gagal, jangan batalkan registrasi, tapi log errornya
             print(f"Error saat proses email/token: {e}")
 
         return jsonify({
-            "message": "Registrasi berhasil. Silakan cek email untuk verifikasi.",
+            "message": "Registration successful. Please check your email for verification.",
             "user_id": new_user.user_id
         }), 201
 
     except Exception as e:
         db.session.rollback()
         print(f"Critical Error Register: {e}")
-        return jsonify({"error": "Terjadi kesalahan internal"}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @auth_bp.route('/verify/<token>', methods=['GET'])
@@ -152,24 +152,24 @@ def verify_email(token):
     try:
         email = confirm_token(token)
         if not email:
-            return redirect('/auth/get-started?verified=error&msg=Token+tidak+valid+atau+sudah+kadaluarsa')
+            return redirect('/auth/get-started?verified=error&msg=Token+is+invalid+or+expired')
         
         user = User.query.filter_by(email=email).first()
         if not user:
-            return redirect('/auth/get-started?verified=error&msg=User+tidak+ditemukan')
+            return redirect('/auth/get-started?verified=error&msg=User+not+found')
         
         if user.is_verified:
-            return redirect('/auth/get-started?verified=already&msg=Akun+sudah+terverifikasi+sebelumnya')
+            return redirect('/auth/get-started?verified=already&msg=Account+already+verified')
 
         # Update Status Verifikasi
         user.is_verified = True
         user.updated_at = db.func.now()
         db.session.commit()
         
-        return redirect('/auth/get-started?verified=success&msg=Email+berhasil+diverifikasi!+Silakan+login.')
+        return redirect('/auth/get-started?verified=success&msg=Email+has+been+verified!+Please+login.')
 
     except Exception as e:
-        return redirect('/auth/get-started?verified=error&msg=Terjadi+kesalahan+saat+verifikasi')
+        return redirect('/auth/get-started?verified=error&msg=Error+occurred+during+verification')
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -178,7 +178,7 @@ def login_user():
         data = request.get_json(silent=True)
         
         if not data or not data.get('email') or not data.get('password'):
-            return jsonify({"error": "Email dan password diperlukan"}), 400
+            return jsonify({"error": "Email and password are required"}), 400
 
         email = data.get('email')
         password = data.get('password')
@@ -187,12 +187,12 @@ def login_user():
 
         # Cek User Ada & Password Cocok
         if not user or not user.check_password(password):
-            return jsonify({"error": "Email atau password salah"}), 401 
+            return jsonify({"error": "wrong email or password, please check again"}), 401 
         
         if not user.is_verified:
             return jsonify({
-                "error": "Akun belum diverifikasi", 
-                "message": "Silakan cek email Anda untuk memverifikasi akun sebelum login."
+                "error": "Account not verified", 
+                "message": "Please verify your account before logging in."
             }), 403
 
         access_token = create_access_token(identity=user.user_id)
@@ -200,7 +200,7 @@ def login_user():
 
     except Exception as e:
         print(f"ERROR LOGIN: {e}") 
-        return jsonify({"error": "Terjadi kesalahan internal"}), 500
+        return jsonify({"error": "Internal server error"}), 500
     
 
 @auth_bp.route('/forgot-password', methods=['POST'])
@@ -216,7 +216,7 @@ def forgot_password():
 
         user = User.query.filter_by(email=email).first()
         if not user:
-            return jsonify({"message": "Jika email terdaftar, link reset akan dikirim."}), 200
+            return jsonify({"message": "If email is registered, reset link will be sent."}), 200
 
         # 1. Generate Token
         reset_token = secrets.token_hex(32)
@@ -236,25 +236,25 @@ def forgot_password():
             body=f"""
             <div style="max-width:480px;margin:0 auto;font-family:Arial,sans-serif;padding:20px">
                 <h2 style="color:#0ea5c7">Reset Password Detectify</h2>
-                <p>Anda menerima email ini karena ada permintaan reset password untuk akun Anda.</p>
-                <p>Klik tombol di bawah untuk membuat password baru:</p>
+                <p>You received this email because a password reset request was made for your account.</p>
+                <p>Click the button below to create a new password:</p>
                 <div style="text-align:center;margin:24px 0">
                     <a href="{reset_url}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0ea5c7,#7c3aed);color:#fff;text-decoration:none;border-radius:999px;font-weight:bold;font-size:15px">
                         Reset Password
                     </a>
                 </div>
-                <p style="font-size:13px;color:#9ca3af">Link ini berlaku selama <strong>1 jam</strong>.</p>
-                <p style="font-size:13px;color:#9ca3af">Jika Anda tidak meminta reset password, abaikan email ini.</p>
-                <p style="font-size:12px;color:#9ca3af">— Tim Detectify</p>
+                <p style="font-size:13px;color:#9ca3af">This link is valid for <strong>1 hour</strong>.</p>
+                <p style="font-size:13px;color:#9ca3af">If you did not request a password reset, ignore this email.</p>
+                <p style="font-size:12px;color:#9ca3af">— Detectify Team</p>
             </div>
             """
         )
 
-        return jsonify({"message": "Jika email terdaftar, link reset akan dikirim."}), 200
+        return jsonify({"message": "If email is registered, reset link will be sent."}), 200
 
     except Exception as e:
         print(f"Error Forgot Password: {e}")
-        return jsonify({"error": "Terjadi kesalahan internal"}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @auth_bp.route('/reset-password-page/<token>', methods=['GET'])
@@ -265,13 +265,13 @@ def reset_password_page(token):
     # Validate token exists
     user = User.query.filter_by(reset_token=token).first()
     if not user:
-        return redirect('/auth/get-started?verified=error&msg=Token+reset+tidak+valid')
+        return redirect('/auth/get-started?verified=error&msg=Token+reset+is+invalid')
     
     # Check expiration (handle naive vs aware datetime)
     now = datetime.utcnow()
     expiry = user.reset_token_expiration.replace(tzinfo=None) if user.reset_token_expiration.tzinfo else user.reset_token_expiration
     if expiry < now:
-        return redirect('/auth/get-started?verified=error&msg=Token+sudah+kadaluarsa')
+        return redirect('/auth/get-started?verified=error&msg=Token+is+expired')
     
     return render_template('reset_password.html', token=token)
 
@@ -287,19 +287,19 @@ def reset_password():
         new_password = data.get('new_password')
 
         if not token or not new_password:
-            return jsonify({"error": "Token dan password baru diperlukan"}), 400
+            return jsonify({"error": "Token and new password are required"}), 400
 
         # 1. Cari User berdasarkan Token
         user = User.query.filter_by(reset_token=token).first()
 
         if not user:
-            return jsonify({"error": "Token tidak valid atau salah"}), 400
+            return jsonify({"error": "Token is invalid or expired"}), 400
 
         # 2. Cek Kadaluarsa (handle naive vs aware datetime)
         now = datetime.utcnow()
         expiry = user.reset_token_expiration.replace(tzinfo=None) if user.reset_token_expiration.tzinfo else user.reset_token_expiration
         if expiry < now:
-            return jsonify({"error": "Token sudah kadaluarsa. Silakan request ulang."}), 400
+            return jsonify({"error": "Token is expired. Please request again."}), 400
 
         # 3. Update Password
         user.set_password(new_password)
@@ -310,9 +310,9 @@ def reset_password():
         
         db.session.commit()
 
-        return jsonify({"message": "Password berhasil diubah. Silakan login."}), 200
+        return jsonify({"message": "Password has been changed. Please login."}), 200
 
     except Exception as e:
         db.session.rollback()
         print(f"Error Reset Password: {e}")
-        return jsonify({"error": "Terjadi kesalahan internal"}), 500
+        return jsonify({"error": "Internal server error"}), 500
