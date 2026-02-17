@@ -329,6 +329,12 @@
         .getElementById("mobileLogoutBtn")
         ?.addEventListener("click", () => doLogout());
     }
+
+    // --- Home Page: hide "Try it for Free" pill ---
+    const heroPill = document.querySelector('.hero__pill');
+    if (heroPill) {
+      heroPill.remove();
+    }
   }
 
   // run after DOM ready

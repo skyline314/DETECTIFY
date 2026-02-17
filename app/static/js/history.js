@@ -211,9 +211,12 @@
             const colors = ai > 50
                 ? { stop1: red, stop2: "#dc2626" }
                 : { stop1: green, stop2: "#15803d" };
-            const stops = elShield.querySelectorAll("stop");
+
+            // Fix: gradient stops are in <defs>, not inside the path
+            const stops = document.querySelectorAll("#historyShieldGrad stop");
             if (stops[0]) stops[0].setAttribute("stop-color", colors.stop1);
             if (stops[1]) stops[1].setAttribute("stop-color", colors.stop2);
+
             // Dynamic glow color
             elShield.style.filter = ai > 50
                 ? "drop-shadow(0 8px 14px rgba(239, 68, 68, .25))"
