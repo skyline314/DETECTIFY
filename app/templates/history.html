@@ -99,6 +99,21 @@
                         <input type="text" id="historySearch" placeholder="Search history..." />
                     </div>
 
+                    <div class="history-sort" style="display:flex; gap:8px;">
+                        <select id="historySortDate" class="df-select">
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                        </select>
+                        <select id="historyFilterType" class="df-select">
+                            <option value="all">All Types</option>
+                            <option value="text">Text Detection</option>
+                            <option value="image">Image Detection</option>
+                            <option value="video">Video Detection</option>
+                            <option value="audio">Audio Detection</option>
+                            <option value="humanize">Humanizer</option>
+                        </select>
+                    </div>
+
                     <div class="history-filelist" id="historyFileList">
                         <div class="history-empty">Loading...</div>
                     </div>
@@ -141,19 +156,22 @@
                                 stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
 
-                        <div class="history-probs">
-                            <div class="history-prob">
-                                <div class="history-prob__num green" id="historyHumanProb">—</div>
-                                <div class="history-prob__label">Human Probability</div>
+                        <div id="historyStats">
+                            <div class="history-probs">
+                                <div class="history-prob">
+                                    <div class="history-prob__num green" id="historyHumanProb">—</div>
+                                    <div class="history-prob__label">Human Probability</div>
+                                </div>
+                                <div class="history-sep"></div>
+                                <div class="history-prob">
+                                    <div class="history-prob__num red" id="historyAiProb">—</div>
+                                    <div class="history-prob__label">AI Probability</div>
+                                </div>
                             </div>
-                            <div class="history-prob">
-                                <div class="history-prob__num red" id="historyAiProb">—</div>
-                                <div class="history-prob__label">AI Probability</div>
-                            </div>
-                        </div>
 
-                        <div class="history-bar">
-                            <div class="history-bar__fill" id="historyBarFill"></div>
+                            <div class="history-bar">
+                                <div class="history-bar__fill" id="historyBarFill"></div>
+                            </div>
                         </div>
 
                         <div style="margin-top:10px;font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px"

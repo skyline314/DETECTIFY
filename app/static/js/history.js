@@ -20,6 +20,9 @@
     const elShieldCheck = document.getElementById("historyShieldCheck");
     const elType = document.getElementById("historyType");
     const elDetails = document.getElementById("historyDetails");
+    const elStats = document.getElementById("historyStats");
+    const sortDateSelect = document.getElementById("historySortDate");
+    const filterTypeSelect = document.getElementById("historyFilterType");
 
     let historyItems = [];
     let activeId = null;
@@ -188,6 +191,11 @@
         // populate
         const { human, ai } = parseResult(item);
 
+        const isHumanize = (item.analysis_type || "").toUpperCase() === "HUMANIZE";
+
+        // Hide stats container if Humanize
+        if (elStats) elStats.hidden = isHumanize;
+
         if (elFilename) elFilename.textContent = item.file_name || "Untitled";
         if (elType) elType.textContent = (item.analysis_type || "").replace("_", " ");
 
@@ -236,19 +244,49 @@
         }
     }
 
-    // ---- search filter ----
-    if (searchInput) {
-        searchInput.addEventListener("input", () => {
-            const q = searchInput.value.toLowerCase().trim();
-            const filtered = q
-                ? historyItems.filter((i) =>
-                    (i.file_name || "").toLowerCase().includes(q) ||
-                    (i.analysis_type || "").toLowerCase().includes(q)
-                )
-                : historyItems;
-            renderFileList(filtered);
+    // ---- sort & filter logic ----
+    function applyFilterAndSort() {
+        const q = searchInput ? searchInput.value.toLowerCase().trim() : "";
+        const sortDateMode = sortDateSelect ? sortDateSelect.value : "newest";
+        const filterType = filterTypeSelect ? filterTypeSelect.value : "all";
+
+        // 1. Filter (Search + Type)
+        let result = historyItems;
+
+        // Search filter
+        if (q) {
+            result = result.filter((i) =>
+                (i.file_name || "").toLowerCase().includes(q) ||
+                (i.analysis_type || "").toLowerCase().includes(q)
+            );
+        }
+
+        // Type filter
+        if (filterType !== "all") {
+            // Backend types: TEXT, IMAGE, VIDEO, AUDIO, HUMANIZE
+            // Our select values: text, image, video, audio, humanize
+            result = result.filter((i) =>
+                (i.analysis_type || "").toLowerCase() === filterType
+            );
+        }
+
+        // 2. Sort (Date)
+        result.sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+
+            if (sortDateMode === "newest") return dateB - dateA;
+            if (sortDateMode === "oldest") return dateA - dateB;
+            return 0;
         });
+
+        renderFileList(result);
     }
+
+    // Event listeners
+    if (searchInput) searchInput.addEventListener("input", applyFilterAndSort);
+    if (sortDateSelect) sortDateSelect.addEventListener("change", applyFilterAndSort);
+    if (filterTypeSelect) filterTypeSelect.addEventListener("change", applyFilterAndSort);
 
     // ---- fetch history ----
     async function loadHistory() {

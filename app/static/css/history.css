@@ -92,6 +92,25 @@ html[data-theme="dark"] .history-sidebar {
     opacity: .65;
 }
 
+/* Sort */
+.history-sort {
+    margin-bottom: 12px;
+}
+
+.history-sort select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--ink);
+    /* use ink for text */
+    border: 1px solid var(--line, rgba(0, 0, 0, 0.1));
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
 /* File list */
 .history-filelist {
     flex: 1;
