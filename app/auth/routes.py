@@ -332,3 +332,45 @@ def reset_password():
         db.session.rollback()
         print(f"Error Reset Password: {e}")
         return jsonify({"error": "Internal server error"}), 500
+
+
+@auth_bp.route('/change-username', methods=['POST'])
+@jwt_required()
+def change_username():
+    """
+    User mengirim username baru, server mengganti username jika tidak duplikat.
+    """
+    try:
+        data = request.get_json()
+        new_username = data.get('new_username')
+
+        if not new_username:
+            return jsonify({"error": "New username is required"}), 400
+        
+        # 1. Cari User saat ini
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # 2. Cek apakah username baru sama dengan yang lama
+        if user.username == new_username:
+            return jsonify({"message": "Username is the same"}), 200
+
+        # 3. Cek apakah username baru sudah dipakai orang lain
+        existing_user = User.query.filter_by(username=new_username).first()
+        if existing_user:
+            return jsonify({"error": "Username already exists, please choose another"}), 409
+
+        # 4. Update Username
+        user.username = new_username
+        user.updated_at = datetime.now(timezone.utc)
+        
+        db.session.commit()
+
+        return jsonify({"message": "Username has been changed.", "new_username": new_username}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error Change Username: {e}")
+        return jsonify({"error": "Internal server error"}), 500

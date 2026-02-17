@@ -117,6 +117,14 @@
         <span>Pricing</span>
       </button>
 
+      <button class="profile-popup__item" data-action="change-username" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Change Username</span>
+      </button>
+
       <button class="profile-popup__item" data-action="reset-password" type="button">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
           <rect x="5" y="11" width="14" height="10" rx="3" stroke="currentColor" stroke-width="2"/>
@@ -145,11 +153,128 @@
       const action = item.dataset.action;
       if (action === "history") window.location.href = "/history-page";
       if (action === "pricing") window.location.href = PRICING_URL;
+      if (action === "change-username") showChangeUsernameModal(user.username);
       if (action === "reset-password") showResetPasswordModal(user.email);
       if (action === "logout") doLogout();
     });
 
     return popup;
+  }
+
+  // ---- Change Username Modal ----
+  function showChangeUsernameModal(currentUsername) {
+    document.querySelector(".reset-pw-overlay")?.remove(); // Reuse class for styling if similar
+
+    const overlay = document.createElement("div");
+    overlay.className = "reset-pw-overlay";
+    Object.assign(overlay.style, {
+      position: "fixed", inset: "0", zIndex: "9999",
+      background: "rgba(0,0,0,.55)", backdropFilter: "blur(6px)",
+      display: "flex", alignItems: "center", justifyContent: "center"
+    });
+
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const modalBg = isDark ? "linear-gradient(150deg, #111827, #0f172a)" : "#fff";
+    const modalBorder = isDark ? "1px solid rgba(255,255,255,.1)" : "1px solid rgba(0,0,0,.08)";
+    const textColor = isDark ? "#eaf2ff" : "#1e293b";
+    const inputBg = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)";
+    const inputBorder = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)";
+
+    overlay.innerHTML = `
+      <div style="width:min(420px,90%);border-radius:20px;padding:32px 28px;text-align:center;
+                  background:${modalBg};border:${modalBorder};color:${textColor};
+                  box-shadow:0 20px 60px rgba(0,0,0,.3)">
+        <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;
+                    background:linear-gradient(135deg,#0ea5c7,#7c3aed)">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <h3 style="font-size:20px;font-weight:700;margin:0 0 8px">Change Username</h3>
+        <p style="font-size:14px;line-height:1.6;margin:0 0 16px;opacity:.75">
+          Enter your new username.
+        </p>
+        
+        <input type="text" id="newUsernameInput" placeholder="New Username" 
+               value="${currentUsername}"
+               style="width:100%;padding:12px 16px;border-radius:12px;margin-bottom:12px;
+                      background:${inputBg};border:1px solid ${inputBorder};color:${textColor};
+                      font-size:14px;outline:none">
+
+        <div id="usernameMsg" style="display:none;margin-bottom:12px;padding:10px;border-radius:10px;font-size:13px"></div>
+        
+        <button id="saveUsernameBtn" type="button"
+          style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 28px;
+                 border-radius:999px;font-size:14px;font-weight:700;border:none;cursor:pointer;
+                 background:linear-gradient(135deg,#0ea5c7,#7c3aed);color:#fff;
+                 box-shadow:0 8px 24px rgba(14,165,199,.25)">
+          Save Changes
+        </button>
+        <button id="cancelUsernameBtn" type="button"
+          style="display:inline-block;margin-top:12px;padding:10px 24px;border-radius:999px;
+                 font-size:14px;font-weight:500;border:none;cursor:pointer;
+                 background:transparent;color:${textColor};opacity:.6">
+          Cancel
+        </button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const input = document.getElementById("newUsernameInput");
+    const btn = document.getElementById("saveUsernameBtn");
+    const msg = document.getElementById("usernameMsg");
+    const cancel = document.getElementById("cancelUsernameBtn");
+
+    input.focus();
+
+    cancel.onclick = () => overlay.remove();
+    overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+    btn.onclick = async () => {
+      const new_username = input.value.trim();
+      if (!new_username) return;
+
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      try {
+        const res = await fetch("/auth/change-username", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getToken()
+          },
+          body: JSON.stringify({ new_username }),
+        });
+        const data = await res.json();
+
+        msg.style.display = "block";
+        if (res.ok) {
+          msg.style.background = "rgba(34,197,94,.12)";
+          msg.style.color = "#16a34a";
+          msg.textContent = "Username successfully changed!";
+
+          // Refresh after delay
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          msg.style.background = "rgba(239,68,68,.12)";
+          msg.style.color = "#ef4444";
+          msg.textContent = data.error || "Failed to change username.";
+          btn.disabled = false;
+          btn.textContent = "Save Changes";
+        }
+      } catch {
+        msg.style.display = "block";
+        msg.style.background = "rgba(239,68,68,.12)";
+        msg.style.color = "#ef4444";
+        msg.textContent = "Network error.";
+        btn.disabled = false;
+        btn.textContent = "Save Changes";
+      }
+    };
   }
 
   // ---- Reset Password Modal ----
@@ -321,6 +446,7 @@
         </div>
         <a class="mobile-link" href="/history-page">📜 History</a>
         <a class="mobile-link" href="${PRICING_URL}">💳 Pricing</a>
+        <a class="mobile-link" href="#" id="mobileChangeUsernameBtn">👤 Change Username</a>
         <button class="btn btn--primary btn--block" type="button" id="mobileLogoutBtn">Log out</button>
       `;
       mobileCta.replaceWith(mobileWrapper);
@@ -328,6 +454,13 @@
       document
         .getElementById("mobileLogoutBtn")
         ?.addEventListener("click", () => doLogout());
+
+      document
+        .getElementById("mobileChangeUsernameBtn")
+        ?.addEventListener("click", (e) => {
+          e.preventDefault();
+          showChangeUsernameModal(user.username);
+        });
     }
 
     // --- Home Page: hide "Try it for Free" pill ---
