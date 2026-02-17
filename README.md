@@ -79,4 +79,4 @@ DetectiFy is a sophisticated web application designed to identify AI-generated c
 5. **Humanize**: Use the Humanizer tool to refine your AI-generated text.
 
 ---
-Developed by **[skyline314](https://github.com/skyline314)**.
+Developed by **[skyline314](https://github.com/skyline314)** and Team.
