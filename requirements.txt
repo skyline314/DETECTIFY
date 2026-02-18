@@ -12,7 +12,7 @@ celery
 redis
 numpy
 pandas
-scikit-learn==1.6.1
+scikit-learn==1.5.1
 xgboost
 joblib
 librosa
@@ -33,3 +33,5 @@ resend
 opencv-python-headless
 requests
 gensim
+mlflow
+dagshub

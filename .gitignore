@@ -40,3 +40,4 @@ celery_worker/assets/models/
 *.h5
 *.fig
 inject_premium.py
+check_mlflow_connection.py

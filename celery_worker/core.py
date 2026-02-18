@@ -2,6 +2,7 @@ import os
 os.environ['OMP_NUM_THREADS'] = '1'
 
 import joblib
+import mlflow.sklearn
 import pandas as pd
 import numpy as np
 import librosa
@@ -191,7 +192,7 @@ class ModelRegistry:
         
         # Text Assets
         self.en_text_model = None
-        self.en_text_vectorizer = None
+        # self.en_text_vectorizer = None # Removed: Included in MLflow Pipeline
         self.id_text_model = None
         self.id_text_vectorizer = None
 
@@ -205,6 +206,13 @@ class ModelRegistry:
         if self._is_loaded:
             return
         
+        # Ensure Env Vars are loaded for MLflow
+        if not os.getenv("MLFLOW_TRACKING_URI"):
+            from app.config import Config
+            os.environ["MLFLOW_TRACKING_URI"] = Config.MLFLOW_TRACKING_URI
+            os.environ["MLFLOW_TRACKING_USERNAME"] = Config.MLFLOW_TRACKING_USERNAME
+            os.environ["MLFLOW_TRACKING_PASSWORD"] = Config.MLFLOW_TRACKING_PASSWORD
+
         print(f"[CORE] Loading ML Models on {DEVICE}")
         self._load_audio_model()
         self._load_text_model()
@@ -225,16 +233,20 @@ class ModelRegistry:
             print(f"[Core]  Error loading Audio Model: {e}")
 
     def _load_text_model(self):
-        # Load englsih model
-        ensure_model_exists("assets/models/text/English/logistic_regression/log_reg_model.pkl", ENGLISH_TEXT_MODEL_PATH)
-        ensure_model_exists("assets/models/text/English/logistic_regression/tfidf_vectorizer.pkl", ENGLISH_TEXT_VECTORIZER_PATH)
+        # Load English Model (MLflow Pipeline)
         try:
-            if os.path.exists(ENGLISH_TEXT_MODEL_PATH) and os.path.exists(ENGLISH_TEXT_VECTORIZER_PATH):
-                    self.en_text_model = joblib.load(ENGLISH_TEXT_MODEL_PATH)
-                    self.en_text_vectorizer = joblib.load(ENGLISH_TEXT_VECTORIZER_PATH)
-                    print(f"[Core] Loaded Text Model: Englsih Text Detection")
+            model_name = "detectify-text-en-logreg"
+            version = "2" # Gunakan versi terbaru yang sudah diverifikasi (Pipeline)
+            model_uri = f"models:/{model_name}/{version}"
+            
+            print(f"[Core] Loading English Text Model from MLflow: {model_uri}")
+            self.en_text_model = mlflow.sklearn.load_model(model_uri)
+            print(f"[Core] Loaded English Text Model (Pipeline)")
+            
         except Exception as e:
-            print(f"[Core] Error loading Text Models: {e}")
+            print(f"[Core] Error loading English Text Model from MLflow: {e}")
+            # Fallback logic could go here if needed
+
 
         # Load indonesia model
         try:
@@ -364,20 +376,22 @@ class ModelRegistry:
 
         # Predict
         if language == 'en':
-            if not getattr(self, 'en_text_model', None) or not getattr(self, 'en_text_vectorizer', None):
+            if not getattr(self, 'en_text_model', None):
                 return {"error": "Model Teks English tidak tersedia."}
             try:
                 processed_text = clean_text(raw_text)
-                text_vectorized = self.en_text_vectorizer.transform([processed_text])
-                prediction = self.en_text_model.predict(text_vectorized)[0]
-                probabilities = self.en_text_model.predict_proba(text_vectorized)[0]
+                
+                # Pipeline expects an iterable (list), returns numpy array
+                # self.en_text_model (Pipeline) handles vectorization internally
+                prediction = self.en_text_model.predict([processed_text])[0]
+                probabilities = self.en_text_model.predict_proba([processed_text])[0]
                 
                 # Mapping: 0 = Human/REAL, 1 = AI/FAKE
                 label = "FAKE" if prediction == 1 else "REAL"
                 confidence = probabilities[1] if prediction == 1 else probabilities[0]
 
                 return {
-                    "model_used": f"Detectify_Text_Logistic_Regression",
+                    "model_used": f"Detectify_Text_LogReg_v2 (MLflow)",
                     "prediction": label,
                     "confidence_score": float(confidence), 
                     "language": "English",
@@ -402,9 +416,9 @@ class ModelRegistry:
 
                 # 4. Inference
                 with torch.no_grad():
-                    prob_ai = self.id_text_model(vector_tensor).item()
+                    prob_human = self.id_text_model(vector_tensor).item()
                 
-                prob_human = 1.0 - prob_ai
+                prob_ai = 1.0 - prob_human
 
                 # 5. Penentuan Label
                 label = "FAKE" if prob_ai >= 0.5 else "REAL"

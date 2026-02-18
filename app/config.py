@@ -64,6 +64,11 @@ class Config:
     MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY')
     MIDTRANS_IS_PRODUCTION = os.environ.get('MIDTRANS_IS_PRODUCTION', 'False') == 'True'
 
+    # MLFLOW
+    MLFLOW_TRACKING_URI = os.getenv('MLFLOW_TRACKING_URI')
+    MLFLOW_TRACKING_USERNAME = os.getenv('MLFLOW_TRACKING_USERNAME')
+    MLFLOW_TRACKING_PASSWORD = os.getenv('MLFLOW_TRACKING_PASSWORD')
+
 
 class DevelopmentConfig(Config):
     """
