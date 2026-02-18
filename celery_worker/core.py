@@ -402,9 +402,9 @@ class ModelRegistry:
 
                 # 4. Inference
                 with torch.no_grad():
-                    prob_human = self.id_text_model(vector_tensor).item()
+                    prob_ai = self.id_text_model(vector_tensor).item()
                 
-                prob_ai = 1.0 - prob_human
+                prob_human = 1.0 - prob_ai
 
                 # 5. Penentuan Label
                 label = "FAKE" if prob_ai >= 0.5 else "REAL"

@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+
+__version__ = '1.0.0'
 from .config import config
 from .extensions import (
     db, 
