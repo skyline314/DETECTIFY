@@ -39,3 +39,4 @@ celery_worker/assets/models/
 *.npy
 *.h5
 *.fig
+inject_premium.py
