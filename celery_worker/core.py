@@ -225,15 +225,56 @@ class ModelRegistry:
 
     # --- Loader Sub-methods ---
     def _load_audio_model(self):
-        ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH)
+        # ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH) # Pindahkan ke fallback
+        
+        audio_loaded = False
+        
+        # 1. Try Loading from MLflow (Artifact Download)
         try:
-            if os.path.exists(AUDIO_MODEL_PATH):
-                print(f"[Core] Loading Audio Model from: {AUDIO_MODEL_PATH}")
+            print(f"[Core] Attempting to load Audio Model from MLflow...")
+            client = mlflow.tracking.MlflowClient()
+            model_name = "Audio_Deepfake_Detection_Model"
+            version = "1"
+            
+            # Get Run ID form Model Version
+            mv = client.get_model_version(model_name, version)
+            run_id = mv.run_id
+            
+            # Target Directory
+            target_dir = os.path.dirname(AUDIO_MODEL_PATH)
+            
+            # Download "raw_models/tuning_2_2.pth"
+            # Note: download_artifacts maintains directory structure of artifact_path
+            print(f"[Core] Downloading artifact 'raw_models/tuning_2_2.pth' from run {run_id}...")
+            local_artifact_path = client.download_artifacts(run_id, "raw_models/tuning_2_2.pth", dst_path=target_dir)
+            
+            # local_artifact_path will be something like '.../assets/models/audio/raw_models/tuning_2_2.pth'
+            
+            if os.path.exists(local_artifact_path):
+                print(f"[Core] Audio model downloaded to: {local_artifact_path}")
                 self.audio_model = SimpleAudioCNN().to(DEVICE)
-                self.audio_model.load_state_dict(torch.load(AUDIO_MODEL_PATH, map_location=DEVICE, weights_only=True))
+                self.audio_model.load_state_dict(torch.load(local_artifact_path, map_location=DEVICE, weights_only=True))
                 self.audio_model.eval()
+                audio_loaded = True
+                print(f"[Core] Loaded Audio Model from MLflow (State Dict)")
+            else:
+                print(f"[Core] Download returned path {local_artifact_path} but file not found.")
+
         except Exception as e:
-            print(f"[Core]  Error loading Audio Model: {e}")
+            print(f"[Core] MLflow Audio Load Failed: {e}")
+            print("[Core] Falling back to Local/S3...")
+
+        # 2. Fallback to Local/S3 if MLflow failed
+        if not audio_loaded:
+            try:
+                ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH)
+                if os.path.exists(AUDIO_MODEL_PATH):
+                    print(f"[Core] Loading Audio Model from Local: {AUDIO_MODEL_PATH}")
+                    self.audio_model = SimpleAudioCNN().to(DEVICE)
+                    self.audio_model.load_state_dict(torch.load(AUDIO_MODEL_PATH, map_location=DEVICE, weights_only=True))
+                    self.audio_model.eval()
+            except Exception as e:
+                print(f"[Core] Error loading Audio Model (Fallback): {e}")
 
     def _load_text_model(self):
         # Load English Model (MLflow Pipeline)
