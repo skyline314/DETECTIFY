@@ -1,0 +1,507 @@
+/* Page-level styling for text.html
+   - tetap "nempel" ke themes.css melalui CSS variables
+   - layout mengikuti mockup: panel besar, divider, kanan area hasil
+*/
+
+:root {
+  --df-radius-xl: 22px;
+  --df-radius-lg: 18px;
+  --df-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+  --df-border: rgba(255, 255, 255, 0.25);
+}
+
+/* ===== Page background glow (dark) & soft (light) ===== */
+.df-page {
+  min-height: 100svh;
+  padding: 34px 18px 40px;
+}
+
+.df-hero {
+  text-align: center;
+  padding: 28px 10px 22px;
+}
+
+.df-hero h1 {
+  font-size: clamp(32px, 4vw, 56px);
+  letter-spacing: 0.5px;
+  margin: 0 0 8px;
+}
+
+.df-hero p {
+  margin: 0;
+  opacity: 0.85;
+  font-size: clamp(14px, 1.5vw, 18px);
+}
+
+/* ===== Panel ===== */
+/* ===== Panel ===== */
+.df-panel {
+  margin: 18px auto 0;
+  max-width: 1150px;
+  border-radius: var(--df-radius-xl);
+  background: #ffffff;
+  /* Base (Light Mode) */
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: var(--panel-shadow, var(--df-shadow));
+  backdrop-filter: blur(10px);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.df-panel__grid {
+  display: grid;
+  grid-template-columns: 1fr 1px 0.92fr;
+  gap: 0;
+  min-height: 520px;
+}
+
+.df-divider {
+  background: var(--divider, rgba(255, 255, 255, 0.35));
+}
+
+/* Cards */
+.df-card {
+  padding: 22px;
+}
+
+.df-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.df-card__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.df-card__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Pills */
+.df-pill {
+  border-radius: 999px;
+  padding: 10px 14px;
+  border: 1px solid var(--pill-border, rgba(0, 0, 0, 0.25));
+  background: var(--pill-bg, rgba(255, 255, 255, 0.55));
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.12s ease, filter 0.12s ease;
+  user-select: none;
+  color: #000;
+}
+
+.df-pill:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+/* Language Selector (Shared) */
+.lang-selector {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.06);
+  /* Light mode bg */
+}
+
+html[data-theme="dark"] .lang-selector {
+  background: rgba(255, 255, 255, 0.1);
+  /* Dark mode bg */
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.lang-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+html[data-theme="dark"] .lang-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lang-btn.active {
+  background: #fff;
+  color: #000;
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .lang-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  /* or clear highlight */
+  color: #fff;
+}
+
+.df-pill--file input {
+  display: none;
+}
+
+.df-pill {
+  font-size: 16px;
+  /* sesuaikan kalau mau lebih kecil/besar */
+  line-height: 1;
+  /* biar tinggi teks konsisten */
+  font-family: inherit;
+  display: inline-flex;
+  /* biar button & label behave sama */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* kalau ada icon */
+}
+
+/* Normalisasi khusus button vs label */
+button.df-pill {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid var(--pill-border, rgba(0, 0, 0, 0.25));
+  background: var(--pill-bg, rgba(255, 255, 255, 0.55));
+}
+
+label.df-pill {
+  cursor: pointer;
+}
+
+/* Wrapper for relative positioning overlay */
+.df-editor-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Base (Light Theme) */
+.df-textarea {
+  width: 100%;
+  height: 320px;
+  resize: none;
+  border-radius: var(--df-radius-lg);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #f1f5f9;
+  /* Light background */
+  color: #0f172a;
+  /* Dark text */
+  padding: 14px 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  outline: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.df-textarea:focus {
+  border-color: #0ea5c7;
+  box-shadow: 0 0 0 4px rgba(14, 165, 199, 0.15);
+}
+
+/* Custom Overlay - Base (Light) */
+.df-editor-overlay {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: rgba(15, 23, 42, 0.5);
+  /* Dark text opacity */
+  font-size: 15px;
+  line-height: 1.5;
+  pointer-events: none;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.df-link-upload {
+  pointer-events: auto;
+  color: #0ea5c7;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.df-link-upload:hover {
+  color: #0284c7;
+}
+
+/* Primary Button - Base (Light) */
+.df-primary {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #0f172a;
+  /* Dark button */
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
+  transition: transform 0.12s ease, filter 0.12s ease, background 0.2s;
+}
+
+.df-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+/* --- DARK MODE OVERRIDES --- */
+html[data-theme="dark"] .df-textarea {
+  background: #0b1120;
+  /* Deep Blue from Image 2 */
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+html[data-theme="dark"] .df-textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+}
+
+html[data-theme="dark"] .df-editor-overlay {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+html[data-theme="dark"] .df-link-upload {
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .df-link-upload:hover {
+  color: #7dd3fc;
+}
+
+html[data-theme="dark"] .df-primary {
+  background: #0ea5c7;
+  /* Cyan from Image 2 */
+  color: #000;
+  box-shadow: 0 10px 26px rgba(14, 165, 199, 0.2);
+}
+
+html[data-theme="dark"] .df-panel {
+  background: #020617;
+  /* Very Dark panel */
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Bottom row left */
+.df-under {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.df-meta {
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+.df-primary:active {
+  transform: translateY(0px);
+}
+
+/* ===== Result side ===== */
+.df-result__empty {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.df-result__hint {
+  text-align: center;
+  font-size: 22px;
+  opacity: 0.75;
+  margin: 0;
+}
+
+.df-result__header .df-result__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  opacity: 0.9;
+}
+
+.df-result__sub {
+  margin: 6px 0 0;
+  opacity: 0.8;
+}
+
+.df-sep {
+  height: 1px;
+  margin: 16px 0;
+  background: var(--divider, rgba(255, 255, 255, 0.35));
+}
+
+/* Result Bar (Single) */
+.prob-bar {
+  margin: 16px 0;
+}
+
+.prob-bar__track {
+  display: flex;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+html[data-theme="dark"] .prob-bar__track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.prob-bar__fill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prob-bar__fill--ai {
+  background: #ef4444;
+  /* Red */
+}
+
+.prob-bar__fill--human {
+  background: #22c55e;
+  /* Green */
+}
+
+.prob-bar__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.prob-bar__label--ai {
+  color: #ef4444;
+}
+
+.prob-bar__label--human {
+  color: #22c55e;
+}
+
+.df-mini {
+  display: grid;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.df-mini__item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.df-mini__k {
+  opacity: 0.75;
+  font-weight: 700;
+}
+
+.df-mini__v {
+  font-weight: 900;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 980px) {
+  .df-panel__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .df-divider {
+    display: none;
+  }
+
+  .df-textarea {
+    height: 260px;
+  }
+}
+
+@media (max-width: 520px) {
+  .df-card__head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .df-under {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .df-primary {
+    width: 100%;
+  }
+}
+
+/* ===== FIX: prevent result rendering outside the right panel ===== */
+/* 1) Pastikan attribute hidden selalu menang (walau ada CSS global yang ngeyel) */
+#emptyState[hidden],
+#resultBody[hidden] {
+  display: none !important;
+}
+
+/* 2) Pastikan hasil & empty state tetap normal flow (ga absolute/fixed/transform) */
+#emptyState,
+#resultBody {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  float: none !important;
+  clear: both !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* 3) Biar kalau ada elemen yang tetap ngeyel, ga tumpah keluar panel */
+.df-card--right {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== Language Selector ===== */
+.lang-selector {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--pill-bg, rgba(255, 255, 255, 0.35));
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--pill-border, rgba(0, 0, 0, 0.12));
+  width: fit-content;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  opacity: 0.6;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.lang-btn:hover {
+  opacity: 0.85;
+}
+
+.lang-btn.active {
+  background: var(--primary, rgba(80, 160, 220, 0.95));
+  color: #fff;
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}

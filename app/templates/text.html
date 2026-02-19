@@ -1,16 +1,14 @@
 <!doctype html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DetectiFy — AI Text Detection</title>
 
-  <!-- Global project CSS (dari zip kamu) -->
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./themes.css" />
-
-  <!-- Page CSS -->
-  <link rel="stylesheet" href="./text.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/text.css') }}" />
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 </head>
 
 <body>
@@ -20,9 +18,11 @@
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
-          <a class="brand" href="#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index') }}">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              alt="Logo" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              alt="Logo" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -34,31 +34,49 @@
               </button>
 
               <!-- Mobile hamburger -->
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
             <!-- Desktop nav -->
-            <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+            <nav class="nav__links">
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
-            <a class="btn btn--primary" href="auth.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
 
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
-        <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+        <nav class="mobile-menu__links">
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
@@ -75,22 +93,28 @@
 
         <!-- LEFT -->
         <div class="df-card df-card--left">
-          <div class="df-card__head">
-            <h2 class="df-card__title">Text Detection</h2>
-            <div class="df-card__actions">
-              <button class="df-pill" id="btn-paste" type="button">Paste Text</button>
+          <div class="df-card__head" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+              <h2 class="df-card__title">Text Detection</h2>
+              <div class="df-card__actions">
+                <!-- Hidden File Input -->
+                <input id="fileInput" type="file" accept=".txt,.pdf,.docx" hidden />
+              </div>
+            </div>
 
-              <label class="df-pill df-pill--file" for="fileInput">Upload Doc<input id="fileInput" type="file" accept=".txt,.md,.text" hidden />
-              </label>
+            <div class="lang-selector" id="langSelector">
+              <button type="button" class="lang-btn" data-lang="en">English</button>
+              <button type="button" class="lang-btn" data-lang="id">Indonesia</button>
             </div>
           </div>
 
-          <textarea
-            id="textInput"
-            class="df-textarea"
-            placeholder="Paste or type your text here..."
-            spellcheck="false"
-          ></textarea>
+          <div class="df-editor-wrapper">
+            <textarea id="textInput" class="df-textarea" spellcheck="false"></textarea>
+            <!-- Custom Placeholder / Overlay -->
+            <div class="df-editor-overlay" id="editorOverlay">
+              Paste or type your text here or <span id="triggerUpload" class="df-link-upload">upload</span>
+            </div>
+          </div>
 
           <div class="df-under">
             <div class="df-meta">
@@ -120,23 +144,15 @@
 
             <div class="df-sep"></div>
 
-            <div class="df-bars">
-              <div class="df-row">
-                <span class="df-label">AI-generated</span>
-                <div class="df-bar"><div id="barAi" class="df-bar__fill"></div></div>
-                <span id="pctAi" class="df-pct">--%</span>
+            <!-- Single Bar Result -->
+            <div class="prob-bar">
+              <div class="prob-bar__track">
+                <div class="prob-bar__fill prob-bar__fill--ai" id="barAi" style="width:0%"></div>
+                <div class="prob-bar__fill prob-bar__fill--human" id="barHuman" style="width:0%"></div>
               </div>
-
-              <div class="df-row">
-                <span class="df-label">Human-written &amp; AI-refined</span>
-                <div class="df-bar"><div id="barHybrid" class="df-bar__fill"></div></div>
-                <span id="pctHybrid" class="df-pct">--%</span>
-              </div>
-
-              <div class="df-row">
-                <span class="df-label">Human-written</span>
-                <div class="df-bar"><div id="barHuman" class="df-bar__fill"></div></div>
-                <span id="pctHuman" class="df-pct">--%</span>
+              <div class="prob-bar__labels">
+                <span class="prob-bar__label--ai">AI: <strong id="pctAi">--%</strong></span>
+                <span class="prob-bar__label--human">Human: <strong id="pctHuman">--%</strong></span>
               </div>
             </div>
 
@@ -148,7 +164,7 @@
                 <span class="df-mini__v" id="confidence">—</span>
               </div>
               <div class="df-mini__item">
-                <span class="df-mini__k">Signals</span>
+                <span class="df-mini__k">Prediction</span>
                 <span class="df-mini__v" id="signals">—</span>
               </div>
             </div>
@@ -160,43 +176,48 @@
   </main>
 
   <!-- FOOTER -->
-    <footer class="site-footer" aria-label="Website footer">
-      <div class="container footer__grid">
-        <div class="footer__brand">
-          <div class="footer__logoRow">
-            <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-            <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-            <strong class="footer__name">DetectiFy</strong>
-          </div>
-          <p class="footer__desc">
-            Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
-          </p>
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
+          <strong class="footer__name">DetectiFy</strong>
         </div>
-
-        <nav class="footer__col" aria-label="Quick links">
-          <h3 class="footer__heading">Quick Links</h3>
-          <a class="footer__link" href="index.html">Home</a>
-          <a class="footer__link" href="apps.html">Application</a>
-          <a class="footer__link" href="pricing.html">Pricing</a>
-        </nav>
-
-        <nav class="footer__col" aria-label="Features">
-          <h3 class="footer__heading">Features</h3>
-          <a class="footer__link" href="text.html">Text Detection</a>
-          <a class="footer__link" href="image.html">Image Detection</a>
-          <a class="footer__link" href="video.html">Video Detection</a>
-          <a class="footer__link" href="audio.html">Audio Detection</a>
-          <a class="footer__link" href="humanize.html">Text Humanization</a>
-        </nav>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
       </div>
 
-      <div class="container footer__bottom">
-        <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
-      </div>
-    </footer>
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
 
   <!-- JS -->
-  <script src="theme.js" defer></script>
-  <script src="./text-detect.js"></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/text-detect.js') }}"></script>
 </body>
+
 </html>

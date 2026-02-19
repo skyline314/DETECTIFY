@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DetectiFy — Pricing</title>
 
   <!-- Theme init (ensures data-theme is applied before paint) -->
-  <script src="theme-init.js"></script>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
 
-  <!-- Global (from your zip) -->
-  <link rel="stylesheet" href="styles.css" />
-  <!-- Pricing page specific -->
-  <link rel="stylesheet" href="pricing.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pricing.css') }}" />
 </head>
 
 <body class="page-pricing">
@@ -25,9 +25,11 @@
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
-          <a class="brand" href="index.html#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index', _anchor='top') }}" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -39,20 +41,32 @@
               </button>
 
               <!-- Mobile hamburger -->
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
             <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html#home">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+              <a class="nav__link" href="{{ url_for('analysis.index', _anchor='home') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
-            <a class="btn btn--primary" href="get-started.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
@@ -60,10 +74,16 @@
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html#home">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="get-started.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
@@ -87,7 +107,8 @@
           </div>
 
           <div class="pricing-hero__art" aria-hidden="true">
-            <img class="pricing-hero__img" src="assets/pricing.png" alt="" loading="lazy" decoding="async" />
+            <img class="pricing-hero__img" src="{{ url_for('static', filename='assets/pricing.png') }}" alt=""
+              loading="lazy" decoding="async" />
           </div>
         </div>
 
@@ -109,7 +130,7 @@
             </div>
 
             <ul class="plan__list">
-              <li>Daily limit 3x per day for all features</li>
+              <li>Daily limit {{ daily_limit }}x per day for all features</li>
               <li>Text Humanizer and Detection limited to 500 words a day</li>
               <li>No workspace and business account</li>
             </ul>
@@ -121,7 +142,7 @@
               <h2 class="plan__name">Pro</h2>
 
               <div class="plan__price">
-                <div class="plan__amount">Rp 150.000,-</div>
+                <div class="plan__amount">Rp {{ "{:,.0f}".format(premium_price).replace(",", ".") }},-</div>
                 <div class="plan__per">/month</div>
               </div>
 
@@ -146,7 +167,8 @@
         <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="upgradeTitle">
           <button class="modal__close" type="button" data-modal-close aria-label="Close">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
             </svg>
           </button>
 
@@ -178,43 +200,52 @@
   </main>
 
   <!-- FOOTER -->
-    <footer class="site-footer" aria-label="Website footer">
-      <div class="container footer__grid">
-        <div class="footer__brand">
-          <div class="footer__logoRow">
-            <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-            <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-            <strong class="footer__name">DetectiFy</strong>
-          </div>
-          <p class="footer__desc">
-            Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
-          </p>
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
+          <strong class="footer__name">DetectiFy</strong>
         </div>
-
-        <nav class="footer__col" aria-label="Quick links">
-          <h3 class="footer__heading">Quick Links</h3>
-          <a class="footer__link" href="#home">Home</a>
-          <a class="footer__link" href="apps.html">Application</a>
-          <a class="footer__link" href="pricing.html">Pricing</a>
-        </nav>
-
-        <nav class="footer__col" aria-label="Features">
-          <h3 class="footer__heading">Features</h3>
-          <a class="footer__link" href="text.html">Text Detection</a>
-          <a class="footer__link" href="image.html">Image Detection</a>
-          <a class="footer__link" href="video.html">Video Detection</a>
-          <a class="footer__link" href="audio.html">Audio Detection</a>
-          <a class="footer__link" href="humanize.html">Text Humanization</a>
-        </nav>
       </div>
+
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+      </nav>
 
       <div class="container footer__bottom">
         <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
       </div>
-    </footer>
+  </footer>
 
   <!-- Theme + mobile menu behavior -->
-  <script src="theme.js"></script>
-  <script src="billing.js" defer></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+
+  <!-- Midtrans Snap.js -->
+  {% if midtrans_is_production %}
+  <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
+  {% else %}
+  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/billing.js') }}" defer></script>
 </body>
+
 </html>

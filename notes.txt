@@ -5,3 +5,5 @@ venv\Scripts\Activate
 celery -A celery_worker.celery_app.celery worker --loglevel=info --pool=solo
 
 flask run
+
+python -m pytest tests

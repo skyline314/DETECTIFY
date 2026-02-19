@@ -1,147 +1,167 @@
 <!doctype html>
-<html lang="id">
+<html lang="en" data-theme="dark">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Humanize Text • DetectiFy</title>
-  <!-- <script src="theme-init.js"></script> -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DetectiFy — Text Humanizer</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script src="theme-init.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/text.css') }}" />
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="humanize.css">
+
 </head>
 
-<body class="humanize-page">
+<body>
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
-          <!-- Brand -->
-          <a class="brand" href="#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index') }}">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              alt="Logo" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              alt="Logo" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
           <div class="nav__right">
             <div class="nav__icons" aria-label="Quick actions">
-              <!-- Theme toggle -->
               <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
               </button>
 
-              <!-- Mobile hamburger -->
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
-            <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
-            <a class="btn btn--primary" href="auth.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
 
-      <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
 
-  <main class="hz-main">
-    <!-- HERO (pendek, rapat) -->
-    <section class="hz-hero" aria-label="Humanize Text Hero">
-      <h1 class="hz-title">Humanize Text</h1>
-      <p class="hz-subtitle">Make your text more “human” for every kind of situation</p>
+  <main class="df-page">
+    <section class="df-hero">
+      <h1>AI Text Humanizer</h1>
+      <p>Rewrite AI-generated text to sound more natural and human-like.</p>
     </section>
 
-    <!-- PANEL -->
-    <section class="app-panel" aria-label="Humanize Text Panel">
-      <div class="panel-grid">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-          <div class="side-title">
-            <span aria-hidden="true">ⓘ</span>
-            <span>Usage Guides</span>
-          </div>
+    <section class="df-panel" aria-label="Text humanizer panel">
+      <div class="df-panel__grid">
 
-          <div class="side-card">
-            <p class="plan">Your plan:<br><b>Free</b></p>
-
-            <div class="quota-row">
-              <div class="quota-pill">AI Detector<br>500 Words</div>
-              <div class="quota-pill">AI Humanizer<br>500 Words</div>
+        <div class="df-card df-card--left">
+          <div class="df-card__head" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+              <h2 class="df-card__title">Input Text</h2>
             </div>
 
-            <button class="side-btn" id="startBtn" type="button">Start For Free</button>
-            <button class="side-btn primary" id="upgradeBtn" type="button">Upgrade Plan</button>
+            <div class="lang-selector" id="langSelector">
+              <button type="button" class="lang-btn" data-lang="en">English</button>
+              <button type="button" class="lang-btn" data-lang="id">Indonesia</button>
+            </div>
+          </div>
 
+          <textarea id="textInput" class="df-textarea" placeholder="Paste your AI-generated text here to humanize..."
+            spellcheck="false"></textarea>
+
+          <div class="df-under">
+            <div class="df-meta">
+              <span id="wordCount">0</span> / <span id="wordLimit">500</span> words
+            </div>
+
+            <button class="df-primary" id="btn-humanize" type="button">
+              Humanize Text
+            </button>
+          </div>
+        </div>
+
+        <div class="df-divider" aria-hidden="true"></div>
+
+        <aside class="df-card df-card--right" aria-label="Humanize result">
+
+          <div class="df-result__empty" id="emptyState">
+            <p class="df-result__hint">Result will appear here</p>
+          </div>
+
+          <div class="df-result__body" id="resultBody" hidden>
+            <div class="df-result__header">
+              <p class="df-result__title">Humanized Result</p>
+              <button class="icon-btn" id="btn-copy" type="button" aria-label="Copy result" style="margin-left: auto;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="df-sep"></div>
+
+            <textarea id="humanizedOutput" class="df-textarea" readonly></textarea>
+
+            <div class="df-sep"></div>
+
+            <div class="df-mini">
+              <div class="df-mini__item">
+                <span class="df-mini__k">Target Language</span>
+                <span class="df-mini__v" id="resultLang">Indonesia</span>
+              </div>
+              <div class="df-mini__item">
+                <span class="df-mini__k">Status</span>
+                <span class="df-mini__v" id="resultStatus">Processing...</span>
+              </div>
+            </div>
           </div>
         </aside>
 
-        <!-- Content -->
-        <div class="content">
-          <div class="top-row">
-            <div class="mode-block">
-              <div class="mode-label">Mode</div>
-              <div class="tabs" role="tablist" aria-label="Mode">
-                <button class="tab active" data-mode="casual" aria-selected="true">Casual</button>
-                <button class="tab" data-mode="academic" aria-selected="false">Academic</button>
-                <button class="tab" data-mode="professional" aria-selected="false">Professional</button>
-              </div>
-            </div>
-
-            <div class="output-bar">
-              <span class="mode-label">Output</span>
-              <button class="copy-btn" id="copyBtn" type="button">Copy</button>
-            </div>
-          </div>
-
-          <div class="io-grid">
-            <!-- Input -->
-            <div class="box">
-              <textarea id="inputText" placeholder="Paste your text here."></textarea>
-            </div>
-
-            <!-- Output -->
-            <div class="box box--output">
-              <textarea id="outputText" readonly placeholder="Your humanized content will appear here."></textarea>
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="action-btn" id="checkBtn" type="button">Check for AI</button>
-            <button class="action-btn" id="humanizeBtn" type="button">Humanize</button>
-          </div>
-        </div>
       </div>
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="site-footer" aria-label="Website footer">
     <div class="container footer__grid">
       <div class="footer__brand">
         <div class="footer__logoRow">
-          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
           <strong class="footer__name">DetectiFy</strong>
         </div>
         <p class="footer__desc">
@@ -151,18 +171,18 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
-        <a class="footer__link" href="index.html">Home</a>
-        <a class="footer__link" href="apps.html">Application</a>
-        <a class="footer__link" href="pricing.html">Pricing</a>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
       </nav>
 
       <nav class="footer__col" aria-label="Features">
         <h3 class="footer__heading">Features</h3>
-        <a class="footer__link" href="text.html">Text Detection</a>
-        <a class="footer__link" href="image.html">Image Detection</a>
-        <a class="footer__link" href="video.html">Video Detection</a>
-        <a class="footer__link" href="audio.html">Audio Detection</a>
-        <a class="footer__link" href="humanize.html">Text Humanization</a>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
       </nav>
     </div>
 
@@ -171,8 +191,12 @@
     </div>
   </footer>
 
-  <script src="theme.js" defer></script>
-  <script src="humanize.js" defer></script>
-  <script src="text-tool.js" defer></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/humanize.js') }}"></script>
+
+
 </body>
+
 </html>

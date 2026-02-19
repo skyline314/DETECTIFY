@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,8 +21,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="auth.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
 </head>
 
 <body>
@@ -30,9 +31,11 @@
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
-          <a class="brand" href="index.html" aria-label="Back to home">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -42,45 +45,61 @@
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true">
                   <!-- SUN (light) -->
                   <svg class="theme-ico theme-ico--sun" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2" />
                     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41
-                            M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                   </svg>
 
                   <!-- MOON (dark) -->
                   <svg class="theme-ico theme-ico--moon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z"
-                          fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </span>
               </button>
 
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
-                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
-            <a class="btn btn--primary" href="auth.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
 
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
@@ -91,7 +110,7 @@
       <section class="auth__shell auth-slider" id="authSlider" aria-label="Authentication">
 
         <!-- STATUS -->
-        <p class="auth__status" id="authStatus" aria-live="polite"></p>
+
 
         <!-- LOGIN -->
         <div class="auth__card auth__panel auth__panel--login">
@@ -106,11 +125,38 @@
 
             <div class="field">
               <label for="loginPassword">Password</label>
-              <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required />
+              <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
+                required />
             </div>
 
+            <!-- STATUS LOGIN -->
+            <div id="loginStatus" class="auth__status"></div>
+
             <button class="btn btn--primary btn--block" type="submit">Login</button>
+
+            <div style="text-align:center;margin-top:12px">
+              <a href="#" id="forgotPasswordLink" class="auth__forgot-link">Forgot Password?</a>
+            </div>
           </form>
+
+          <!-- FORGOT PASSWORD (hidden initially) -->
+          <div id="forgotPasswordPanel" style="display:none;margin-top:0">
+            <h2 class="auth__title" style="font-size:20px">Reset Your Password</h2>
+            <p class="auth__desc">Enter your email and we'll send you a reset token.</p>
+            <form id="forgotPasswordForm" class="auth__form">
+              <div class="field">
+                <label for="forgotEmail">Email</label>
+                <input id="forgotEmail" type="email" placeholder="youremail@example.com" autocomplete="email"
+                  required />
+              </div>
+              <div id="forgotMsg" style="display:none;padding:10px;border-radius:8px;font-size:13px;margin-bottom:10px">
+              </div>
+              <button class="btn btn--primary btn--block" type="submit">Send Reset Token</button>
+              <div style="text-align:center;margin-top:10px">
+                <a href="#" id="backToLoginLink" class="auth__forgot-link">← Back to Login</a>
+              </div>
+            </form>
+          </div>
         </div>
 
         <!-- SIGNUP -->
@@ -136,8 +182,12 @@
 
             <div class="field">
               <label for="signupConfirm">Confirm Password</label>
-              <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password" required />
+              <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password"
+                required />
             </div>
+
+            <!-- STATUS SIGNUP -->
+            <div id="signupStatus" class="auth__status"></div>
 
             <button class="btn btn--primary btn--block" type="submit">Create Account</button>
           </form>
@@ -167,8 +217,10 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <div class="footer__logoRow">
-          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
           <strong class="footer__name">DetectiFy</strong>
         </div>
         <p class="footer__desc">
@@ -178,18 +230,18 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
-        <a class="footer__link" href="index.html">Home</a>
-        <a class="footer__link" href="apps.html">Application</a>
-        <a class="footer__link" href="pricing.html">Pricing</a>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
       </nav>
 
       <nav class="footer__col" aria-label="Features">
         <h3 class="footer__heading">Features</h3>
-        <a class="footer__link" href="text.html">Text Detection</a>
-        <a class="footer__link" href="image.html">Image Detection</a>
-        <a class="footer__link" href="video.html">Video Detection</a>
-        <a class="footer__link" href="audio.html">Audio Detection</a>
-        <a class="footer__link" href="humanize.html">Text Humanization</a>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
       </nav>
     </div>
 
@@ -198,7 +250,9 @@
     </div>
   </footer>
 
-  <script src="theme.js" defer></script>
-  <script src="auth.js" defer></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth.js') }}?v=2" defer></script>
 </body>
+
 </html>

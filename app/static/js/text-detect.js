@@ -1,0 +1,230 @@
+/**
+ * text-detect.js
+ * Backend: POST /text (FormData with file + language)
+ * Result: { prediction: "FAKE"/"REAL", probability_ai: 0-1, probability_human: 0-1, confidence_score: 0-1 }
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  const API_TEXT = "/text";
+
+  const textInput = document.getElementById("textInput");
+  const fileInput = document.getElementById("fileInput");
+  const btnDetect = document.getElementById("btn-detect");
+  const btnPaste = document.getElementById("btn-paste");
+
+  // Overlay elements
+  const editorOverlay = document.getElementById("editorOverlay");
+  const triggerUpload = document.getElementById("triggerUpload");
+
+  let selectedLang = null;
+
+  // --- LANGUAGE SELECTOR ---
+  const langBtns = document.querySelectorAll("#langSelector .lang-btn");
+  langBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      langBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedLang = btn.dataset.lang;
+    });
+  });
+
+
+
+  // --- OVERLAY LOGIC ---
+  function toggleOverlay() {
+    if (!textInput || !editorOverlay) return;
+    if (textInput.value.length > 0) {
+      editorOverlay.style.opacity = "0";
+      editorOverlay.style.pointerEvents = "none";
+    } else {
+      editorOverlay.style.opacity = "1";
+      editorOverlay.style.pointerEvents = "auto";
+    }
+  }
+
+  // Hide overlay on focus, show on blur if empty
+  if (textInput) {
+    textInput.addEventListener("focus", () => {
+      if (editorOverlay) editorOverlay.style.opacity = "0";
+    });
+    textInput.addEventListener("blur", toggleOverlay);
+    textInput.addEventListener("input", () => {
+      toggleOverlay();
+      updateWordCount();
+    });
+  }
+
+  // Click "upload" link -> trigger file input
+  if (triggerUpload && fileInput) {
+    triggerUpload.addEventListener("click", (e) => {
+      e.stopPropagation(); // prevent textarea focus
+      fileInput.click();
+    });
+  }
+
+  // --- FILE EXTRACTION (POST /text/extract) ---
+  if (fileInput) fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validasi ekstensi client-side simpel
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['txt', 'pdf', 'docx'].includes(ext)) {
+      alert("File format not supported. Use TXT, PDF, or DOCX.");
+      fileInput.value = "";
+      return;
+    }
+
+    // Show loading in textarea
+    textInput.value = "Extracting text doing...";
+    textInput.disabled = true;
+    if (editorOverlay) editorOverlay.style.opacity = "0"; // Hide overlay
+
+    try {
+      const token = localStorage.getItem("detectify_token");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/text/extract", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` }, // Optional if protected
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to extract text");
+
+      // Paste result
+      textInput.value = data.text || "";
+      updateWordCount();
+
+    } catch (err) {
+      textInput.value = ""; // Clear on error
+      alert("Error: " + err.message);
+      toggleOverlay();
+    } finally {
+      textInput.disabled = false;
+      fileInput.value = ""; // Reset input so same file can be selected again
+      textInput.focus();
+    }
+  });
+  // --- WORD COUNT ---
+  function updateWordCount() {
+    const words = textInput.value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById("wordCount").textContent = words;
+  }
+
+
+  // --- ANALYZE ---
+  const handleAnalyze = async () => {
+    const text = textInput.value.trim();
+
+    if (!selectedLang) return alert("Please choose language first (English / Indonesia).");
+    if (!text) return alert("Please input text or upload a file."); // Simplified check as file content is extracted to textInput
+
+    // Login guard
+    if (!window.requireLogin || !window.requireLogin()) return;
+    const token = localStorage.getItem("detectify_token");
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("language", selectedLang);
+
+      // Always send text as blob (because we extracted file content to textInput)
+      const blob = new Blob([text], { type: "text/plain" });
+      formData.append("file", blob, "manual_input.txt");
+
+      const res = await fetch(API_TEXT, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      // Handle auth/limit errors
+      if (window.handleApiError && window.handleApiError(res, data)) {
+        setLoading(false);
+        return;
+      }
+      if (!res.ok) throw new Error(data.error || "Analysis failed");
+
+      if (data.analysis_id) {
+        await pollStatus(data.analysis_id, token);
+      } else {
+        showResult(data);
+      }
+    } catch (err) {
+      alert("Error: " + err.message);
+      setLoading(false);
+    }
+  };
+
+  async function pollStatus(id, token) {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/status/${id}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (data.status === "COMPLETED") {
+          clearInterval(interval);
+          showResult(data.result);
+          setLoading(false);
+        } else if (data.status === "FAILED") {
+          clearInterval(interval);
+          alert("Analysis failed.");
+          setLoading(false);
+        }
+      } catch (err) {
+        clearInterval(interval);
+        alert(err.message);
+        setLoading(false);
+      }
+    }, 2000);
+  }
+
+  function setLoading(loading) {
+    btnDetect.disabled = loading;
+    btnDetect.textContent = loading ? "Analyzing..." : "Detect AI";
+  }
+
+  function showResult(result) {
+    // Backend returns: probability_ai (0-1), probability_human (0-1), prediction, confidence_score
+    const probAi = result.probability_ai || 0;
+    const probHuman = result.probability_human || 0;
+
+    const aiPct = (probAi * 100).toFixed(1);
+    const humanPct = (probHuman * 100).toFixed(1);
+    const confidence = (result.confidence_score ? result.confidence_score * 100 : Math.max(probAi, probHuman) * 100).toFixed(1);
+
+    document.getElementById("emptyState").hidden = true;
+    document.getElementById("resultBody").hidden = false;
+
+    // Update bars (AI + Human only, no hybrid)
+    updateBar("barAi", "pctAi", aiPct);
+    updateBar("barHuman", "pctHuman", humanPct);
+
+    // Prediction label
+    const prediction = result.prediction || "Unknown";
+    const labelText = prediction === "FAKE" ? "AI-Generated" : "Human-Written";
+
+    document.getElementById("confidence").textContent = confidence + "%";
+    document.getElementById("signals").textContent = labelText;
+    document.getElementById("resultNote").textContent =
+      prediction === "FAKE" ? "This text appears AI-generated" :
+        prediction === "REAL" ? "This text appears human-written" :
+          "Analysis complete";
+  }
+
+  function updateBar(barId, textId, val) {
+    const el = document.getElementById(barId);
+    const txt = document.getElementById(textId);
+    if (el) el.style.width = val + "%";
+    if (txt) txt.textContent = val + "%";
+  }
+
+  if (btnDetect) btnDetect.addEventListener("click", handleAnalyze);
+});

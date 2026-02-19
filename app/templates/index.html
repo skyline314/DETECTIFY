@@ -1,19 +1,20 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DetectiFy</title>
-  <script src="theme-init.js"></script>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
-  <link rel="preload" as="image" href="assets/hero-bg.jpg" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/about-us.jpg">
+  <link rel="preload" as="image" href="{{ url_for('static', filename='assets/hero-bg.jpg') }}" fetchpriority="high">
+  <link rel="preload" as="image" href="{{ url_for('static', filename='assets/about-us.jpg') }}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
@@ -22,9 +23,11 @@
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
-          <a class="brand" href="#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -36,20 +39,32 @@
               </button>
 
               <!-- Mobile hamburger -->
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
             <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="#home">Home</a>
-              <a class="nav__link" href="apps.html">Application</a>
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
-            <a class="btn btn--primary" href="auth.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
@@ -57,10 +72,16 @@
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="#home">Home</a>
-          <a class="mobile-link" href="apps.html">Application</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
@@ -68,18 +89,19 @@
   <main>
     <!-- HERO -->
     <section class="hero hero--detect" id="home" aria-label="Hero">
-      <div class="hero__bg" style="background-image: url('assets/hero-bg.jpg');" role="img" aria-label="Hero background"></div>
+      <div class="hero__bg" style="background-image: url('{{ url_for('static', filename='assets/hero-bg.jpg') }}');"
+        aria-hidden="true"></div>
 
       <div class="container hero__content">
         <div class="hero__grid">
           <div class="hero__left">
             <h1 class="hero__title">Looking<br><span class="hero__titleThin">for</span></h1>
-            <a class="hero__pill" href="auth.html" aria-label="Try it for free">
+            <a class="hero__pill" href="{{ url_for('auth.auth_page') }}" aria-label="Try it for free">
               <span>Try it for Free</span>
-              <!-- <span class="hero__btnIcon">→</span> -->
               <span class="hero__pillIcon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </span>
             </a>
@@ -107,16 +129,16 @@
 
           <div class="carousel3d__stage" aria-live="polite">
             <article class="carousel3d__card" data-slide>
-              <img src="assets/fast_eff.jpeg" alt="Fast & Efficient" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/fast_eff.jpeg') }}" alt="Fast & Efficient" />
             </article>
             <article class="carousel3d__card" data-slide>
-              <img src="assets/adv_process.jpeg" alt="Advanced Processing" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/adv_process.jpeg') }}" alt="Advanced Processing" />
             </article>
             <article class="carousel3d__card" data-slide>
-              <img src="assets/multi_format.jpeg" alt="Multi-Format Support" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/multi_format.jpeg') }}" alt="Multi-Format Support" />
             </article>
             <article class="carousel3d__card" data-slide>
-              <img src="assets/easy_to_use.jpeg" alt="Easy to Use" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/easy_to_use.jpeg') }}" alt="Easy to Use" />
             </article>
           </div>
 
@@ -132,37 +154,40 @@
       <div class="container">
         <div class="section__bar">
           <h2 class="section__titleV2">Our Features</h2>
-          <a class="btn btn--ghost" href="apps.html">Browse All</a>
+          <a class="btn btn--ghost" href="{{ url_for('analysis.apps') }}">Browse All</a>
         </div>
 
         <div class="feature-cardsV2" aria-label="Feature cards">
-          <a class="featureV2" href="text.html" aria-label="Text Detection">
+          <a class="featureV2" href="{{ url_for('analysis.text_ui') }}">
             <div class="featureV2__media">
-              <img src="assets/text_detect.jpeg" alt="Text Detection" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/text_detect.jpeg') }}" alt="Text Detection" />
             </div>
             <div class="featureV2__body">
               <h3 class="featureV2__title">Text Detection</h3>
-              <p class="featureV2__desc">Uncover whether text is human-written or AI-generated with a clear, confidence-based score.</p>
+              <p class="featureV2__desc">Uncover whether text is human-written or AI-generated with a clear,
+                confidence-based score.</p>
             </div>
           </a>
 
-          <a class="featureV2" href="image.html" aria-label="Image Detection">
+          <a class="featureV2" href="{{ url_for('analysis.image_ui') }}">
             <div class="featureV2__media">
-              <img src="assets/image_detect.jpeg" alt="Image Detection" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/image_detect.jpeg') }}" alt="Image Detection" />
             </div>
             <div class="featureV2__body">
               <h3 class="featureV2__title">Image Detection</h3>
-              <p class="featureV2__desc">Reveal whether an image is AI-made or edited in seconds with a confident authenticity check.</p>
+              <p class="featureV2__desc">Reveal whether an image is AI-made or edited in seconds with a confident
+                authenticity check.</p>
             </div>
           </a>
 
-          <a class="featureV2" href="video.html" aria-label="Video Detection">
+          <a class="featureV2" href="{{ url_for('analysis.video_ui') }}">
             <div class="featureV2__media">
-              <img src="assets/video_detect.jpeg" alt="Video Detection" loading="lazy" decoding="async" />
+              <img src="{{ url_for('static', filename='assets/video_detect.jpeg') }}" alt="Video Detection" />
             </div>
             <div class="featureV2__body">
               <h3 class="featureV2__title">Video Detection</h3>
-              <p class="featureV2__desc">Instantly spot AI-generated or manipulated videos with a sleek authenticity score you can trust.</p>
+              <p class="featureV2__desc">Instantly spot AI-generated or manipulated videos with a sleek authenticity
+                score you can trust.</p>
             </div>
           </a>
         </div>
@@ -172,7 +197,7 @@
     <!-- ABOUT US -->
     <section class="section section--about" id="about" aria-label="About Detectify">
       <div class="about__bg">
-        <img src="assets/about-us.jpg" alt="About Detectify" loading="lazy" decoding="async" />
+        <img class="about__img" src="{{ url_for('static', filename='assets/about-us.jpg') }}" alt="Our team working" />
       </div>
 
       <div class="container about__wrap">
@@ -187,8 +212,10 @@
           </p>
 
           <p>
-            We are <strong>here to help</strong> individuals and organizations navigate the growing volume of AI-generated
-            content by providing <strong>reliable, transparent</strong> analysis that <strong>supports</strong> authenticity
+            We are <strong>here to help</strong> individuals and organizations navigate the growing volume of
+            AI-generated
+            content by providing <strong>reliable, transparent</strong> analysis that <strong>supports</strong>
+            authenticity
             checks and informed decision-making.
           </p>
         </div>
@@ -222,16 +249,17 @@
         </div>
 
         <div class="founded__media">
-          <img class="found__image" src="assets/laptop_logo.png" alt="Detectify on laptop" />
+          <img class="found__image" src="{{ url_for('static', filename='assets/laptop_logo.png') }}"
+            alt="Detectify on laptop" />
         </div>
       </div>
     </section>
 
-    <!-- SUBSCRIBE -->
+    <!-- SUBSCRIBE
     <section class="section section--subscribe" id="subscribe" aria-label="Subscribe">
       <div class="container subscribe">
-        <div class="subscribe__media" aria-hidden="true">
-          <img src="assets/subscribe.png" alt="" loading="lazy" decoding="async" />
+        <div class="subscribe__media">
+          <img src="{{ url_for('static', filename='assets/subscribe.png') }}" alt="" />
         </div>
 
         <div class="subscribe__content">
@@ -242,28 +270,24 @@
             <label class="sr-only" for="subscribe-email">Email</label>
 
             <div class="subscribe__pill">
-              <input
-                id="subscribe-email"
-                name="email"
-                type="email"
-                placeholder="Enter your email here"
-                autocomplete="email"
-                required
-              />
+              <input id="subscribe-email" name="email" type="email" placeholder="Enter your email here"
+                autocomplete="email" required />
               <button type="submit">Subscribe</button>
             </div>
           </form>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- FOOTER -->
     <footer class="site-footer" aria-label="Website footer">
       <div class="container footer__grid">
         <div class="footer__brand">
           <div class="footer__logoRow">
-            <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
-            <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+            <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              alt="DetectiFy" />
+            <img class="footer__logo footer__logo--light"
+              src="{{ url_for('static', filename='assets/light-logo.png') }}" alt="DetectiFy" />
             <strong class="footer__name">DetectiFy</strong>
           </div>
           <p class="footer__desc">
@@ -273,18 +297,18 @@
 
         <nav class="footer__col" aria-label="Quick links">
           <h3 class="footer__heading">Quick Links</h3>
-          <a class="footer__link" href="#home">Home</a>
-          <a class="footer__link" href="apps.html">Application</a>
-          <a class="footer__link" href="pricing.html">Pricing</a>
+          <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
         </nav>
 
         <nav class="footer__col" aria-label="Features">
           <h3 class="footer__heading">Features</h3>
-          <a class="footer__link" href="text.html">Text Detection</a>
-          <a class="footer__link" href="image.html">Image Detection</a>
-          <a class="footer__link" href="video.html">Video Detection</a>
-          <a class="footer__link" href="audio.html">Audio Detection</a>
-          <a class="footer__link" href="humanize.html">Text Humanization</a>
+          <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
       </div>
 
@@ -294,7 +318,9 @@
     </footer>
   </main>
 
-  <script src="home.js" defer></script>
-  <script src="theme.js" defer></script>
+  <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
 </body>
+
 </html>

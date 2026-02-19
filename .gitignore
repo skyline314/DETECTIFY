@@ -23,8 +23,20 @@ migrations/
 Thumbs.db
 
 # testing
-tests/
 instance/
 test_detectify.sqlite
 .pytest_cache
+run_benchmark.py
 
+
+# Ignore all ML models and vectorizers
+celery_worker/assets/models/
+*.pth
+*.pkl
+*.d2v
+*.npy
+*.h5
+*.fig
+inject_premium.py
+check_mlflow_connection.py
+check_registered_models.py
