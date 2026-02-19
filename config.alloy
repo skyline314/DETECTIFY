@@ -1,6 +1,7 @@
 
 // 1. Scrape Local Metrics
 prometheus.scrape "local_app" {
+    job_name = "flask"
     targets = [
         { "__address__" = "localhost:7860" },
     ]
