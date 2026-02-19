@@ -33,7 +33,11 @@ def create_app(config_name='default'):
     # Initialize Metrics
     metrics.init_app(app)
     # Set static info (optional)
-    metrics.info('app_info', 'Application info', version='1.0.0')
+    # Set static info (optional)
+    try:
+        metrics.info('app_info', 'Application info', version='1.0.0')
+    except ValueError:
+        pass # Metric already registered
 
     with app.app_context():
         from . import models 
