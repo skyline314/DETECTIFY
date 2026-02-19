@@ -41,3 +41,4 @@ celery_worker/assets/models/
 *.fig
 inject_premium.py
 check_mlflow_connection.py
+check_registered_models.py
