@@ -1,820 +1,202 @@
 <!doctype html>
-<html lang="id">
+<html lang="en" data-theme="dark">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Application • DetectiFy</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DetectiFy — Text Humanizer</title>
 
-  <!-- THEME INIT (SAMA PERSIS DENGAN auth.html) -->
-  <script>
-    (function () {
-      const KEY = "detectify_theme";
-      const saved = localStorage.getItem(KEY);
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const theme = (saved === "light" || saved === "dark") ? saved : (prefersDark ? "dark" : "light");
-      document.documentElement.setAttribute("data-theme", theme);
-    })();
-  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/text.css') }}" />
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    /* ======================================================
-       THEME VARS (MENGIKUTI auth.html)
-       ====================================================== */
-    :root {
-      --bg-body: #f4f7f6;
-      --bg-card: #f2f2f2;
-      --text-main: #1a1a1a;
-      --nav-bg: rgba(255, 255, 255, 0.7);
-      --nav-text: #1a1a1a;
-      --nav-border: rgba(255, 255, 255, 0.3);
-      --knob-bg: #ffffff;
-      --input-bg: #ffffff;
-      --input-border: #ddd;
-
-      /* toggle vars */
-      --navy:#112233;
-      --switch-bg:#e6f7ff;
-      --switch-border:#d7d7d7;
-      --sun:#FFD700;
-      --moon:#62B6FF;
-
-      /* App accent */
-      --blue-outline: #000000;
-      --blue-panel: #dff3ff;
-      --blue-panel-2: #cfeeff;
-      --btn-dark: #022e5a;
-    }
-
-    [data-theme="dark"] {
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      --text-main: #ffffff;
-      --nav-bg: rgba(20, 20, 20, 0.6);
-      --nav-text: #ffffff;
-      --nav-border: rgba(255, 255, 255, 0.1);
-      --knob-bg: #112233;
-      --input-bg: #2d3748;
-      --input-border: #4a5568;
-
-      --switch-bg:#0b1220;
-      --switch-border: rgba(255,255,255,.20);
-
-      --blue-outline: #39b9ee;
-      --blue-panel: #0f2235;
-      --blue-panel-2: #12304b;
-      --btn-dark: #5AA5CD;
-    }
-
-    *{ box-sizing: border-box; }
-    body{
-      margin: 0;
-      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg-body);
-      color: var(--text-main);
-      transition: background 0.3s ease, color 0.3s ease;
-      animation: fadeIn 0.35s ease-in-out;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    /* ======================================================
-       PAGE WRAPPER (SAMA PERSIS auth.html)
-       ====================================================== */
-    .page{
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 18px 18px 0;
-    }
-
-    /* ======================================================
-       NAVBAR (SAMA PERSIS auth.html)
-       ====================================================== */
-    header.topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 8px 12px !important;
-      border: 2px solid #cfcfcf;
-      border-radius: 999px;
-      background:#fff;
-      gap: 12px;
-    }
-    header.topbar .nav{
-      width: 100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 14px;
-      background: transparent !important;
-      border: 0 !important;
-      outline: 0 !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-    }
-    header.topbar .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:700;
-      text-decoration: none;
-      min-width: 0;
-    }
-    .brand__logo { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
-    .brand__name { font-weight: 800; font-size: 1.2rem; color:#000; text-decoration:none; }
-
-    .logo-dark{ display:none; }
-    [data-theme="dark"] .logo-light{ display:none; }
-    [data-theme="dark"] .logo-dark{ display:inline-block; }
-
-    header.topbar .nav__right{
-      display:flex;
-      align-items:center;
-      gap: 14px !important;
-      flex-wrap: wrap;
-      justify-content:flex-end;
-      background: transparent !important;
-      border: 0 !important;
-      outline: 0 !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-    }
-    header.topbar .nav__link{
-      text-decoration:none;
-      color:#111;
-      font-size:0.95rem;
-      font-weight:600;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .btn--nav-primary{
-      background:#022e5a;
-      color:#fff !important;
-      padding:9px 16px !important;
-      border-radius:12px !important;
-      text-decoration:none;
-      font-weight:600;
-      white-space: nowrap;
-    }
-
-    header.topbar .theme-switch{
-      width: 74px !important;
-      height: 38px !important;
-      border-radius: 999px;
-      border: 1px solid var(--switch-border);
-      background: var(--switch-bg);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 8px;
-      padding: 6px !important;
-      cursor:pointer;
-      position: relative;
-      flex: 0 0 auto;
-    }
-    header.topbar .theme-switch:active{ transform: translateY(1px); }
-    header.topbar .switch-knob{
-      position:absolute;
-      left: 6px !important;
-      top: 6px !important;
-      width: 26px !important;
-      height: 26px !important;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 6px 14px rgba(0,0,0,.12);
-      transition: transform .25s ease, background .25s ease;
-      z-index: 1;
-      transform: translateX(1.8px);
-    }
-    header.topbar .theme-switch .icon{
-      width: 24px;
-      height: 24px;
-      display:grid;
-      place-items:center;
-      z-index: 2;
-      pointer-events:none;
-    }
-    header.topbar .sun-icon{ stroke: var(--sun) !important; }
-    header.topbar .moon-icon{ stroke: var(--moon) !important; }
-
-    [data-theme="dark"] header.topbar{
-      background: rgba(7,10,42,.78);
-      border-color: rgba(255,255,255,.28);
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-    }
-    [data-theme="dark"] header.topbar .brand__name{ color:#ffffff; }
-    [data-theme="dark"] header.topbar .nav__link{ color:#ffffff !important; opacity:.95; }
-    [data-theme="dark"] header.topbar .theme-switch{
-      background: #0b1220 !important;
-      border-color: rgba(255,255,255,.2);
-    }
-    [data-theme="dark"] header.topbar .switch-knob{
-      transform: translateX(32px) !important;
-      background: var(--navy);
-    }
-
-    @media (max-width: 520px){
-      header.topbar .brand__name{ display:none !important; }
-      header.topbar .btn--nav-primary{ padding: 8px 12px !important; }
-      header.topbar .nav__right{ gap: 10px !important; }
-    }
-
-    /* ======================================================
-       APP CONTENT (Humanize Text) - MENYESUAIKAN FIGMA
-       ====================================================== */
-    .hero{
-      text-align:center;
-      padding: 26px 0 8px;
-    }
-    .hero h1{
-      margin: 6px 0 6px;
-      font-size: 44px;
-      line-height: 1.05;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-    .hero p{
-      margin:0;
-      font-size: 14px;
-      opacity: .85;
-    }
-
-    .app-panel{
-      margin: 18px auto 0;
-      border: 0.2px solid var(--blue-outline);
-      background: var(--blue-panel);
-      padding: 14px;
-      border-radius: 15px;
-    }
-
-    .panel-grid{
-      display:grid;
-      grid-template-columns: 260px 1fr;
-      gap: 14px;
-      min-height: 460px;
-    }
-
-    .sidebar{
-      background: var(--blue-panel);
-      border-right: 2px solid rgba(0,0,0,.10);
-      padding: 10px 12px;
-    }
-    [data-theme="dark"] .sidebar{
-      border-right: 2px solid rgba(255,255,255,.14);
-    }
-
-    .side-title{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-
-    .side-card{
-      border: 1px solid rgba(0,0,0,.12);
-      border-radius: 10px;
-      background: rgba(255,255,255,.55);
-      padding: 10px;
-    }
-    [data-theme="dark"] .side-card{
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-    }
-
-    .plan{
-      font-size: 12px;
-      opacity: .85;
-      margin: 0 0 10px;
-    }
-    .plan b{ opacity: 1; }
-
-    .quota-row{
-      display:flex;
-      gap: 10px;
-      margin: 10px 0 12px;
-    }
-    .quota-pill{
-      flex:1;
-      text-align:center;
-      padding: 10px 10px;
-      border-radius: 12px;
-      background: rgba(58, 175, 224, .18);
-      border: 1px solid rgba(0,0,0,.12);
-      font-size: 12px;
-      font-weight: 800;
-    }
-    [data-theme="dark"] .quota-pill{
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(57,185,238,.14);
-    }
-
-    .side-btn{
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.14);
-      background: #ffffff;
-      color: var(--text-main);
-      cursor:pointer;
-      font-weight: 700;
-      margin-top: 10px;
-    }
-    .side-btn.primary{
-      background: #022e5a;
-      color: #fff;
-      border-color: rgba(0,0,0,.08);
-    }
-    [data-theme="dark"] .side-btn{
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.16);
-      color: #fff;
-    }
-    [data-theme="dark"] .side-btn.primary{
-      background: #5AA5CD;
-      color: #020617;
-    }
-
-    .content{
-      padding: 8px 6px 6px 6px;
-    }
-
-    .top-row{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .mode-block{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-
-    .mode-label{
-      font-weight: 900;
-      font-size: 13px;
-    }
-
-    .tabs{
-      display:flex;
-      gap: 8px;
-      background: var(--blue-panel-2);
-      border: 1px solid rgba(0,0,0,.12);
-      border-radius: 999px;
-      padding: 4px;
-    }
-    [data-theme="dark"] .tabs{
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.12);
-    }
-
-    .tab{
-      border: 0;
-      background: transparent;
-      color: rgba(0,0,0,.65);
-      font-size: 12px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      cursor:pointer;
-      font-weight: 800;
-    }
-    [data-theme="dark"] .tab{ color: rgba(255,255,255,.72); }
-
-    .tab.active{
-      background: rgba(58, 175, 224, .35);
-      color: var(--text-main);
-      border: 1px solid rgba(58, 175, 224, .45);
-    }
-
-    .copy-btn{
-      border: 0;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: #022e5a;
-      color: #fff;
-      cursor:pointer;
-      font-weight: 800;
-      font-size: 12px;
-    }
-    [data-theme="dark"] .copy-btn{
-      background: #5AA5CD;
-      color: #020617;
-    }
-
-    .io-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 6px;
-    }
-
-    .box{
-      background: rgba(255,255,255,.55);
-      border: 1px solid rgba(0,0,0,.12);
-      border-radius: 10px;
-      padding: 14px 14px 12px;
-      min-height: 320px;
-      display:flex;
-      flex-direction:column;
-    }
-    [data-theme="dark"] .box{
-      background: rgba(0,0,0,.16);
-      border: 1px solid rgba(255,255,255,.16);
-    }
-
-    .box-title{
-      font-weight: 900;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-
-    textarea{
-      width: 100%;
-      flex:1;
-      border: 0;
-      outline: none;
-      resize: none;
-      background: transparent;
-      color: var(--text-main);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-    textarea::placeholder{ opacity: .7; }
-
-    /* .empty-icon{
-      width: 52px; height: 52px;
-      border: 1px solid rgba(0,0,0,.14);
-      border-radius: 10px;
-      margin: 40px auto 0;
-      display:grid;
-      place-items:center;
-      opacity: .6;
-      background: rgba(255,255,255,.25);
-    } */
-    /* [data-theme="dark"] .empty-icon{
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.12);
-    } */
-
-    .actions{
-      display:flex;
-      gap: 10px;
-      justify-content:center;
-      margin-top: 14px;
-    }
-
-    .action-btn{
-      border: 0;
-      padding: 10px 16px;
-      border-radius: 999px;
-      cursor:pointer;
-      font-weight: 900;
-      font-size: 12px;
-      background: #022e5a;
-      color: #fff;
-      box-shadow: 0 8px 18px rgba(0,0,0,.12);
-    }
-    [data-theme="dark"] .action-btn{
-      background: #5AA5CD;
-      color: #020617;
-    }
-
-    @media (max-width: 980px){
-      .panel-grid{ grid-template-columns: 1fr; }
-      .sidebar{ border-right: 0; border-bottom: 2px solid rgba(0,0,0,.10); }
-      [data-theme="dark"] .sidebar{ border-bottom: 2px solid rgba(255,255,255,.14); }
-      .io-grid{ grid-template-columns: 1fr; }
-    }
-
-    /* ======================================================
-       FOOTER (SAMA PERSIS auth.html)
-       ====================================================== */
-    .footer{
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-      background: #ffffff;
-      border-top: 1px solid #e5e7eb;
-      padding: 32px 0 24px;
-      color: #1f2937;
-      margin-top: 24px;
-    }
-
-    .footer-grid{
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 18px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 32px;
-    }
-
-    .footer-brand{ display:flex; align-items:flex-start; gap:10px; }
-    .footer-logo img{ width: 35px; height: auto; display: block; }
-
-    .footer h4{ color: #111827; font-size: 13px; margin-bottom: 10px; }
-    .footer a{
-      color: #374151;
-      font-size: 13px;
-      text-decoration: none;
-      margin: 6px 0;
-      display: block;
-    }
-    .footer a:hover{ color:#111827; }
-    .footer small{ color: #6b7280; line-height: 1.5; display:block; margin-top:6px; }
-    .copyright{ text-align: center; font-size: 12px; color: #6b7280; margin-top: 28px; }
-
-    [data-theme="dark"] .footer{
-      background: radial-gradient(120% 120% at 50% 0%, #1b1b1b 0%, #0f0f0f 60%, #000000 100%);
-      border-top: 1px solid rgba(255,255,255,.1);
-      color: #e5e7eb;
-    }
-    [data-theme="dark"] .footer h4{ color:#ffffff; }
-    [data-theme="dark"] .footer a{ color:#cbd5e1; }
-    [data-theme="dark"] .footer a:hover{ color:#ffffff; }
-    [data-theme="dark"] .footer small{ color:#9ca3af; }
-    [data-theme="dark"] .copyright{
-      color:#9ca3af;
-      border-top: 1px solid rgba(255,255,255,.08);
-      padding-top: 14px;
-    }
-
-    .output-bar{
-      display: flex;
-      align-items: center;
-      justify-content:flex-end; /* semua ke kanan */
-      gap: 265px;                   /* ⬅️ WAJIB */
-    }
-
-    .upload-icon{
-      cursor: pointer;
-    }
-
-    .upload-icon:hover{
-      opacity: 0.85;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="page">
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="{{ url_for('analysis.index') }}">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              alt="Logo" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              alt="Logo" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
 
-    <!-- NAVBAR -->
-    <header class="topbar">
-      <div class="nav">
-        <a class="brand" href="index.html">
-          <img class="brand__logo logo-light" src="assets/light-logo.png" alt="DetectiFy" />
-          <img class="brand__logo logo-dark" src="assets/dark-logo.png" alt="DetectiFy" />
-          <span class="brand__name">DetectiFy</span>
-        </a>
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
 
-        <div class="nav__right">
-          <button class="theme-switch" id="themeBtn" type="button" aria-label="Toggle theme">
-            <div class="switch-knob"></div>
-            <div class="icon">
-              <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-              </svg>
-            </div>
-            <div class="icon">
-              <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-              </svg>
-            </div>
-          </button>
-
-          <a class="nav__link" href="index.html">Home</a>
-          <a class="nav__link" href="application.html">Application</a>
-          <a class="btn--nav-primary" href="get-started.html">Get Started</a>
-        </div>
-      </div>
-    </header>
-
-    <!-- HERO -->
-    <header class="hero">
-      <h1>Humanize Text</h1>
-      <p>Make your text more “human” for every kind of situation</p>
-    </header>
-
-    <!-- MAIN APP -->
-    <main>
-      <section class="app-panel" aria-label="Humanize Text Panel">
-        <div class="panel-grid">
-          <!-- Sidebar -->
-          <aside class="sidebar">
-            <div class="side-title">
-              <span aria-hidden="true">ⓘ</span>
-              <span>Usage Guides</span>
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
+              </button>
             </div>
 
-            <div class="side-card">
-              <p class="plan">Your plan:<br><b>Free</b></p>
-
-              <div class="quota-row">
-                <div class="quota-pill">AI Detector<br>500 Words</div>
-                <div class="quota-pill">AI Humanizer<br>500 Words</div>
-              </div>
-
-              <button class="side-btn" type="button">Start For Free</button>
-              <button class="side-btn primary" type="button">Upgrade Plan</button>
-            </div>
-          </aside>
-
-          <!-- Content -->
-          <div class="content">
-            <div class="top-row">
-              <div class="mode-block">
-                <div class="mode-label">Mode</div>
-                <div class="tabs" role="tablist" aria-label="Mode Tabs">
-                  <button class="tab active" role="tab" aria-selected="true" data-mode="casual">Casual</button>
-                  <button class="tab" role="tab" aria-selected="false" data-mode="academic">Academic</button>
-                  <button class="tab" role="tab" aria-selected="false" data-mode="professional">Professional</button>
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
                 </div>
               </div>
+            </nav>
 
-              <div class="output-bar">
-                <span class="mode-label">Output</span>
-                <button class="copy-btn" id="copyBtn" type="button">Copy</button>
-              </div>
-            </div>
-
-            <div class="io-grid">
-              <!-- Input -->
-              <div class="box">
-                <div class="box-title">&nbsp;</div>
-
-                <textarea id="inputText" placeholder="Paste your text here."></textarea>
-
-                <label class="empty-icon upload-icon" title="Upload file">
-                <input type="file" id="fileUpload" accept=".txt" hidden />
-
-                <!-- ICON UPLOAD -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                </label>
-
-              </div>
-
-              <!-- Output -->
-              <div class="box">
-                <div class="box-title">&nbsp;</div>
-                <textarea id="outputText" placeholder="Your humanized content will appear here." readonly></textarea>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="action-btn" id="checkBtn" type="button">Check for AI</button>
-              <button class="action-btn" id="humanizeBtn" type="button">Humanize</button>
-            </div>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- FOOTER (SAMA PERSIS auth.html) -->
-    <footer class="footer">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">
-            <div class="footer-logo">
-              <img src="./assets/light-logo.png" alt="DetectiFy Logo" />
-            </div>
-            <div>
-              <div style="font-weight:700;">DetectiFy</div>
-              <small>Transform AI-generated content into naturally human-like results</small>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h4>Quick Links</h4>
-          <a href="#">Home</a>
-          <a href="#">Application</a>
-        </div>
-
-        <div>
-          <h4>Features</h4>
-          <a href="#">Text Humanization</a>
-          <a href="#">Image Enhancement</a>
-          <a href="#">Video Processing</a>
-          <a href="#">Audio Conversion</a>
         </div>
       </div>
 
-      <div class="copyright">© 2024 DetectiFy. All rights reserved.</div>
-    </footer>
-  </div>
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+      </div>
+    </div>
+  </header>
 
-  <!-- THEME TOGGLE  -->
-  <script>
-    const themeBtn = document.getElementById('themeBtn');
-    const html = document.documentElement;
+  <main class="df-page">
+    <section class="df-hero">
+      <h1>AI Text Humanizer</h1>
+      <p>Rewrite AI-generated text to sound more natural and human-like.</p>
+    </section>
 
-    themeBtn.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('detectify_theme', newTheme);
-    });
-  </script>
+    <section class="df-panel" aria-label="Text humanizer panel">
+      <div class="df-panel__grid">
 
-  <!-- APP LOGIC (tabs, copy, demo actions + upload) -->
-  <script>
-    // Tabs
-    const tabs = document.querySelectorAll(".tab");
-    let currentMode = "casual";
+        <div class="df-card df-card--left">
+          <div class="df-card__head" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+              <h2 class="df-card__title">Input Text</h2>
+            </div>
 
-    tabs.forEach(t => {
-      t.addEventListener("click", () => {
-        tabs.forEach(x => {
-          x.classList.remove("active");
-          x.setAttribute("aria-selected", "false");
-        });
-        t.classList.add("active");
-        t.setAttribute("aria-selected", "true");
-        currentMode = t.dataset.mode || "casual";
-      });
-    });
+            <div class="lang-selector" id="langSelector">
+              <button type="button" class="lang-btn" data-lang="en">English</button>
+              <button type="button" class="lang-btn" data-lang="id">Indonesia</button>
+            </div>
+          </div>
 
-    // Buttons
-    const inputText = document.getElementById("inputText");
-    const outputText = document.getElementById("outputText");
-    const checkBtn = document.getElementById("checkBtn");
-    const humanizeBtn = document.getElementById("humanizeBtn");
-    const copyBtn = document.getElementById("copyBtn");
+          <textarea id="textInput" class="df-textarea" placeholder="Paste your AI-generated text here to humanize..."
+            spellcheck="false"></textarea>
 
-    checkBtn.addEventListener("click", () => {
-      const txt = inputText.value.trim();
-      outputText.value = txt
-        ? `[${currentMode.toUpperCase()}] (Demo) AI check complete.\n\n` + txt
-        : "";
-    });
+          <div class="df-under">
+            <div class="df-meta">
+              <span id="wordCount">0</span> / <span id="wordLimit">500</span> words
+            </div>
 
-    humanizeBtn.addEventListener("click", () => {
-      const txt = inputText.value.trim();
-      if(!txt){ outputText.value = ""; return; }
+            <button class="df-primary" id="btn-humanize" type="button">
+              Humanize Text
+            </button>
+          </div>
+        </div>
 
-      const prefix =
-        currentMode === "academic" ? "Berikut versi yang lebih natural dan akademik:\n\n" :
-        currentMode === "professional" ? "Berikut versi yang lebih natural dan profesional:\n\n" :
-        "Berikut versi yang lebih natural:\n\n";
+        <div class="df-divider" aria-hidden="true"></div>
 
-      outputText.value = prefix + txt;
-    });
+        <aside class="df-card df-card--right" aria-label="Humanize result">
 
-    copyBtn.addEventListener("click", async () => {
-      const txt = outputText.value.trim();
-      if(!txt) return;
+          <div class="df-result__empty" id="emptyState">
+            <p class="df-result__hint">Result will appear here</p>
+          </div>
 
-      try{
-        await navigator.clipboard.writeText(txt);
-        copyBtn.textContent = "Copied";
-        setTimeout(() => (copyBtn.textContent = "Copy"), 1200);
-      }catch(e){
-        outputText.select();
-        document.execCommand("copy");
-        copyBtn.textContent = "Copied";
-        setTimeout(() => (copyBtn.textContent = "Copy"), 1200);
-      }
-    });
+          <div class="df-result__body" id="resultBody" hidden>
+            <div class="df-result__header">
+              <p class="df-result__title">Humanized Result</p>
+              <button class="icon-btn" id="btn-copy" type="button" aria-label="Copy result" style="margin-left: auto;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
 
-    // Upload .txt into input textarea
-    const fileUpload = document.getElementById("fileUpload");
-    if (fileUpload && inputText) {
-      fileUpload.addEventListener("change", () => {
-        const file = fileUpload.files[0];
-        if (!file) return;
+            <div class="df-sep"></div>
 
-        if (!file.type.includes("text")) {
-          alert("Please upload a text file (.txt)");
-          fileUpload.value = "";
-          return;
-        }
+            <textarea id="humanizedOutput" class="df-textarea" readonly></textarea>
 
-        const reader = new FileReader();
-        reader.onload = () => {
-          inputText.value = reader.result;
-        };
-        reader.readAsText(file);
-      });
-    }
-  </script>
+            <div class="df-sep"></div>
+
+            <div class="df-mini">
+              <div class="df-mini__item">
+                <span class="df-mini__k">Target Language</span>
+                <span class="df-mini__v" id="resultLang">Indonesia</span>
+              </div>
+              <div class="df-mini__item">
+                <span class="df-mini__k">Status</span>
+                <span class="df-mini__v" id="resultStatus">Processing...</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
+          <strong class="footer__name">DetectiFy</strong>
+        </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/humanize.js') }}"></script>
+
+
 </body>
+
 </html>

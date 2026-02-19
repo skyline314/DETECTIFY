@@ -1,85 +1,84 @@
 <!doctype html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Video Detection • DetectiFy</title>
-
-  <!-- Anti-flicker tema (sama seperti index.html) -->
-  <script>
-    (function () {
-      const KEY = "detectify_theme";
-      const saved = localStorage.getItem(KEY);
-      const prefersDark = window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-      const theme = (saved === "light" || saved === "dark")
-        ? saved
-        : (prefersDark ? "dark" : "light");
-
-      document.documentElement.setAttribute("data-theme", theme);
-    })();
-  </script>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
-  <!-- TOPBAR (konsisten dengan index.html) -->
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
-          <a class="brand" href="index.html#top" aria-label="Back to home">
-            <img class="brand__logo brand__logo--light"
-                 src="assets/light-logo.png"
-                 width="34" height="34"
-                 alt="DetectiFy" decoding="async" loading="eager" />
-            <img class="brand__logo brand__logo--dark"
-                 src="assets/dark-logo.png"
-                 width="34" height="34"
-                 alt="DetectiFy" decoding="async" loading="eager" />
-            <span class="brand__name" id="brandName">DetectiFy</span>
+          <!-- Brand -->
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <span class="brand__name">DetectiFy</span>
           </a>
 
           <div class="nav__right">
             <div class="nav__icons" aria-label="Quick actions">
-              <button class="icon-btn" id="themeToggle" type="button"
-                aria-label="Toggle theme" aria-pressed="false">
+              <!-- Theme toggle -->
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
               </button>
 
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
-                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <!-- Mobile hamburger -->
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round"/>
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
+            <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
-              <a class="nav__link" href="index.html#home">Home</a>
-              <a class="nav__link" href="index.html#app">Application</a>
-              <a class="nav__link" href="index.html#features">Features</a>
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
             </nav>
 
-            <a class="btn btn--primary" href="login.html">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
 
+      <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
-          <a class="mobile-link" href="index.html#home">Home</a>
-          <a class="mobile-link" href="index.html#app">Application</a>
-          <a class="mobile-link" href="index.html#features">Features</a>
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
-        <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
@@ -91,22 +90,17 @@
 
       <div class="upload-card">
         <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload video file">
-          <input
-            id="fileInput"
-            class="dropzone__input"
-            type="file"
-            accept=".mp4,.mov,.mpeg,video/mp4,video/quicktime,video/mpeg"
-          />
+          <input id="fileInput" class="dropzone__input" type="file"
+            accept=".mp4,.avi,.mov,video/mp4,video/x-msvideo,video/quicktime" />
 
           <div class="dropzone__inner">
-            <div class="dropzone__icon dropzone__icon--video" aria-hidden="true">
-              <!-- folder + clapper icon -->
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M8 14h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M9 11l2-1 2 1 2-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            <!-- Video Preview Player -->
+            <video id="videoPreview" controls
+              style="display:none; width:100%; max-width:480px; max-height:270px; border-radius:10px; margin-bottom:1.5rem; object-fit:contain;"></video>
+
+            <div id="dropzoneIcon" class="dropzone__icon dropzone__icon--video" aria-hidden="true">
+              <img src="{{ url_for('static', filename='assets/video-folder.png') }}" alt="" class="dropzone__iconImg"
+                decoding="async" loading="eager" />
             </div>
 
             <div class="dropzone__title">Drag &amp; drop your video here</div>
@@ -122,7 +116,9 @@
               <span class="dot" aria-hidden="true">•</span>
               <span class="pill">Max Size: <b>100 MB</b></span>
             </div>
+            <div class="dropzone__hint">Tips: use a clear, high-resolution video for better results.</div>
           </div>
+
         </div>
 
         <div class="upload-actions">
@@ -133,7 +129,7 @@
 
           <div class="actions-row">
             <button class="btn" type="button" id="btnRemove" disabled>Remove</button>
-            <button class="btn btn--primary" type="button" id="btnUpload" disabled>Upload</button>
+            <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
           </div>
 
           <div class="progress" id="progressWrap" hidden aria-label="upload progress">
@@ -141,12 +137,69 @@
           </div>
 
           <div class="status" id="status" role="status" aria-live="polite"></div>
+
+          <div id="resultCard" class="result-card" style="display:none;">
+            <p class="result-card__title">Analysis Result</p>
+            <p class="result-card__label" id="resultLabel">-</p>
+            <div class="prob-bar">
+              <div class="prob-bar__track">
+                <div class="prob-bar__fill prob-bar__fill--ai" id="barAi" style="width:0%"></div>
+                <div class="prob-bar__fill prob-bar__fill--human" id="barHuman" style="width:0%"></div>
+              </div>
+              <div class="prob-bar__labels">
+                <span class="prob-bar__label--ai">AI: <strong id="pctAi">0%</strong></span>
+                <span class="prob-bar__label--human">Human: <strong id="pctHuman">0%</strong></span>
+              </div>
+            </div>
+            <div class="result-card__confidence">Confidence: <strong id="resultConfidence">-</strong></div>
+            <div class="result-card__details" id="resultDetails"></div>
+          </div>
         </div>
       </div>
     </section>
   </main>
+  <!-- FOOTER -->
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
+          <strong class="footer__name">DetectiFy</strong>
+        </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
+      </div>
 
-  <script src="theme.js" defer></script>
-  <script src="upload-video.js" defer></script>
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/upload-video.js') }}" defer></script>
 </body>
+
 </html>

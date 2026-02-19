@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auth • DetectiFy</title>
+  <title>Get Started • DetectiFy</title>
 
+  <!-- Init theme awal biar logo/navbar ga kedip salah -->
   <script>
     (function () {
       const KEY = "detectify_theme";
@@ -18,659 +20,239 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
 
-  <style>
-    :root {
-      --bg-body: #f4f7f6;
-      --bg-card: #f2f2f2;
-      --text-main: #1a1a1a;
-      --nav-bg: rgba(255, 255, 255, 0.7);
-      --nav-text: #1a1a1a;
-      --nav-border: rgba(255, 255, 255, 0.3);
-      --knob-bg: #ffffff;
-      --input-bg: #ffffff;
-      --input-border: #ddd;
-
-      /* toggle vars */
-      --navy:#112233;
-      --switch-bg:#e6f7ff;
-      --switch-border:#d7d7d7;
-      --sun:#FFD700;
-      --moon:#62B6FF;
-
-      /* ===== AUTH SLIDER IMAGES (GANTI SESUAI FILE KAMU) ===== */
-      --media-login: url("assets/hero-bg.jpg");
-      --media-signup: url("assets/hero-bg.jpg");
-      --auth-h: 560px; /* tinggi box auth, kamu boleh ubah */
-    }
-
-    [data-theme="dark"] {
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      --text-main: #ffffff;
-      --nav-bg: rgba(20, 20, 20, 0.6);
-      --nav-text: #ffffff;
-      --nav-border: rgba(255, 255, 255, 0.1);
-      --knob-bg: #112233;
-      --input-bg: #2d3748;
-      --input-border: #4a5568;
-
-      --switch-bg:#0b1220;
-      --switch-border: rgba(255,255,255,.20);
-    }
-
-    body {
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      animation: fadeIn 0.4s ease-in-out;
-      transition: background 0.3s ease, color 0.3s ease;
-      margin: 0;
-      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .auth__card { background-color: var(--bg-card); color: var(--text-main); transition: background 0.3s ease; }
-    .auth__title, .auth__desc, .field label, .auth__bottom, .auth__bottom a { color: var(--text-main); }
-
-    .field input {
-      background-color: var(--input-bg);
-      border: 1px solid var(--input-border);
-      color: var(--text-main);
-      transition: background 0.3s ease, border 0.3s ease;
-    }
-
-    .auth__media {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      text-align: center;
-      color: #ffffff;
-      background: rgba(0, 0, 0, 0.45);
-      overflow: hidden;
-    }
-    .auth__media::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
-      z-index: 1;
-      pointer-events: none;
-    }
-    .auth__media-content { position: relative; z-index: 2; padding: 2rem; }
-    .auth__media-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-    .btn--outline-white {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      color: white;
-      padding: 0.8rem 3rem;
-      border-radius: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn--outline-white:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.02); }
-
-    /* jarak navbar ke box auth */
-    .auth { margin-top: 60px !important; }
-
-    /* ======================================================
-       NAVBAR (sesuai code kamu)
-       ====================================================== */
-    .page{
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 18px 18px 0;
-    }
-
-    header.topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 8px 12px !important;
-      border: 2px solid #cfcfcf;
-      border-radius: 999px;
-      background:#fff;
-      gap: 12px;
-    }
-    header.topbar .nav{
-      width: 100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 14px;
-      background: transparent !important;
-      border: 0 !important;
-      outline: 0 !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-    }
-    header.topbar .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:700;
-      text-decoration: none;
-      min-width: 0;
-    }
-    .brand__logo { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
-    .brand__name { font-weight: 800; font-size: 1.2rem; color:#000; text-decoration:none; }
-
-    .logo-dark{ display:none; }
-    [data-theme="dark"] .logo-light{ display:none; }
-    [data-theme="dark"] .logo-dark{ display:inline-block; }
-
-    header.topbar .nav__right{
-      display:flex;
-      align-items:center;
-      gap: 14px !important;
-      flex-wrap: wrap;
-      justify-content:flex-end;
-      background: transparent !important;
-      border: 0 !important;
-      outline: 0 !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-    }
-    header.topbar .nav__link{
-      text-decoration:none;
-      color:#111;
-      font-size:0.95rem;
-      font-weight:600;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .btn--nav-primary{
-      background:#022e5a;
-      color:#fff !important;
-      padding:9px 16px !important;
-      border-radius:12px !important;
-      text-decoration:none;
-      font-weight:600;
-      white-space: nowrap;
-    }
-
-    header.topbar .theme-switch{
-      width: 74px !important;
-      height: 38px !important;
-      border-radius: 999px;
-      border: 1px solid var(--switch-border);
-      background: var(--switch-bg);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 8px;
-      padding: 6px !important;
-      cursor:pointer;
-      position: relative;
-      flex: 0 0 auto;
-    }
-    header.topbar .theme-switch:active{ transform: translateY(1px); }
-    header.topbar .switch-knob{
-      position:absolute;
-      left: 6px !important;
-      top: 6px !important;
-      width: 26px !important;
-      height: 26px !important;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 6px 14px rgba(0,0,0,.12);
-      transition: transform .25s ease, background .25s ease;
-      z-index: 1;
-      transform: translateX(1.8px); /*buat atur buletan toggle)*/
-    }
-    header.topbar .theme-switch .icon{
-      width: 24px;
-      height: 24px;
-      display:grid;
-      place-items:center;
-      z-index: 2;
-      pointer-events:none;
-    }
-    header.topbar .sun-icon{ stroke: var(--sun) !important; }
-    header.topbar .moon-icon{ stroke: var(--moon) !important; }
-
-    [data-theme="dark"] header.topbar{
-      background: rgba(7,10,42,.78);
-      border-color: rgba(255,255,255,.28);
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-    }
-    [data-theme="dark"] header.topbar .brand__name{ color:#ffffff; }
-    [data-theme="dark"] header.topbar .nav__link{ color:#ffffff !important; opacity:.95; }
-    [data-theme="dark"] header.topbar .theme-switch{
-      background: #0b1220 !important;
-      border-color: rgba(255,255,255,.2);
-    }
-    [data-theme="dark"] header.topbar .switch-knob{
-      transform: translateX(32px) !important; /*buat atur buletan toggle)*/
-      background: var(--navy);
-    }
-
-    @media (max-width: 520px){
-      header.topbar .brand__name{ display:none !important; }
-      header.topbar .btn--nav-primary{ padding: 8px 12px !important; }
-      header.topbar .nav__right{ gap: 10px !important; }
-    }
-
-    /* ======================================================
-       FOOTER (sesuai code kamu)
-       ====================================================== */
-    .footer{
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-      background: #ffffff;
-      border-top: 1px solid #e5e7eb;
-      padding: 32px 0 24px;
-      color: #1f2937;
-      margin-top: 24px;
-    }
-
-    .footer-grid{
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 18px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 32px;
-    }
-
-    .footer-brand{ display:flex; align-items:flex-start; gap:10px; }
-    .footer-logo img{ width: 35px; height: auto; display: block; }
-
-    .footer h4{ color: #111827; font-size: 13px; margin-bottom: 10px; }
-    .footer a{
-      color: #374151;
-      font-size: 13px;
-      text-decoration: none;
-      margin: 6px 0;
-      display: block;
-    }
-    .footer a:hover{ color:#111827; }
-    .footer small{ color: #6b7280; line-height: 1.5; display:block; margin-top:6px; }
-    .copyright{ text-align: center; font-size: 12px; color: #6b7280; margin-top: 28px; }
-
-    [data-theme="dark"] .footer{
-      background: radial-gradient(120% 120% at 50% 0%, #1b1b1b 0%, #0f0f0f 60%, #000000 100%);
-      border-top: 1px solid rgba(255,255,255,.1);
-      color: #e5e7eb;
-    }
-    [data-theme="dark"] .footer h4{ color:#ffffff; }
-    [data-theme="dark"] .footer a{ color:#cbd5e1; }
-    [data-theme="dark"] .footer a:hover{ color:#ffffff; }
-    [data-theme="dark"] .footer small{ color:#9ca3af; }
-    [data-theme="dark"] .copyright{
-      color:#9ca3af;
-      border-top: 1px solid rgba(255,255,255,.08);
-      padding-top: 14px;
-    }
-
-    /* ======================================================
-       AUTH SLIDER (GAMBAR SAJA SLIDE)
-       ====================================================== */
-    .auth__shell.auth-slider{
-      position: relative;
-      min-height: var(--auth-h);
-      overflow: hidden;
-    }
-
-    /* panel form */
-    .auth__shell.auth-slider .auth__panel{
-      position: absolute;
-      top: 0;
-      height: 100%;
-      width: 50%;
-      z-index: 2;
-      transition: opacity .25s ease;
-    }
-    .auth__shell.auth-slider .auth__panel--login{
-      left: 0;
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .auth__shell.auth-slider .auth__panel--signup{
-      left: 50%;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* media: ini yang slide */
-    .auth__shell.auth-slider .auth__panel-media{
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 50%;
-      height: 100%;
-      z-index: 3;
-      transition: transform .55s ease;
-      transform: translateX(0);
-      overflow: hidden;
-    }
-
-    /* background login */
-    .auth__shell.auth-slider .auth__mediaInner{
-      position: absolute;
-      inset: 0;
-      background-image: var(--media-login);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    /* background signup overlay */
-    .auth__shell.auth-slider .auth__mediaInner::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background-image: var(--media-signup);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity .35s ease;
-    }
-
-    .auth__shell.auth-slider .media-content--signup{ display:none; }
-
-    /* state signup */
-    .auth__shell.auth-slider.is-signup .auth__panel-media{
-      transform: translateX(-100%);
-    }
-    .auth__shell.auth-slider.is-signup .auth__panel--login{
-      opacity: 0;
-      pointer-events: none;
-    }
-    .auth__shell.auth-slider.is-signup .auth__panel--signup{
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .auth__shell.auth-slider.is-signup .media-content--login{ display:none; }
-    .auth__shell.auth-slider.is-signup .media-content--signup{ display:block; }
-    .auth__shell.auth-slider.is-signup .auth__mediaInner::after{ opacity: 1; }
-
-    /* mobile stack */
-    @media (max-width: 768px){
-      .auth__shell.auth-slider{
-        position: static;
-        min-height: auto;
-      }
-      .auth__shell.auth-slider .auth__panel,
-      .auth__shell.auth-slider .auth__panel-media{
-        position: static;
-        width: 100%;
-        transform: none !important;
-      }
-      .auth__shell.auth-slider .auth__panel--signup{
-        left: auto;
-        opacity: 1;        /* biar bisa kebaca kalau kamu scroll */
-        pointer-events: auto;
-      }
-    }
-
-    /* slider gambar saja */
-.media-slider{
-  position: absolute;
-  inset: 0;
-  width: 200%;
-  display: flex;
-  transition: transform .7s cubic-bezier(.77,0,.18,1);
-}
-
-.auth--signup .media-slider{
-  transform: translateX(-50%);
-}
-
-.media-slide{
-  width: 50%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-}
-
-/* ===== BUTTON AUTH (LOGIN & SIGNUP) ===== */
-.btn--primary{
-  background: #022e5a;   /* warna biru light mode */
-  color: #ffffff;
-}
-
-[data-theme="dark"] .btn--primary{
-  background: #5AA5CD;   /* warna dark mode */
-  color: #020617;
-}
-/* === LOGO THEME SWITCH (FINAL) === */
-.logo-light {
-  display: inline-block;
-}
-
-.logo-dark {
-  display: none;
-}
-
-[data-theme="dark"] .logo-light {
-  display: none;
-}
-
-[data-theme="dark"] .logo-dark {
-  display: inline-block;
-}
-
-
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
 </head>
 
 <body>
-  <div class="page">
+  <!-- NAVBAR -->
+  <header class="topbar" id="top">
+    <div class="container">
+      <div class="topbar__shell">
+        <div class="nav">
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
 
-    <!-- NAVBAR -->
-    <header class="topbar">
-      <div class="nav">
-        <a class="brand" href="index.html">
-          <img class="brand__logo logo-light" src="assets/light-logo.png" alt="DetectiFy" />
-          <img class="brand__logo logo-dark" src="assets/dark-logo.png" alt="DetectiFy" />
-          <span class="brand__name">DetectiFy</span>
-        </a>
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true">
+                  <!-- SUN (light) -->
+                  <svg class="theme-ico theme-ico--sun" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41
+                            M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
 
-        <div class="nav__right">
-          <button class="theme-switch" id="themeBtn" type="button" aria-label="Toggle theme">
-            <div class="switch-knob"></div>
-            <div class="icon">
-              <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-              </svg>
-            </div>
-            <div class="icon">
-              <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-              </svg>
-            </div>
-          </button>
-
-          <a class="nav__link" href="index.html">Home</a>
-          <a class="nav__link" href="application.html">Application</a>
-          <a class="btn--nav-primary" href="get-started.html">Get Started</a>
-        </div>
-      </div>
-    </header>
-
-    <!-- AUTH -->
-    <main class="auth">
-      <div class="container">
-        <section class="auth__shell auth-slider" id="authSlider">
-
-          <!-- LOGIN FORM (kiri) -->
-          <div class="auth__card auth__panel auth__panel--login">
-            <h1 class="auth__title">Log in to your account.</h1>
-            <p class="auth__desc">login for continue to DetectiFy.</p>
-
-            <form id="loginForm" class="auth__form">
-              <div class="field">
-                <label>Email</label>
-                <input type="email" placeholder="Email" required />
-              </div>
-              <div class="field">
-                <label>Password</label>
-                <input type="password" placeholder="Password" required />
-              </div>
-
-              <button class="btn btn--primary btn--block" type="submit"
-                style="width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;">
-                Login
+                  <!-- MOON (dark) -->
+                  <svg class="theme-ico theme-ico--moon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </button>
 
-              <p class="auth__bottom" style="margin-top: 15px; text-align: center;">
-                <a href="#" data-auth-toggle="signup" style="text-decoration: none; font-weight: 600;"></a>
-              </p>
-            </form>
-          </div>
-
-          <!-- SIGNUP FORM (kanan) -->
-          <div class="auth__card auth__panel auth__panel--signup">
-            <h1 class="auth__title">Create your account.</h1>
-            <p class="auth__desc">create your account for use DetectiFy.</p>
-
-            <form id="signupForm" class="auth__form">
-              <div class="field">
-                <label>Username</label>
-                <input type="text" placeholder="Username" required />
-              </div>
-
-              <div class="field">
-                <label>Email</label>
-                <input type="email" placeholder="Email" required />
-              </div>
-
-              <div class="field">
-                <label>Password</label>
-                <input type="password" placeholder="Password" required />
-              </div>
-
-              <div class="field">
-                <label>Confirm Password</label>
-                <input type="password" placeholder="Confirm Password" required />
-              </div>
-
-              <button class="btn btn--primary btn--block" type="submit"
-                style="width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;">
-                Create Account
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
               </button>
+            </div>
 
-              <p class="auth__bottom" style="margin-top: 15px; text-align: center;">
-              
-                <a href="#" data-auth-toggle="login" style="text-decoration: none; font-weight: 600;"></a>
-              </p>
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
+            </nav>
+
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="auth">
+    <div class="container">
+      <section class="auth__shell auth-slider" id="authSlider" aria-label="Authentication">
+
+        <!-- STATUS -->
+
+
+        <!-- LOGIN -->
+        <div class="auth__card auth__panel auth__panel--login">
+          <h1 class="auth__title">Log in to your account.</h1>
+          <p class="auth__desc">Login to continue to DetectiFy.</p>
+
+          <form id="loginForm" class="auth__form">
+            <div class="field">
+              <label for="loginEmail">Email</label>
+              <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required />
+            </div>
+
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
+                required />
+            </div>
+
+            <!-- STATUS LOGIN -->
+            <div id="loginStatus" class="auth__status"></div>
+
+            <button class="btn btn--primary btn--block" type="submit">Login</button>
+
+            <div style="text-align:center;margin-top:12px">
+              <a href="#" id="forgotPasswordLink" class="auth__forgot-link">Forgot Password?</a>
+            </div>
+          </form>
+
+          <!-- FORGOT PASSWORD (hidden initially) -->
+          <div id="forgotPasswordPanel" style="display:none;margin-top:0">
+            <h2 class="auth__title" style="font-size:20px">Reset Your Password</h2>
+            <p class="auth__desc">Enter your email and we'll send you a reset token.</p>
+            <form id="forgotPasswordForm" class="auth__form">
+              <div class="field">
+                <label for="forgotEmail">Email</label>
+                <input id="forgotEmail" type="email" placeholder="youremail@example.com" autocomplete="email"
+                  required />
+              </div>
+              <div id="forgotMsg" style="display:none;padding:10px;border-radius:8px;font-size:13px;margin-bottom:10px">
+              </div>
+              <button class="btn btn--primary btn--block" type="submit">Send Reset Token</button>
+              <div style="text-align:center;margin-top:10px">
+                <a href="#" id="backToLoginLink" class="auth__forgot-link">← Back to Login</a>
+              </div>
             </form>
           </div>
+        </div>
 
-          <!-- MEDIA (SLIDE) -->
-          <aside class="auth__media auth__panel-media">
-            <div class="auth__mediaInner"></div>
+        <!-- SIGNUP -->
+        <div class="auth__card auth__panel auth__panel--signup">
+          <h1 class="auth__title">Create your account.</h1>
+          <p class="auth__desc">Create your account to use DetectiFy.</p>
 
-            <!-- konten login -->
-            <div class="auth__media-content media-content--login">
-              <h2 class="auth__media-title">Don't have an account?</h2>
-              <a href="#" class="btn--outline-white" data-auth-toggle="signup">Sign Up</a>
+          <form id="signupForm" class="auth__form">
+            <div class="field">
+              <label for="signupName">Username</label>
+              <input id="signupName" type="text" placeholder="Username" autocomplete="username" required />
             </div>
 
-            <!-- konten signup -->
-            <div class="auth__media-content media-content--signup">
-              <h2 class="auth__media-title"> Already have an account?</h2>
-              <a href="#" class="btn--outline-white" data-auth-toggle="login">Log In</a>
+            <div class="field">
+              <label for="signupEmail">Email</label>
+              <input id="signupEmail" type="email" placeholder="Email" autocomplete="email" required />
             </div>
-          </aside>
 
-        </section>
-      </div>
-    </main>
+            <div class="field">
+              <label for="signupPassword">Password</label>
+              <input id="signupPassword" type="password" placeholder="Password" autocomplete="new-password" required />
+            </div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">
-            <div class="footer-logo">
-              <img src="./assets/light-logo.png" alt="DetectiFy Logo" />
+            <div class="field">
+              <label for="signupConfirm">Confirm Password</label>
+              <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password"
+                required />
             </div>
-            <div>
-              <div style="font-weight:700;">DetectiFy</div>
-              <small>Transform AI-generated content into naturally human-like results</small>
-            </div>
+
+            <!-- STATUS SIGNUP -->
+            <div id="signupStatus" class="auth__status"></div>
+
+            <button class="btn btn--primary btn--block" type="submit">Create Account</button>
+          </form>
+        </div>
+
+        <!-- MEDIA SLIDE (satu-satunya switch login/signup) -->
+        <aside class="auth__media auth__panel-media" aria-hidden="true">
+          <div class="auth__mediaInner"></div>
+
+          <div class="auth__media-content media-content--login">
+            <h2 class="auth__media-title">Don't have an account?</h2>
+            <a href="#" class="btn--outline-white" data-auth-toggle="signup">Sign Up</a>
           </div>
-        </div>
 
-        <div>
-          <h4>Quick Links</h4>
-          <a href="#">Home</a>
-          <a href="#">Application</a>
-        </div>
+          <div class="auth__media-content media-content--signup">
+            <h2 class="auth__media-title">Already have an account?</h2>
+            <a href="#" class="btn--outline-white" data-auth-toggle="login">Log In</a>
+          </div>
+        </aside>
 
-        <div>
-          <h4>Features</h4>
-          <a href="#">Text Humanization</a>
-          <a href="#">Image Enhancement</a>
-          <a href="#">Video Processing</a>
-          <a href="#">Audio Conversion</a>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER (punya kamu) -->
+  <footer class="site-footer" aria-label="Website footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="footer__logoRow">
+          <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+            alt="DetectiFy logo" />
+          <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+            alt="DetectiFy logo" />
+          <strong class="footer__name">DetectiFy</strong>
         </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
       </div>
 
-      <div class="copyright">© 2024 DetectiFy. All rights reserved.</div>
-    </footer>
-  </div>
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+        <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+        <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+      </nav>
 
-  <!-- THEME TOGGLE -->
-  <script>
-    const themeBtn = document.getElementById('themeBtn');
-    const html = document.documentElement;
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+        <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+      </nav>
+    </div>
 
-    themeBtn.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('detectify_theme', newTheme);
-    });
-  </script>
+    <div class="container footer__bottom">
+      <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
+    </div>
+  </footer>
 
-  <!-- AUTH SLIDER LOGIC -->
-  <script>
-    const authSlider = document.getElementById("authSlider");
-
-    function setMode(mode){ // "login" | "signup"
-      if(!authSlider) return;
-      authSlider.classList.toggle("is-signup", mode === "signup");
-    }
-
-    document.querySelectorAll("[data-auth-toggle]").forEach((el) => {
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-        setMode(el.dataset.authToggle);
-      });
-    });
-  </script>
-
-  <!-- OPTIONAL: PASSWORD MATCH CHECK -->
-  <script>
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-      signupForm.addEventListener('submit', (e) => {
-        const inputs = signupForm.querySelectorAll('input[type="password"]');
-        if (inputs.length >= 2 && inputs[0].value !== inputs[1].value) {
-          e.preventDefault();
-          alert("Password dan Confirm Password harus sama.");
-        }
-      });
-    }
-  </script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth.js') }}?v=2" defer></script>
 </body>
+
 </html>

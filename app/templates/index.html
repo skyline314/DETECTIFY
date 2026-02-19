@@ -1,404 +1,326 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DetectiFy</title>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
 
-  <!-- Anti-flicker: tentukan tema sebelum CSS dirender -->
-  <script>
-    (function () {
-      const KEY = "detectify_theme";
-      const saved = localStorage.getItem(KEY);
-      const prefersDark = window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-      const theme = (saved === "light" || saved === "dark")
-        ? saved
-        : (prefersDark ? "dark" : "light");
-
-      document.documentElement.setAttribute("data-theme", theme);
-    })();
-  </script>
+  <link rel="preload" as="image" href="{{ url_for('static', filename='assets/hero-bg.jpg') }}" fetchpriority="high">
+  <link rel="preload" as="image" href="{{ url_for('static', filename='assets/about-us.jpg') }}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
-  <!-- TOPBAR -->
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
-          <a class="brand" href="#top" aria-label="Back to top">
-            <img class="brand__logo brand__logo--light"
-                 src="assets/light-logo.png"
-                 width="34" height="34"
-                 alt="DetectiFy"
-                 decoding="async"
-                 loading="eager" />
-            <img class="brand__logo brand__logo--dark"
-                 src="assets/dark-logo.png"
-                 width="34" height="34"
-                 alt="DetectiFy"
-                 decoding="async"
-                 loading="eager" />
-            <span class="brand__name" id="brandName">DetectiFy</span>
+          <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              width="75" height="45" alt="DetectiFy" />
+            <span class="brand__name">DetectiFy</span>
           </a>
 
           <div class="nav__right">
             <div class="nav__icons" aria-label="Quick actions">
               <!-- Theme toggle -->
-              <button class="icon-btn" id="themeToggle" type="button"
-                aria-label="Toggle theme" aria-pressed="false">
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
               </button>
 
               <!-- Mobile hamburger -->
-              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
-                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round"/>
+                    stroke-linecap="round" />
                 </svg>
               </button>
             </div>
 
             <!-- Desktop nav -->
-            <nav class="nav__links" id="desktopNav" aria-label="Primary navigation"></nav>
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
+              <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
+              <div class="nav__dropdown">
+                <button class="nav__link nav__link--dropdown" type="button">Model ▾</button>
+                <div class="nav__dropdown-menu">
+                  <a href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+                  <a href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+                  <a href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+                  <a href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+                  <a href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+                </div>
+              </div>
+            </nav>
 
-            <a class="btn btn--primary" id="navCta" href="#">Get Started</a>
+            <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
           </div>
         </div>
       </div>
 
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
-        <nav class="mobile-menu__links" id="mobileNav" aria-label="Mobile navigation"></nav>
-        <a class="btn btn--primary btn--block" id="mobileCta" href="#">Get Started</a>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <span class="mobile-menu__model-title">Model</span>
+          <a class="mobile-link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
       </div>
     </div>
   </header>
 
   <main>
     <!-- HERO -->
-    <section class="hero" id="home" aria-label="Hero">
-      <div class="hero__bg" id="heroBg" role="img" aria-label="Hero background"></div>
+    <section class="hero hero--detect" id="home" aria-label="Hero">
+      <div class="hero__bg" style="background-image: url('{{ url_for('static', filename='assets/hero-bg.jpg') }}');"
+        aria-hidden="true"></div>
 
       <div class="container hero__content">
-        <!-- Center pack: CTA + subtitle -->
-        <div class="hero__center">
-          <a class="hero__cta" id="heroCta" href="#">
-            <span id="heroCtaText">Get Started</span>
-            <span class="hero__ctaIcon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
+        <div class="hero__grid">
+          <div class="hero__left">
+            <h1 class="hero__title">Looking<br><span class="hero__titleThin">for</span></h1>
+            <a class="hero__pill" href="{{ url_for('auth.auth_page') }}" aria-label="Try it for free">
+              <span>Try it for Free</span>
+              <span class="hero__pillIcon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </a>
+          </div>
+
+          <div class="hero__right" aria-hidden="false">
+            <h1 class="hero__title hero__title--right">a<br>Real<br>Answer?</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GET TO KNOW (3D CAROUSEL) -->
+    <section class="section section--know" id="app" aria-label="Get to know Detectify">
+      <div class="container">
+        <div class="know__head">
+          <p class="know__kicker">Let’s Get</p>
+          <h2 class="know__title">to Know <span>Detectify</span> <em>More!</em></h2>
+        </div>
+
+        <div class="carousel3d" data-carousel="know">
+          <button class="carousel3d__nav carousel3d__nav--prev" type="button" aria-label="Previous card">
+            <span aria-hidden="true">‹</span>
+          </button>
+
+          <div class="carousel3d__stage" aria-live="polite">
+            <article class="carousel3d__card" data-slide>
+              <img src="{{ url_for('static', filename='assets/fast_eff.jpeg') }}" alt="Fast & Efficient" />
+            </article>
+            <article class="carousel3d__card" data-slide>
+              <img src="{{ url_for('static', filename='assets/adv_process.jpeg') }}" alt="Advanced Processing" />
+            </article>
+            <article class="carousel3d__card" data-slide>
+              <img src="{{ url_for('static', filename='assets/multi_format.jpeg') }}" alt="Multi-Format Support" />
+            </article>
+            <article class="carousel3d__card" data-slide>
+              <img src="{{ url_for('static', filename='assets/easy_to_use.jpeg') }}" alt="Easy to Use" />
+            </article>
+          </div>
+
+          <button class="carousel3d__nav carousel3d__nav--next" type="button" aria-label="Next card">
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUR FEATURES -->
+    <section class="section section--featuresV2" id="features" aria-label="Our Features">
+      <div class="container">
+        <div class="section__bar">
+          <h2 class="section__titleV2">Our Features</h2>
+          <a class="btn btn--ghost" href="{{ url_for('analysis.apps') }}">Browse All</a>
+        </div>
+
+        <div class="feature-cardsV2" aria-label="Feature cards">
+          <a class="featureV2" href="{{ url_for('analysis.text_ui') }}">
+            <div class="featureV2__media">
+              <img src="{{ url_for('static', filename='assets/text_detect.jpeg') }}" alt="Text Detection" />
+            </div>
+            <div class="featureV2__body">
+              <h3 class="featureV2__title">Text Detection</h3>
+              <p class="featureV2__desc">Uncover whether text is human-written or AI-generated with a clear,
+                confidence-based score.</p>
+            </div>
           </a>
 
-          <p class="hero__sub" id="heroSubtitle"></p>
+          <a class="featureV2" href="{{ url_for('analysis.image_ui') }}">
+            <div class="featureV2__media">
+              <img src="{{ url_for('static', filename='assets/image_detect.jpeg') }}" alt="Image Detection" />
+            </div>
+            <div class="featureV2__body">
+              <h3 class="featureV2__title">Image Detection</h3>
+              <p class="featureV2__desc">Reveal whether an image is AI-made or edited in seconds with a confident
+                authenticity check.</p>
+            </div>
+          </a>
+
+          <a class="featureV2" href="{{ url_for('analysis.video_ui') }}">
+            <div class="featureV2__media">
+              <img src="{{ url_for('static', filename='assets/video_detect.jpeg') }}" alt="Video Detection" />
+            </div>
+            <div class="featureV2__body">
+              <h3 class="featureV2__title">Video Detection</h3>
+              <p class="featureV2__desc">Instantly spot AI-generated or manipulated videos with a sleek authenticity
+                score you can trust.</p>
+            </div>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- FEATURES -->
-    <section class="section section--features" id="features">
-      <div class="container">
-        <h2 class="section__title section__title--big" id="featuresTitle">Our Features</h2>
-        <p class="section__desc" id="featuresDesc"></p>
+    <!-- ABOUT US -->
+    <section class="section section--about" id="about" aria-label="About Detectify">
+      <div class="about__bg">
+        <img class="about__img" src="{{ url_for('static', filename='assets/about-us.jpg') }}" alt="Our team working" />
+      </div>
 
-        <!-- Interactive hub -->
-        <div class="features-hub" id="featuresHub">
-          <!-- Menu (tabs/pills) -->
-          <div class="features-menu" id="featuresMenu" role="tablist" aria-label="Feature menu"></div>
+      <div class="container about__wrap">
+        <h2 class="about__brand">Detectify</h2>
 
-          <!-- Content panel (dynamic) -->
-          <div class="feature-panel" id="featurePanel" aria-live="polite"></div>
+        <div class="about__card" role="region" aria-label="About Us content">
+          <h3 class="about__title">About Us</h3>
+
+          <p>
+            We are a multidisciplinary team of AI researchers, engineers, and creative professionals dedicated to
+            <strong>bridging the gap</strong> between human and artificial intelligence.
+          </p>
+
+          <p>
+            We are <strong>here to help</strong> individuals and organizations navigate the growing volume of
+            AI-generated
+            content by providing <strong>reliable, transparent</strong> analysis that <strong>supports</strong>
+            authenticity
+            checks and informed decision-making.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- FOUNDED -->
+    <section class="section section--founded" id="founded" aria-label="Founded in 2025">
+      <div class="container founded__wrap">
+        <div class="founded__content">
+          <h2 class="found__title">Founded in 2025</h2>
+
+          <p class="found__desc">
+            <strong>We, Detectify,</strong> believe the future of digital trust
+            lies not in replacing humans with AI, but in
+            strengthening <strong>transparency</strong>&mdash;
+          </p>
+
+          <p class="found__desc found__desc--sub">
+            Combining the speed of artificial intelligence
+            with human judgment to help people verify
+            <strong>authenticity</strong> and make informed decisions.
+          </p>
+
+          <div class="found__tags">
+            <span class="found__pill">Innovation</span>
+            <span class="found__pill">Quality</span>
+            <span class="found__pill">Authenticity</span>
+          </div>
         </div>
 
-        <!-- Cards grid (each div/card is clickable & linked to the menu) -->
-        <div class="features" id="featuresGrid" aria-label="Feature cards"></div>
+        <div class="founded__media">
+          <img class="found__image" src="{{ url_for('static', filename='assets/laptop_logo.png') }}"
+            alt="Detectify on laptop" />
+        </div>
       </div>
     </section>
 
+    <!-- SUBSCRIBE
+    <section class="section section--subscribe" id="subscribe" aria-label="Subscribe">
+      <div class="container subscribe">
+        <div class="subscribe__media">
+          <img src="{{ url_for('static', filename='assets/subscribe.png') }}" alt="" />
+        </div>
 
-    <!-- CONTENT -->
-    <section class="section section--content" id="app">
-      <div class="container content-stack">
-        <!-- Overview -->
-        <article class="content-block">
-          <div class="content-head">
-            <span class="content-badge" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16.5 3.5a2.1 2.1 0 013 3L8 18l-4 1 1-4 11.5-11.5Z"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <h3 class="content-title" id="overviewTitle">Overview</h3>
-          </div>
+        <div class="subscribe__content">
+          <h2 class="subscribe__title">Subscribe to get<br />more information!</h2>
+          <p class="subscribe__subtitle">&amp; Stay updated for our new features</p>
 
-          <p class="content-text" id="overviewText"></p>
-          <div class="bullets" id="overviewBullets"></div>
-        </article>
+          <form class="subscribe__form" action="#" method="post">
+            <label class="sr-only" for="subscribe-email">Email</label>
 
-        <!-- About -->
-        <article class="content-block">
-          <div class="content-head">
-            <span class="content-badge" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16.5 3.5a2.1 2.1 0 013 3L8 18l-4 1 1-4 11.5-11.5Z"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <h3 class="content-title" id="aboutTitle">About Us</h3>
-          </div>
-
-          <p class="content-text" id="aboutText1"></p>
-          <p class="content-text" id="aboutText2"></p>
-          <div class="chips" id="aboutChips"></div>
-        </article>
+            <div class="subscribe__pill">
+              <input id="subscribe-email" name="email" type="email" placeholder="Enter your email here"
+                autocomplete="email" required />
+              <button type="submit">Subscribe</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- FOOTER -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer__grid">
-          <div class="footer__brand">
-            <a class="brand brand--footer" href="#top" aria-label="Back to top">
-              <img class="brand__logo brand__logo--light"
-                   src="assets/light-logo.png"
-                   width="34" height="34"
-                   alt="DetectiFy"
-                   decoding="async"
-                   loading="lazy" />
-              <img class="brand__logo brand__logo--dark"
-                   src="assets/dark-logo.png"
-                   width="34" height="34"
-                   alt="DetectiFy"
-                   decoding="async"
-                   loading="lazy" />
-              <span class="brand__name" id="footerBrandName">DetectiFy</span>
-            </a>
-            <p class="footer__desc" id="footerDesc"></p>
+    <footer class="site-footer" aria-label="Website footer">
+      <div class="container footer__grid">
+        <div class="footer__brand">
+          <div class="footer__logoRow">
+            <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
+              alt="DetectiFy" />
+            <img class="footer__logo footer__logo--light"
+              src="{{ url_for('static', filename='assets/light-logo.png') }}" alt="DetectiFy" />
+            <strong class="footer__name">DetectiFy</strong>
           </div>
-
-          <div class="footer__col">
-            <h4 class="footer__title" id="footerQuickTitle">Quick Links</h4>
-            <ul class="footer__links" id="footerQuickLinks"></ul>
-          </div>
-
-          <div class="footer__col">
-            <h4 class="footer__title" id="footerFeaturesTitle">Features</h4>
-            <ul class="footer__links" id="footerFeatureLinks"></ul>
-          </div>
+          <p class="footer__desc">
+            Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+          </p>
         </div>
 
-        <div class="footer__bottom">
-          <span id="footerCopyright"></span>
-        </div>
+        <nav class="footer__col" aria-label="Quick links">
+          <h3 class="footer__heading">Quick Links</h3>
+          <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
+          <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
+          <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+        </nav>
+
+        <nav class="footer__col" aria-label="Features">
+          <h3 class="footer__heading">Features</h3>
+          <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
+          <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+        </nav>
+      </div>
+
+      <div class="container footer__bottom">
+        <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
       </div>
     </footer>
   </main>
 
-  <!-- Load JSON content -->
-  <script>
-    async function loadContent() {
-      const res = await fetch("./data.json");
-      const data = await res.json();
-
-      document.title = data.site.title;
-      document.getElementById("brandName").textContent = data.site.brand;
-      document.getElementById("footerBrandName").textContent = data.site.brand;
-
-      // Nav links
-      const desktopNav = document.getElementById("desktopNav");
-      const mobileNav = document.getElementById("mobileNav");
-
-      desktopNav.innerHTML = data.nav.links
-        .map(l => `<a class="nav__link" href="${l.href}">${l.label}</a>`)
-        .join("");
-
-      mobileNav.innerHTML = data.nav.links
-        .map(l => `<a class="mobile-link" href="${l.href}">${l.label}</a>`)
-        .join("");
-
-      // CTA
-      const navCta = document.getElementById("navCta");
-      const mobileCta = document.getElementById("mobileCta");
-      const heroCta = document.getElementById("heroCta");
-
-      navCta.textContent = data.nav.cta.label;
-      navCta.href = data.nav.cta.href;
-
-      mobileCta.textContent = data.nav.cta.label;
-      mobileCta.href = data.nav.cta.href;
-
-      document.getElementById("heroCtaText").textContent = data.hero.cta.label;
-      heroCta.href = data.hero.cta.href;
-
-      // Hero bg + subtitle
-      document.getElementById("heroSubtitle").textContent = data.hero.subtitle || "";
-      const heroBg = document.getElementById("heroBg");
-      heroBg.style.backgroundImage = `url("${data.hero.backgroundImage}")`;
-
-      // Features
-      document.getElementById("featuresTitle").textContent = data.features.title;
-      document.getElementById("featuresDesc").textContent = data.features.description || "";
-
-      const grid = document.getElementById("featuresGrid");
-
-      // mapping icon -> halaman tujuan
-      const FEATURE_ROUTES = {
-        text: "text.html",
-        image: "image.html",
-        video: "video.html",
-        audio: "audio.html",
-      };
-
-      grid.innerHTML = data.features.items.map(item => `
-        <article
-          class="feature-card is-link"
-          data-feature="${item.icon}"
-          tabindex="0"
-          role="link"
-          aria-label="Open ${item.title} page"
-        >
-          <div class="feature-card__icon" aria-hidden="true">${getFeatureIcon(item.icon)}</div>
-          <h4 class="feature-card__title">${item.title}</h4>
-          <p class="feature-card__desc">${item.description}</p>
-        </article>
-      `).join("");
-
-      // Klik untuk navigasi (event delegation)
-      grid.addEventListener("click", (e) => {
-        const card = e.target.closest(".feature-card.is-link");
-        if (!card) return;
-
-        const key = card.dataset.feature;
-        const href = FEATURE_ROUTES[key];
-        if (href) window.location.href = href;
-      });
-
-      // Enter / Space untuk navigasi (aksesibilitas)
-      grid.addEventListener("keydown", (e) => {
-        const card = e.target.closest(".feature-card.is-link");
-        if (!card) return;
-
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          const key = card.dataset.feature;
-          const href = FEATURE_ROUTES[key];
-          if (href) window.location.href = href;
-        }
-      });
-
-      // Overview
-      document.getElementById("overviewTitle").textContent = data.overview.title;
-      document.getElementById("overviewText").textContent = data.overview.text;
-
-      const bullets = document.getElementById("overviewBullets");
-      bullets.innerHTML = data.overview.bullets.map(b => `
-        <div class="bullet">
-          <span class="bullet__icon" aria-hidden="true">${getCheckIcon()}</span>
-          <div class="bullet__content">
-            <div class="bullet__title">${b.title}</div>
-            <div class="bullet__desc">${b.description}</div>
-          </div>
-        </div>
-      `).join("");
-
-      // About
-      document.getElementById("aboutTitle").textContent = data.about.title;
-      document.getElementById("aboutText1").textContent = data.about.paragraphs[0] || "";
-      document.getElementById("aboutText2").textContent = data.about.paragraphs[1] || "";
-
-      const chips = document.getElementById("aboutChips");
-      chips.innerHTML = data.about.chips.map(c => `<span class="chip">${c}</span>`).join("");
-
-      // Footer
-      document.getElementById("footerDesc").textContent = data.footer.description;
-      document.getElementById("footerQuickTitle").textContent = data.footer.quickLinksTitle;
-      document.getElementById("footerFeaturesTitle").textContent = data.footer.featureLinksTitle;
-
-      document.getElementById("footerQuickLinks").innerHTML =
-        data.footer.quickLinks.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join("");
-
-      document.getElementById("footerFeatureLinks").innerHTML =
-        data.footer.featureLinks.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join("");
-
-      document.getElementById("footerCopyright").textContent =
-        data.footer.copyright;
-
-      // Close mobile menu after clicking a link
-      mobileNav.querySelectorAll("a").forEach(a => {
-        a.addEventListener("click", () => {
-          const btn = document.getElementById("menuToggle");
-          if (btn && btn.getAttribute("aria-expanded") === "true") btn.click();
-        });
-      });
-    }
-
-    function getCheckIcon() {
-      return `
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>`;
-    }
-
-    function getFeatureIcon(name) {
-      const icons = {
-      text: `
-        <svg class="feature-icon feature-icon--text" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M14 2v6h6"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>`,
-
-      image: `
-        <svg class="feature-icon feature-icon--image" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <rect x="3" y="4" width="18" height="16" rx="2"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 14l2-2 4 4 2-2 3 3"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
-        </svg>`,
-
-      video: `
-        <svg class="feature-icon feature-icon--video" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <rect x="3" y="6" width="14" height="12" rx="2"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M17 10l4-2v8l-4-2z"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>`,
-
-      audio: `
-        <svg class="feature-icon feature-icon--audio" viewBox="0 0 24 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <path d="M8 18V6l12-2v12"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="6" cy="18" r="3"
-            stroke="currentColor" stroke-width="2"/>
-          <circle cx="18" cy="16" r="3"
-            stroke="currentColor" stroke-width="2"/>
-        </svg>`
-      };
-      return icons[name] || icons.text;
-    }
-
-    loadContent().catch(err => console.error("Failed to load data.json:", err));
-  </script>
-
-  <script src="theme.js" defer></script>
+  <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
 </body>
+
 </html>

@@ -1,11 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Started</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Started • DetectiFy</title>
+
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
+  <meta http-equiv="refresh" content="0; url={{ url_for('auth.login_ui') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 <body>
-    <p>login</p>
+  <main class="container" style="padding: 120px 0; text-align:center;">
+    <p style="color: var(--muted);">
+      Redirecting… If nothing happens, 
+      <a href="{{ url_for('auth.login_ui') }}">click here</a>.
+    </p>
+  </main>
+  <script>
+    // JS fallback for environments ignoring meta refresh
+    location.replace("{{ url_for('auth.login_ui') }}"); 
+  </script>
 </body>
 </html>
