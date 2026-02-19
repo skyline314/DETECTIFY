@@ -23,6 +23,7 @@ migrations/
 Thumbs.db
 
 # testing
+<<<<<<< HEAD
 instance/
 test_detectify.sqlite
 .pytest_cache
@@ -40,3 +41,10 @@ celery_worker/assets/models/
 inject_premium.py
 check_mlflow_connection.py
 check_registered_models.py
+=======
+tests/
+instance/
+test_detectify.sqlite
+.pytest_cache
+
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59

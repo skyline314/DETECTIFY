@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import User, Transaction, db
 import midtransclient
+<<<<<<< HEAD
 from flask import render_template
 
 payment_bp = Blueprint('payment', __name__)
@@ -22,6 +23,11 @@ def pricing():
         midtrans_is_production=midtrans_is_production
     )
 
+=======
+
+payment_bp = Blueprint('payment', __name__)
+
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 def get_midtrans_snap():
     """Helper untuk koneksi ke Midtrans Snap API"""
     snap = midtransclient.Snap(
@@ -48,7 +54,11 @@ def create_transaction():
         return jsonify({"error": "User tidak ditemukan"}), 404
 
     # Harga Paket 
+<<<<<<< HEAD
     amount = int(current_app.config.get('PREMIUM_PRICE') or 100000)
+=======
+    amount = int(current_app.config.get('PREMIUM_PRICE'))
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 
     safe_uid = str(user.user_id)[:8]
     # Format Order ID: ORDER-{UID}-{RANDOM}

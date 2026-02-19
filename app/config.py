@@ -60,6 +60,7 @@ class Config:
     # PRICE
     PREMIUM_PRICE = os.environ.get('PREMIUM_PRICE')
 
+<<<<<<< HEAD
     # MIDTRANS
     MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY')
     MIDTRANS_IS_PRODUCTION = os.environ.get('MIDTRANS_IS_PRODUCTION', 'False') == 'True'
@@ -69,6 +70,8 @@ class Config:
     MLFLOW_TRACKING_USERNAME = os.getenv('MLFLOW_TRACKING_USERNAME')
     MLFLOW_TRACKING_PASSWORD = os.getenv('MLFLOW_TRACKING_PASSWORD')
 
+=======
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 
 class DevelopmentConfig(Config):
     """
@@ -76,7 +79,12 @@ class DevelopmentConfig(Config):
     Mewarisi (inherits) dari Config dasar.
     """
     DEBUG = True
+<<<<<<< HEAD
     DATABASE_URL="sqlite:///detectify_local.db"
+=======
+    # bisa override DB di sini jika perlu, misal menunjuk ke DB lokal
+    # SQLALCHEMY_DATABASE_URI = "sqlite:///dev.db" 
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 
 
 class ProductionConfig(Config):
@@ -89,18 +97,24 @@ class ProductionConfig(Config):
     # DB_USER = os.getenv('PROD_DB_USER')
     # ... dll
 
+<<<<<<< HEAD
 class TestingConfig(Config):
     """Konfigurasi khusus untuk Unit Testing."""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_ENGINE_OPTIONS = {}
+=======
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 
 # Dictionary untuk memetakan string ke class Konfigurasi
 # Ini akan digunakan oleh Application Factory (di __init__.py)
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+<<<<<<< HEAD
     'testing': TestingConfig,  
+=======
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
     'default': DevelopmentConfig
 }

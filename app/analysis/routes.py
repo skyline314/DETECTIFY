@@ -4,6 +4,7 @@ from . import analysis_bp
 from .services import AnalysisService 
 from app.decorators import premium_required
 from io import BytesIO
+<<<<<<< HEAD
 from flask import render_template
 
 @analysis_bp.route('/')
@@ -44,6 +45,11 @@ def history_page():
 
 # ENDPOINT UPLOAD AUDIO 
 @analysis_bp.route('/audio', methods=['POST'])
+=======
+
+# ENDPOINT UPLOAD AUDIO 
+@analysis_bp.route('/analysis/audio', methods=['POST'])
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 @jwt_required()
 def upload_audio():
     # Cek apakah user mengirim file
@@ -68,7 +74,11 @@ def upload_audio():
 
 
 # ENDPOINT UPLOAD TEXT
+<<<<<<< HEAD
 @analysis_bp.route('/text', methods=['POST'])
+=======
+@analysis_bp.route('/analysis/text', methods=['POST'])
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 @jwt_required()
 def upload_text():
     # Cek apakah user mengirim file
@@ -97,7 +107,11 @@ def upload_text():
     
 
 # ENDPOINT UPLOAD IMAGE    
+<<<<<<< HEAD
 @analysis_bp.route('/image', methods=['POST'])
+=======
+@analysis_bp.route('/analysis/image', methods=['POST'])
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 @jwt_required()
 def upload_image():
     # Cek apakah user mengirim file
@@ -121,6 +135,7 @@ def upload_image():
     except Exception as e:
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
+<<<<<<< HEAD
 @analysis_bp.route('/text/extract', methods=['POST'])
 @jwt_required()
 def extract_text():
@@ -147,6 +162,10 @@ def extract_text():
 
 # ENDPOINT UPLOAD VIDEO
 @analysis_bp.route('/video', methods=['POST'])
+=======
+# ENDPOINT UPLOAD VIDEO
+@analysis_bp.route('/analysis/video', methods=['POST'])
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 @jwt_required()
 def upload_video():
     # Cek apakah user mengirim file
@@ -170,7 +189,11 @@ def upload_video():
         return jsonify({"error": "Internal Error", "details": str(e)}), 500
 
 # ENDPOINT HUMANIZE
+<<<<<<< HEAD
 @analysis_bp.route('/humanize', methods=['POST'])
+=======
+@analysis_bp.route('/analysis/humanize', methods=['POST'])
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 @jwt_required()
 def humanize_text():
     data = request.get_json()
@@ -190,10 +213,13 @@ def humanize_text():
     try:
         result = AnalysisService.process_upload(user_id, file_obj, 'HUMANIZE')
         return jsonify(result), 202
+<<<<<<< HEAD
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except PermissionError as e:
         return jsonify({"error": str(e)}), 403
+=======
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -210,7 +236,11 @@ def get_history():
         return jsonify({"error": "Gagal mengambil riwayat", "details": str(e)}), 500
 
 # ENDPOINT STATUS
+<<<<<<< HEAD
 @analysis_bp.route('/status/<string:analysis_id>', methods=['GET'])
+=======
+@analysis_bp.route('/analysis/<string:analysis_id>', methods=['GET'])
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 @jwt_required()
 def get_analysis_status(analysis_id):
     user_id = get_jwt_identity()

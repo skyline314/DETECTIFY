@@ -23,12 +23,18 @@ def process_humanize_task(analysis_id):
         db.session.commit()
 
         with s3_temp_file(job.file_location) as temp_path:
+<<<<<<< HEAD
             # Baca teks dari file
             raw_text = extract_text_from_file(temp_path)
             
             if not raw_text or len(raw_text.strip()) < 5:
                 raise ValueError("Text is not found or too short to process.")
             
+=======
+            # Baca teks dari file .input
+            raw_text = extract_text_from_file(temp_path)
+            
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
             # Deteksi bahasa dari nama file (id_manual_text.input atau en_manual_text.input)
             lang = 'id' if job.file_name_original.startswith('id_') else 'en'
             

@@ -1,4 +1,5 @@
 <!doctype html>
+<<<<<<< HEAD
 <html lang="en">
 
 <head>
@@ -229,3 +230,929 @@
 </body>
 
 </html>
+=======
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DetectiFy — History</title>
+
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --ink:#1a1a1a;
+      --muted:#6b7280;
+      --line:#d6d6d6;
+      --card:#ffffff;
+      --soft:#dff3fb;   /* main area */
+      --soft-2:#e8f7ff; /* sidebar */
+      --green:#16a34a;
+      --red:#ef4444;
+      --shadow: 0 12px 30px rgba(0,0,0,.10);
+      --radius: 16px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+
+    .page{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 18px 0;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 10px 14px;
+      border: 2px solid #cfcfcf;
+      border-radius: 999px;
+      background:#fff;
+      gap: 12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+    }
+    .logo-dot{
+      width:26px;height:26px;border-radius:50%;
+      display:grid;place-items:center;
+      background:#0b1220;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.12);
+      flex: 0 0 auto;
+    }
+
+    .top-actions{
+      display:flex; align-items:center; gap:14px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill-icons{
+      display:flex; gap:10px;
+    }
+    .ic{
+      width:34px;height:34px;border-radius:999px;
+      display:grid;place-items:center;
+      border:1px solid #d7d7d7;
+      background:#f7fbff;
+      color:#111;
+    }
+    .ic.dark{ background:#0b1220; border-color:#0b1220; color:#fff; }
+    .ic.sky{ background:#8fd3e8; border-color:#8fd3e8; color:#0b1220; }
+
+    .navlinks{
+      display:flex; align-items:center; gap:18px;
+      font-size:13px;
+      color:#111;
+      flex-wrap:wrap;
+    }
+    .navlinks a{
+      color:#111;
+      text-decoration:none;
+      font-weight:500;
+      opacity:.9;
+    }
+    .navlinks a:hover{ opacity:1; }
+
+    .btn{
+      border:0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight:600;
+      font-size:12px;
+      cursor:pointer;
+      background:#0b1220;
+      color:#fff;
+    }
+
+    /* ===== TITLE ===== */
+    .title{
+      text-align:center;
+      margin: 28px 0 18px;
+      font-size: 40px;
+      font-weight:600;
+      color:#1f2a37;
+      letter-spacing:.5px;
+    }
+
+    .subtitle {
+      text-align:center;
+      margin: -20px 20 18px;
+      font-size: 15px;
+      font-weight:300;
+      color:#1f2a37;
+      letter-spacing:.5px;
+    }
+
+    /* ===== MAIN PANEL ===== */
+    .panel{
+      background: var(--soft);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 430px;
+      display:flex;
+      gap: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* LEFT SIDEBAR */
+    .sidebar{
+      width: 250px;
+      background: var(--soft-2);
+      border-radius: 12px;
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      border: 1px solid rgba(0,0,0,.04);
+    }
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      background:#fff;
+      border:1px solid #d7edf6;
+      border-radius: 10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .search svg{ flex:0 0 auto; opacity:.75; }
+
+    .filelist{
+      background:#cfefff;
+      border-radius: 10px;
+      padding:10px 10px;
+      height: 265px;
+      overflow:auto;
+      border:1px solid rgba(0,0,0,.05);
+    }
+    .filelist::-webkit-scrollbar{ width:10px; }
+    .filelist::-webkit-scrollbar-thumb{
+      background: rgba(0,0,0,.15);
+      border-radius: 10px;
+      border:3px solid rgba(255,255,255,.5);
+    }
+
+    .file{
+      font-size: 11px;
+      color:#0f172a;
+      padding: 6px 6px;
+      border-radius: 8px;
+      line-height:1.25;
+      opacity:.92;
+    }
+    .file.active{
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .file small{
+      display:block;
+      color:#1f2937;
+      opacity:.75;
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .side-actions{
+      margin-top:auto;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .side-btn{
+      display:flex; align-items:center; gap:10px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#3e84a8;
+      color:#fff;
+      padding:10px 12px;
+      border-radius: 10px;
+      font-weight:600;
+      font-size:12px;
+      cursor:pointer;
+      justify-content:center;
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+    }
+    .side-btn.secondary{ background:#3e84a8; }
+
+    /* CENTER CONTENT */
+    .content{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      padding-right: 140px; /* ruang untuk tangan kanan */
+    }
+
+    .result-card{
+      width: min(560px, 92%);
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 26px 28px 22px;
+      text-align:center;
+      border: 1px solid rgba(0,0,0,.06);
+      position:relative;
+      z-index: 2;
+    }
+
+    .filename{
+      font-size: 26px;
+      font-weight:600;
+      color:#111827;
+      margin: 0 0 8px;
+    }
+    .risk{
+      font-size: 22px;
+      font-weight:700;
+      color: var(--green);
+      margin: 0 0 10px;
+      letter-spacing:.4px;
+    }
+
+    .shield{
+      width: 120px;
+      height: 120px;
+      margin: 10px auto 14px;
+      display:block;
+      filter: drop-shadow(0 10px 16px rgba(22,163,74,.18));
+    }
+
+    .probs{
+      display:flex;
+      justify-content:center;
+      gap: 70px;
+      margin: 8px 0 10px;
+      align-items:flex-end;
+    }
+    .prob .num{ font-weight:700; font-size: 22px; line-height:1; }
+    .prob .label{ font-size: 10px; color: var(--muted); margin-top: 3px; }
+    .prob.green .num{ color: var(--green); }
+    .prob.red .num{ color: var(--red); }
+
+    .bar{
+      width: 210px;
+      height: 8px;
+      border-radius: 999px;
+      margin: 10px auto 0;
+      background: linear-gradient(90deg, var(--green) 0 72%, var(--red) 72% 100%);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+    }
+
+    /* supaya tangan bisa lewat & nggak kepotong */
+    .panel{
+    overflow: visible; /* sebelumnya hidden */
+    }
+
+    /* ruang kanan buat tangan */
+    .content{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding-right: 50px; /*kanan kiri*/
+    }
+
+    [data-theme="dark"] .result-card{
+    width: min(560px, 92%);
+      background: linear-gradient(
+    150deg,
+    #ffffff 0%,
+    #dbdada 120%
+    );
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.10);
+    padding: 26px 28px 22px;
+    text-align:center;
+    border: 1px solid rgba(0,0,0,.06);
+
+    position: relative;
+    z-index: 2; /* card selalu di atas */
+    }
+
+    /* Judul History jadi putih saat dark mode */
+    [data-theme="dark"] .title{
+      color: #ffffff;
+    }
+
+    /* tangan DI ATAS card tapi posisinya di kanan luar */
+    .hand{
+    position: absolute;
+    right: -120px;   /* geser ke kanan supaya nggak masuk card */
+    bottom: -25px;
+    width: 420px;
+    height: auto;
+
+    transform: scaleX(-1); /* mirror */
+    z-index: 5;            /* lebih tinggi dari card */
+
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 14px 18px rgba(0,0,0,.12));
+    }
+
+    /* tangan biru (BELAKANG) */
+    .hand-blue{
+    z-index: 3;
+    opacity: 0.9;
+
+    /* sedikit geser biar kelihatan layer */
+    right: -190px;
+    bottom: 2px;
+    }
+
+    /* tangan kulit (DEPAN) */
+    .hand-skin{
+    z-index: 5;
+    }
+
+    /* container biru = pemotong */
+    .panel{
+    position: relative;
+    overflow: hidden; /* AKTIFKAN LAGI */
+    }
+
+    /* ===== FOOTER ===== */
+    .footer{
+      margin-top: 18px;
+      border-top: 1px solid #d9d9d9;
+      padding: 18px 6px 26px;
+      color:#1f2937;
+    }
+    .footer-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 18px;
+      align-items:start;
+    }
+    .footer-brand{
+      display:flex; align-items:flex-start; gap:10px;
+    }
+    .footer small{
+      color: var(--muted);
+      display:block;
+      margin-top:6px;
+      line-height:1.4;
+    }
+    .footer h4{
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing:.2px;
+    }
+    .footer a{
+      display:block;
+      font-size: 12px;
+      color:#111827;
+      text-decoration:none;
+      opacity:.85;
+      margin: 6px 0;
+    }
+    .footer a:hover{ opacity:1; }
+    .copyright{
+      text-align:center;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 18px;
+    }
+
+    .footer-logo img{
+        width: 35px;       /* sesuaikan kalau mau lebih besar/kecil */
+        height: auto;
+        display: block;
+    }
+
+        /* ===== NAVBAR FIGMA ===== */
+    .navbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 16px;
+    border:2px solid #2b2b2b;
+    border-radius:999px;
+    background:#fff;
+    margin-bottom:20px;
+    }
+
+    /* LEFT */
+    .nav-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    }
+    .nav-left img{
+    width:34px;
+    height:34px;
+    }
+
+    /* RIGHT */
+    .nav-right{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    }
+
+    /* ICON PILL */
+    .icon-pill{
+    display:flex;
+    gap:8px;
+    padding:6px 8px;
+    background:#7ed3e6;
+    border-radius:999px;
+    }
+    .icon-btn{
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    font-size:16px;
+    }
+
+    /* ICON COLORS */
+    .icon-btn.sun{
+    background:#fff3cf;
+    }
+    .icon-btn.moon{
+    background:#0b1220;
+    color:#2b7bff;
+    }
+    .icon-btn.globe{
+    background:#e9fbff;
+    }
+
+    /* LINKS */
+    .nav-links{
+    display:flex;
+    gap:18px;
+    font-size:13px;
+    }
+    .nav-links a{
+    text-decoration:none;
+    color:#0f172a;
+    }
+
+    /* CTA */
+    .nav-cta{
+    background:#0b1220;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    }
+    /* NAV shell */
+    .topbar { padding: 10px 14px; }
+    .nav {
+    width: 100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    }
+
+    /* brand */
+    .brand__logo { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
+    .brand__name { font-weight: 800; font-size: 1.2rem; }
+
+    /* right */
+    .nav__right { display:flex; align-items:center; gap:20px; }
+    .nav__link { text-decoration:none; color:#111; font-size:0.9rem; font-weight:600; }
+
+    /* button */
+    .btn--nav-primary{
+    background:#112233;
+    color:#fff !important;
+    padding:10px 22px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    }
+
+    /* ====== FIX NAVBAR (ONLY NAVBAR) ====== */
+    :root{
+      --nav-border:#cfcfcf;
+      --navy:#112233;
+      --brand-blue:#1d4ed8;
+      --switch-bg:#e6f7ff;
+      --switch-border:#d7d7d7;
+      --sun:#FFD700;
+      --moon:#62B6FF;
+    }
+
+   /* buat ngatur bagian toggle dark mode dan light mode*/
+    header.topbar .theme-switch{
+      width: 80px;
+      height: 42px;
+      border-radius: 999px; /* CHANGED: OVAL */
+      border: 1px solid var(--switch-border);
+      background: var(--switch-bg);
+      display:flex;
+      align-items:center;
+      justify-content:center; /* ⬅️ jangan sp  ace-between */
+      gap: 8px; 
+      padding: 6px;
+      cursor:pointer;
+      position: relative;
+      flex: 0 0 auto;
+    }
+    header.topbar .theme-switch:active{ transform: translateY(1px); }
+
+    header.topbar .switch-knob{
+      position:absolute;
+      left: 6px;
+      top: 6px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%; /* CHANGED: BULAT */
+      background: #fff;
+      box-shadow: 0 6px 14px rgba(0,0,0,.12);
+      transition: transform .25s ease;
+      z-index: 1;
+      transform: translateX(2px); /* buat yg light mode */
+    }
+
+    /* buat darkmode*/
+    [data-theme="dark"] header.topbar .switch-knob{
+      transform: translateX(32px); /* buat atur knob nya */
+      background: var(--navy);
+    }
+
+    header.topbar .theme-switch .icon{
+      width: 24px;
+      height: 24px;
+      display:grid;
+      place-items:center;
+      z-index: 2;
+      pointer-events:none;
+    }
+    header.topbar .sun-icon{ stroke: var(--sun) !important; }
+    header.topbar .moon-icon{ stroke: var(--moon) !important; }
+
+    /* === LOGO SWITCH DARK MODE (NAVBAR ONLY) === */
+    .logo-dark{ display:none; }
+    [data-theme="dark"] .logo-light{ display:none; }
+    [data-theme="dark"] .logo-dark{ display:inline-block; }
+
+        /* LIGHT MODE → HITAM */
+    header.topbar .brand__name{
+    color: #000000;
+    }
+
+    /* DARK MODE → PUTIH */
+    [data-theme="dark"] header.topbar .brand__name{
+    color: #ffffff;
+    }
+    header.topbar .brand{
+    text-decoration: none;
+    }
+
+    header.topbar .brand__name{
+    text-decoration: none;
+    }
+    /* FIX: link navbar harus putih saat dark mode */
+    [data-theme="dark"] header.topbar .nav__link{
+    color: #ffffff !important;
+    opacity: .95;
+    }
+
+    [data-theme="dark"] header.topbar .nav__link:hover{
+    background: rgba(255,255,255,.10);
+    }
+
+
+
+        /* ===== DARK MODE PALETTE (sesuai contoh kamu) ===== */
+        [data-theme="dark"]{
+        --bg: #070a2a;
+        --ink: #eaf2ff;
+        --muted: #b7c7d9;
+        --line: rgba(255,255,255,.22);
+
+        --card: #ffffff;
+        --soft: #6fa7bd;
+        --soft-2: #5e97ad;
+
+        --shadow: 0 18px 42px rgba(0,0,0,.45);
+        }
+
+        [data-theme="dark"] body{
+        background: radial-gradient(1200px 600px at 50% -10%, #141a55 0%, #070a2a 55%, #05061c 100%);
+        }
+
+        [data-theme="dark"] .topbar{
+        background: rgba(7,10,42,.78);
+        border-color: rgba(255,255,255,.28);
+        box-shadow: 0 14px 40px rgba(0,0,0,.35);
+        }
+
+        [data-theme="dark"] .theme-switch{
+        background: rgba(255,255,255,.08);
+        border-color: rgba(255,255,255,.18);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 980px){
+        .panel{ flex-direction:column; }
+        .sidebar{ width: 100%; }
+        .content{ padding-right: 0; }
+        .hand{ display:none; }
+        .title{ font-size: 34px; }
+        .topbar{ justify-content:center; }
+        .top-actions{ justify-content:center; }
+        }
+
+        /* ===============================
+      FOOTER (LIGHT MODE)
+      =============================== */
+      .footer{
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+
+      background: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      padding: 32px 0 24px;
+      color: #1f2937;
+      }
+
+      .footer-grid{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 18px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 32px;
+      }
+
+      .footer h4{
+      color: #111827;
+      font-size: 13px;
+      margin-bottom: 10px;
+      }
+
+      .footer a{
+      color: #374151;
+      font-size: 13px;
+      text-decoration: none;       
+      margin: 6px 0;
+      display: block;
+      }
+
+      .footer a:hover{
+      color: #111827;
+      }
+
+      .footer small{
+      color: #6b7280;
+      line-height: 1.5;
+      }
+
+      .copyright{
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 28px;
+      }
+
+
+      /* ===============================
+      FOOTER (DARK MODE)
+      =============================== */
+      [data-theme="dark"] .footer{
+      background: radial-gradient(
+          120% 120% at 50% 0%,
+          #1b1b1b 0%,
+          #0f0f0f 60%,
+          #000000 100%
+      );
+      border-top: 1px solid rgba(255,255,255,.1);
+      color: #e5e7eb;
+      }
+
+      [data-theme="dark"] .footer h4{
+      color: #ffffff;
+      }
+
+      [data-theme="dark"] .footer a{
+      color: #cbd5e1;
+      text-decoration: none;        /* tetap tanpa garis */
+      }
+
+      [data-theme="dark"] .footer a:hover{
+      color: #ffffff;
+      }
+
+      [data-theme="dark"] .footer small{
+      color: #9ca3af;
+      }
+
+      [data-theme="dark"] .copyright{
+      color: #9ca3af;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 14px;
+      }
+
+      /* FIX: toggle background saat DARK MODE */
+      [data-theme="dark"] header.topbar .theme-switch{
+      background: #0b1220 !important;
+      border-color: rgba(255,255,255,.2);
+      }
+
+  </style>
+</head>
+
+<body>
+  <div class="page">
+<!-- TOP NAV -->
+<header class="topbar">
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img class="brand__logo logo-light" src="assets/light-logo.png" alt="DetectiFy" />
+      <img class="brand__logo logo-dark" src="assets/dark-logo.png" alt="DetectiFy" />
+
+      <span class="brand__name">DetectiFy</span>
+    </a>
+
+    <div class="nav__right">
+      <button class="theme-switch" id="themeBtn" type="button" aria-label="Toggle theme">
+        <div class="switch-knob"></div>
+        <div class="icon">
+          <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </div>
+        <div class="icon">
+          <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </div>
+      </button>
+
+      <a class="nav__link" href="index.html">Home</a>
+      <a class="nav__link" href="application.html">Application</a>
+      <a class="btn--nav-primary" href="get-started.html">Get Started</a>
+    </div>
+  </div>
+</header>
+
+    <h1 class="title">History</h1>
+    <p class="subtitle">Keep track of all your past checks in one place</p>
+    <!-- MAIN PANEL -->
+    <section class="panel">
+      <!-- LEFT -->
+      <aside class="sidebar">
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" stroke="currentColor" stroke-width="2"/>
+            <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Search</span>
+        </div>
+
+        <div class="filelist" role="listbox" aria-label="History file list">
+          <div class="file active" role="option" aria-selected="true">
+            tralala_tralelo.jpg
+          </div>
+          <div class="file">Function-UseCase Point - week 6</div>
+          <div class="file">WhatsApp Image 2025-10-30 a ...</div>
+          <div class="file">temanfinancial (1).mp4</div>
+          <div class="file">koruptor jadi kurban.mp4</div>
+          <div class="file">theo_analysis.txt</div>
+          <div class="file">ganash selfie.png</div>
+          <div class="file">trump_speech.mp3</div>
+        </div>
+
+        <div class="side-actions">
+          <button class="side-btn" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 21a8 8 0 0 0-16 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" stroke="white" stroke-width="2"/>
+            </svg>
+            Account Information
+          </button>
+          <button class="side-btn secondary" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 18h16l-1 3H5l-1-3z" fill="rgba(255,255,255,.25)"/>
+              <path d="M5 18l-2-9 6 4 3-7 3 7 6-4-2 9" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            Upgrade Plan
+          </button>
+        </div>
+      </aside>
+
+      <!-- CENTER -->
+      <main class="content">
+        <div class="result-card">
+          <div class="filename">tralala_tralelo.jpg</div>
+          <div class="risk">LOW RISK</div>
+
+          <!-- Shield -->
+          <svg class="shield" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#22c55e"/>
+                <stop offset="1" stop-color="#16a34a"/>
+              </linearGradient>
+            </defs>
+            <path d="M64 10l42 18v36c0 30-20 52-42 54C42 116 22 94 22 64V28l42-18z" fill="url(#g)"/>
+            <path d="M45 65l12 12 28-32" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+
+          <div class="probs">
+            <div class="prob green">
+              <div class="num">88%</div>
+              <div class="label">Human Probality</div>
+            </div>
+            <div class="prob red">
+              <div class="num">12%</div>
+              <div class="label">AI Probality</div>
+            </div>
+          </div>
+
+          <div class="bar" aria-label="Probability bar"></div>
+        </div>
+
+         </main>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+           <div class="footer-logo">
+  <img src="./assets/light-logo.png" alt="DetectiFy Logo" />
+</div>
+
+            <div>
+              <div style="font-weight:700;">DetectiFy</div>
+              <small>Transform AI-generated content into naturally human-like results</small>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4>Quick Links</h4>
+          <a href="#">Home</a>
+          <a href="#">Application</a>
+        </div>
+
+        <div>
+          <h4>Features</h4>
+          <a href="#">Text Humanization</a>
+          <a href="#">Image Enhancement</a>
+          <a href="#">Video Processing</a>
+          <a href="#">Audio Conversion</a>
+        </div>
+      </div>
+
+      <div class="copyright">© 2024 DetectiFy. All rights reserved.</div>
+    </footer>
+  </div>
+
+  <script>
+  const themeBtn = document.getElementById('themeBtn');
+  const html = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('detectify_theme', newTheme);
+  });
+</script>
+
+</body>
+</html>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59

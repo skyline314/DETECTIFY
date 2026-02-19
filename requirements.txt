@@ -12,7 +12,11 @@ celery
 redis
 numpy
 pandas
+<<<<<<< HEAD
 scikit-learn==1.5.1
+=======
+scikit-learn==1.6.1
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 xgboost
 joblib
 librosa
@@ -32,6 +36,11 @@ midtransclient
 resend
 opencv-python-headless
 requests
+<<<<<<< HEAD
 gensim
 mlflow
 dagshub
+=======
+tensorflow
+gensim
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59

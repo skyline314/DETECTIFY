@@ -1,24 +1,55 @@
 <!doctype html>
 <html lang="id">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Video Detection • DetectiFy</title>
+<<<<<<< HEAD
   <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
+=======
+
+  <!-- Anti-flicker tema (sama seperti index.html) -->
+  <script>
+    (function () {
+      const KEY = "detectify_theme";
+      const saved = localStorage.getItem(KEY);
+      const prefersDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      const theme = (saved === "light" || saved === "dark")
+        ? saved
+        : (prefersDark ? "dark" : "light");
+
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+<<<<<<< HEAD
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
+=======
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- TOPBAR (konsisten dengan index.html) -->
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
+<<<<<<< HEAD
           <!-- Brand -->
           <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
             <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
@@ -26,10 +57,23 @@
             <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
               width="75" height="45" alt="DetectiFy" />
             <span class="brand__name">DetectiFy</span>
+=======
+          <a class="brand" href="index.html#top" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light"
+                 src="assets/light-logo.png"
+                 width="34" height="34"
+                 alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"
+                 src="assets/dark-logo.png"
+                 width="34" height="34"
+                 alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name" id="brandName">DetectiFy</span>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
           </a>
 
           <div class="nav__right">
             <div class="nav__icons" aria-label="Quick actions">
+<<<<<<< HEAD
               <!-- Theme toggle -->
               <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
@@ -41,10 +85,23 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" />
+=======
+              <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round"/>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
                 </svg>
               </button>
             </div>
 
+<<<<<<< HEAD
             <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
               <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
@@ -62,10 +119,20 @@
             </nav>
 
             <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+=======
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html#home">Home</a>
+              <a class="nav__link" href="index.html#app">Application</a>
+              <a class="nav__link" href="index.html#features">Features</a>
+            </nav>
+
+            <a class="btn btn--primary" href="login.html">Get Started</a>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
           </div>
         </div>
       </div>
 
+<<<<<<< HEAD
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
@@ -79,6 +146,15 @@
           <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
         <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+=======
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="index.html#home">Home</a>
+          <a class="mobile-link" href="index.html#app">Application</a>
+          <a class="mobile-link" href="index.html#features">Features</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
       </div>
     </div>
   </header>
@@ -90,6 +166,7 @@
 
       <div class="upload-card">
         <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload video file">
+<<<<<<< HEAD
           <input id="fileInput" class="dropzone__input" type="file"
             accept=".mp4,.avi,.mov,video/mp4,video/x-msvideo,video/quicktime" />
 
@@ -101,6 +178,24 @@
             <div id="dropzoneIcon" class="dropzone__icon dropzone__icon--video" aria-hidden="true">
               <img src="{{ url_for('static', filename='assets/video-folder.png') }}" alt="" class="dropzone__iconImg"
                 decoding="async" loading="eager" />
+=======
+          <input
+            id="fileInput"
+            class="dropzone__input"
+            type="file"
+            accept=".mp4,.mov,.mpeg,video/mp4,video/quicktime,video/mpeg"
+          />
+
+          <div class="dropzone__inner">
+            <div class="dropzone__icon dropzone__icon--video" aria-hidden="true">
+              <!-- folder + clapper icon -->
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M8 14h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M9 11l2-1 2 1 2-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
             </div>
 
             <div class="dropzone__title">Drag &amp; drop your video here</div>
@@ -116,9 +211,13 @@
               <span class="dot" aria-hidden="true">•</span>
               <span class="pill">Max Size: <b>100 MB</b></span>
             </div>
+<<<<<<< HEAD
             <div class="dropzone__hint">Tips: use a clear, high-resolution video for better results.</div>
           </div>
 
+=======
+          </div>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
         </div>
 
         <div class="upload-actions">
@@ -129,7 +228,11 @@
 
           <div class="actions-row">
             <button class="btn" type="button" id="btnRemove" disabled>Remove</button>
+<<<<<<< HEAD
             <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
+=======
+            <button class="btn btn--primary" type="button" id="btnUpload" disabled>Upload</button>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
           </div>
 
           <div class="progress" id="progressWrap" hidden aria-label="upload progress">
@@ -137,6 +240,7 @@
           </div>
 
           <div class="status" id="status" role="status" aria-live="polite"></div>
+<<<<<<< HEAD
 
           <div id="resultCard" class="result-card" style="display:none;">
             <p class="result-card__title">Analysis Result</p>
@@ -154,10 +258,13 @@
             <div class="result-card__confidence">Confidence: <strong id="resultConfidence">-</strong></div>
             <div class="result-card__details" id="resultDetails"></div>
           </div>
+=======
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
         </div>
       </div>
     </section>
   </main>
+<<<<<<< HEAD
   <!-- FOOTER -->
   <footer class="site-footer" aria-label="Website footer">
     <div class="container footer__grid">
@@ -203,3 +310,10 @@
 </body>
 
 </html>
+=======
+
+  <script src="theme.js" defer></script>
+  <script src="upload-video.js" defer></script>
+</body>
+</html>
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59

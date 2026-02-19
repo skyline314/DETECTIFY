@@ -65,7 +65,11 @@ class AnalysisService:
         
         # jika tidak hitung limit
         usage_count = AnalysisService.get_daily_usage(user_id)
+<<<<<<< HEAD
         limit = int(current_app.config.get('LIMIT_DAILY', 5))
+=======
+        limit = int(current_app.config.get('LIMIT_DAILY'))
+>>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
         if usage_count >= limit: 
             raise PermissionError("Kuota harian habis.")
             
