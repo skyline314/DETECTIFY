@@ -209,9 +209,12 @@ class ModelRegistry:
         # Ensure Env Vars are loaded for MLflow
         if not os.getenv("MLFLOW_TRACKING_URI"):
             from app.config import Config
-            os.environ["MLFLOW_TRACKING_URI"] = Config.MLFLOW_TRACKING_URI
-            os.environ["MLFLOW_TRACKING_USERNAME"] = Config.MLFLOW_TRACKING_USERNAME
-            os.environ["MLFLOW_TRACKING_PASSWORD"] = Config.MLFLOW_TRACKING_PASSWORD
+            if Config.MLFLOW_TRACKING_URI:
+                os.environ["MLFLOW_TRACKING_URI"] = Config.MLFLOW_TRACKING_URI
+                os.environ["MLFLOW_TRACKING_USERNAME"] = Config.MLFLOW_TRACKING_USERNAME or ""
+                os.environ["MLFLOW_TRACKING_PASSWORD"] = Config.MLFLOW_TRACKING_PASSWORD or ""
+            else:
+                print("[CORE] WARNING: MLFLOW_TRACKING_URI is not set in Environment or Config. MLflow model loading may fail.")
 
         print(f"[CORE] Loading ML Models on {DEVICE}")
         self._load_audio_model()
