@@ -82,17 +82,8 @@ class DevelopmentConfig(Config):
     Mewarisi (inherits) dari Config dasar.
     """
     DEBUG = True
-<<<<<<< HEAD
-<<<<<<< HEAD
-    DATABASE_URL="sqlite:///detectify_local.db"
-=======
-    # bisa override DB di sini jika perlu, misal menunjuk ke DB lokal
-    # SQLALCHEMY_DATABASE_URI = "sqlite:///dev.db" 
->>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
-=======
-    # bisa override DB di sini jika perlu, misal menunjuk ke DB lokal
-    # SQLALCHEMY_DATABASE_URI = "sqlite:///dev.db" 
->>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
+    # Gunakan Env Var jika ada, jika tidak gunakan SQLite lokal
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or "sqlite:///detectify_local.db"
 
 
 class ProductionConfig(Config):
