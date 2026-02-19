@@ -23,11 +23,9 @@ migrations/
 Thumbs.db
 
 # testing
-tests/
 instance/
 test_detectify.sqlite
 .pytest_cache
-pytest.ini
 run_benchmark.py
 
 
@@ -40,3 +38,5 @@ celery_worker/assets/models/
 *.h5
 *.fig
 inject_premium.py
+check_mlflow_connection.py
+check_registered_models.py
