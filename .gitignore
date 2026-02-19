@@ -24,6 +24,7 @@ Thumbs.db
 
 # testing
 <<<<<<< HEAD
+<<<<<<< HEAD
 instance/
 test_detectify.sqlite
 .pytest_cache
@@ -42,9 +43,14 @@ inject_premium.py
 check_mlflow_connection.py
 check_registered_models.py
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 tests/
 instance/
 test_detectify.sqlite
 .pytest_cache
 
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

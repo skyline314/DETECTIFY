@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 
@@ -14,15 +15,39 @@
 <body class="apps-page">
   <!-- TOPBAR -->
   <header class="topbar" id="top">
+=======
+<!DOCTYPE html>  
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DetectiFy — Application</title>
+
+    <!-- Ensure theme is applied before first paint -->
+    <script src="theme-init.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="apps-page">
+    <!-- TOPBAR -->
+    <header class="topbar" id="top">
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
           <!-- Brand -->
+<<<<<<< HEAD
           <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
             <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
               width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
             <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
               width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+=======
+          <a class="brand" href="#top" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -34,17 +59,24 @@
               </button>
 
               <!-- Mobile hamburger -->
+<<<<<<< HEAD
               <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
                 aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" />
+=======
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                 </svg>
               </button>
             </div>
 
             <!-- Desktop nav -->
             <nav class="nav__links" aria-label="Primary navigation">
+<<<<<<< HEAD
               <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
               <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
               <div class="nav__dropdown">
@@ -60,6 +92,13 @@
             </nav>
 
             <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+=======
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
+            </nav>
+
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
           </div>
         </div>
       </div>
@@ -67,6 +106,7 @@
       <!-- Mobile menu -->
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
+<<<<<<< HEAD
           <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
           <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
           <span class="mobile-menu__model-title">Model</span>
@@ -77,10 +117,17 @@
           <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
         <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+=======
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
       </div>
     </div>
   </header>
 
+<<<<<<< HEAD
   <main class="apps" id="main">
     <!-- HERO -->
     <section class="apps-hero" aria-label="Apps hero">
@@ -97,6 +144,24 @@
           get to verify what’s real in seconds.
         </p>
       </div>
+=======
+    <main class="apps" id="main">
+    <!-- HERO -->
+    <section class="apps-hero" aria-label="Apps hero">
+        <div class="container apps-hero__inner">
+        <p class="apps-hero__kicker">Worried everything’s all fake?</p>
+
+        <h1 class="apps-hero__title">
+            Verify Reality,<br />
+            Faster.
+        </h1>
+
+        <p class="apps-hero__desc">
+            Try our new AI Deepfake Video Detection (and many more),<br />
+            get to verify what’s real in seconds.
+        </p>
+        </div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     </section>
 
     <!-- =======================
@@ -105,6 +170,7 @@
 
     <!-- VIDEO -->
     <section class="feature-band feature-band--video" aria-label="AI Video Detection">
+<<<<<<< HEAD
       <div class="container feature-band__inner">
         <div class="feature-band__copy">
           <h2 class="feature-band__title">AI Video<br />Detection</h2>
@@ -115,10 +181,23 @@
         <!-- 1 frame besar (ambil ~setengah section) -->
         <div class="feature-band__frame" aria-hidden="true"></div>
       </div>
+=======
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Video<br />Detection</h2>
+            <p>Instantly spot AI-generated or manipulated videos </p>
+            <a class="feature-band__btn" href="video.html">Try now</a>
+            </div>
+
+            <!-- 1 frame besar (ambil ~setengah section) -->
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     </section>
 
     <!-- IMAGE (reverse contoh: teks kanan, frame kiri) -->
     <section class="feature-band feature-band--image feature-band--reverse" aria-label="AI Image Detection">
+<<<<<<< HEAD
       <div class="container feature-band__inner">
         <div class="feature-band__copy">
           <h2 class="feature-band__title">AI Image<br />Detection</h2>
@@ -128,10 +207,22 @@
 
         <div class="feature-band__frame" aria-hidden="true"></div>
       </div>
+=======
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Image<br />Detection</h2>
+            <p>Reveal whether an image is AI-made or edited</p>
+            <a class="feature-band__btn" href="image.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     </section>
 
     <!-- AUDIO -->
     <section class="feature-band feature-band--audio" aria-label="AI Audio Detection">
+<<<<<<< HEAD
       <div class="container feature-band__inner">
         <div class="feature-band__copy">
           <h2 class="feature-band__title">AI Audio<br />Detection</h2>
@@ -141,10 +232,22 @@
 
         <div class="feature-band__frame" aria-hidden="true"></div>
       </div>
+=======
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Audio<br />Detection</h2>
+            <p>Instantly check whether an audio clip is AI-generated or edited</p>
+            <a class="feature-band__btn" href="audio.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     </section>
 
     <!-- TEXT (reverse) -->
     <section class="feature-band feature-band--text feature-band--reverse" aria-label="AI Text Detection">
+<<<<<<< HEAD
       <div class="container feature-band__inner">
         <div class="feature-band__copy">
           <h2 class="feature-band__title">AI Text<br />Detection</h2>
@@ -154,10 +257,22 @@
 
         <div class="feature-band__frame" aria-hidden="true"></div>
       </div>
+=======
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">AI Text<br />Detection</h2>
+            <p>Uncover whether text is human-written or AI-generated</p>
+            <a class="feature-band__btn" href="text.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     </section>
 
     <!-- HUMANIZER -->
     <section class="feature-band feature-band--humanizer" aria-label="Text Humanizer">
+<<<<<<< HEAD
       <div class="container feature-band__inner">
         <div class="feature-band__copy">
           <h2 class="feature-band__title">Text<br />Humanizer</h2>
@@ -167,6 +282,17 @@
 
         <div class="feature-band__frame" aria-hidden="true"></div>
       </div>
+=======
+        <div class="container feature-band__inner">
+            <div class="feature-band__copy">
+            <h2 class="feature-band__title">Text<br />Humanizer</h2>
+            <p>Refine AI-written text into natural, human-sounding writing</p>
+            <a class="feature-band__btn" href="humanize.html">Try now</a>
+            </div>
+
+            <div class="feature-band__frame" aria-hidden="true"></div>
+        </div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     </section>
 
     <!-- FOOTER -->
@@ -174,10 +300,15 @@
       <div class="container footer__grid">
         <div class="footer__brand">
           <div class="footer__logoRow">
+<<<<<<< HEAD
             <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
               alt="DetectiFy logo" />
             <img class="footer__logo footer__logo--light"
               src="{{ url_for('static', filename='assets/light-logo.png') }}" alt="DetectiFy logo" />
+=======
+            <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+            <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             <strong class="footer__name">DetectiFy</strong>
           </div>
           <p class="footer__desc">
@@ -187,18 +318,32 @@
 
         <nav class="footer__col" aria-label="Quick links">
           <h3 class="footer__heading">Quick Links</h3>
+<<<<<<< HEAD
           <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
           <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
           <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+=======
+          <a class="footer__link" href="index.html">Home</a>
+          <a class="footer__link" href="apps.html">Application</a>
+          <a class="footer__link" href="pricing.html">Pricing</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         </nav>
 
         <nav class="footer__col" aria-label="Features">
           <h3 class="footer__heading">Features</h3>
+<<<<<<< HEAD
           <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
           <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
           <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
           <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
           <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+=======
+          <a class="footer__link" href="text.html">Text Detection</a>
+          <a class="footer__link" href="image.html">Image Detection</a>
+          <a class="footer__link" href="video.html">Video Detection</a>
+          <a class="footer__link" href="audio.html">Audio Detection</a>
+          <a class="footer__link" href="humanize.html">Text Humanization</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         </nav>
       </div>
 
@@ -206,6 +351,7 @@
         <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
       </div>
     </footer>
+<<<<<<< HEAD
   </main>
 
   <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
@@ -214,3 +360,11 @@
 </body>
 
 </html>
+=======
+    </main>
+
+    <script src="theme.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

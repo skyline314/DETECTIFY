@@ -1,13 +1,18 @@
 <!doctype html>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <html lang="en">
 
+=======
+<html lang="id">
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Get Started • DetectiFy</title>
 
   <!-- Init theme awal biar logo/navbar ga kedip salah -->
+<<<<<<< HEAD
 =======
 <html lang="id">
 <head>
@@ -16,6 +21,8 @@
   <title>Auth • DetectiFy</title>
 
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
   <script>
     (function () {
       const KEY = "detectify_theme";
@@ -30,9 +37,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+=======
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="auth.css" />
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 </head>
 
 <body>
@@ -41,11 +54,17 @@
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
+<<<<<<< HEAD
           <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to home">
             <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
               width="75" height="45" alt="DetectiFy" />
             <img class="brand__logo brand__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
               width="75" height="45" alt="DetectiFy" />
+=======
+          <a class="brand" href="index.html" aria-label="Back to home">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             <span class="brand__name">DetectiFy</span>
           </a>
 
@@ -55,30 +74,51 @@
                 <span class="icon-btn__icon" id="themeIcon" aria-hidden="true">
                   <!-- SUN (light) -->
                   <svg class="theme-ico theme-ico--sun" viewBox="0 0 24 24" aria-hidden="true">
+<<<<<<< HEAD
                     <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2" />
                     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41
                             M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" fill="none"
                       stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+=======
+                    <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41
+                            M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                   </svg>
 
                   <!-- MOON (dark) -->
                   <svg class="theme-ico theme-ico--moon" viewBox="0 0 24 24" aria-hidden="true">
+<<<<<<< HEAD
                     <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z" fill="none" stroke="currentColor"
                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+=======
+                    <path d="M21 13.2A8.5 8.5 0 1 1 10.8 3a7 7 0 0 0 10.2 10.2Z"
+                          fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                   </svg>
                 </span>
               </button>
 
+<<<<<<< HEAD
               <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu"
                 aria-expanded="false" aria-controls="mobileMenu">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" />
+=======
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                 </svg>
               </button>
             </div>
 
             <nav class="nav__links" aria-label="Primary navigation">
+<<<<<<< HEAD
               <a class="nav__link" href="{{ url_for('analysis.index') }}">Home</a>
               <a class="nav__link" href="{{ url_for('analysis.apps') }}">Application</a>
               <div class="nav__dropdown">
@@ -94,12 +134,20 @@
             </nav>
 
             <a class="btn btn--primary" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+=======
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
+            </nav>
+
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
           </div>
         </div>
       </div>
 
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
+<<<<<<< HEAD
           <a class="mobile-link" href="{{ url_for('analysis.index') }}">Home</a>
           <a class="mobile-link" href="{{ url_for('analysis.apps') }}">Application</a>
           <span class="mobile-menu__model-title">Model</span>
@@ -110,6 +158,12 @@
           <a class="mobile-link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
         </nav>
         <a class="btn btn--primary btn--block" href="{{ url_for('auth.auth_page') }}">Get Started</a>
+=======
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
       </div>
     </div>
   </header>
@@ -120,7 +174,11 @@
       <section class="auth__shell auth-slider" id="authSlider" aria-label="Authentication">
 
         <!-- STATUS -->
+<<<<<<< HEAD
 
+=======
+        <p class="auth__status" id="authStatus" aria-live="polite"></p>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
         <!-- LOGIN -->
         <div class="auth__card auth__panel auth__panel--login">
@@ -135,6 +193,7 @@
 
             <div class="field">
               <label for="loginPassword">Password</label>
+<<<<<<< HEAD
               <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
                 required />
             </div>
@@ -167,6 +226,13 @@
               </div>
             </form>
           </div>
+=======
+              <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required />
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit">Login</button>
+          </form>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         </div>
 
         <!-- SIGNUP -->
@@ -192,6 +258,7 @@
 
             <div class="field">
               <label for="signupConfirm">Confirm Password</label>
+<<<<<<< HEAD
               <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password"
                 required />
             </div>
@@ -199,6 +266,11 @@
             <!-- STATUS SIGNUP -->
             <div id="signupStatus" class="auth__status"></div>
 
+=======
+              <input id="signupConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password" required />
+            </div>
+
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             <button class="btn btn--primary btn--block" type="submit">Create Account</button>
           </form>
         </div>
@@ -227,10 +299,15 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <div class="footer__logoRow">
+<<<<<<< HEAD
           <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
             alt="DetectiFy logo" />
           <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
             alt="DetectiFy logo" />
+=======
+          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
           <strong class="footer__name">DetectiFy</strong>
         </div>
         <p class="footer__desc">
@@ -240,18 +317,32 @@
 
       <nav class="footer__col" aria-label="Quick links">
         <h3 class="footer__heading">Quick Links</h3>
+<<<<<<< HEAD
         <a class="footer__link" href="{{ url_for('analysis.index') }}">Home</a>
         <a class="footer__link" href="{{ url_for('analysis.apps') }}">Application</a>
         <a class="footer__link" href="{{ url_for('payment.pricing') }}">Pricing</a>
+=======
+        <a class="footer__link" href="index.html">Home</a>
+        <a class="footer__link" href="apps.html">Application</a>
+        <a class="footer__link" href="pricing.html">Pricing</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
       </nav>
 
       <nav class="footer__col" aria-label="Features">
         <h3 class="footer__heading">Features</h3>
+<<<<<<< HEAD
         <a class="footer__link" href="{{ url_for('analysis.text_ui') }}">Text Detection</a>
         <a class="footer__link" href="{{ url_for('analysis.image_ui') }}">Image Detection</a>
         <a class="footer__link" href="{{ url_for('analysis.video_ui') }}">Video Detection</a>
         <a class="footer__link" href="{{ url_for('analysis.audio_ui') }}">Audio Detection</a>
         <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
+=======
+        <a class="footer__link" href="text.html">Text Detection</a>
+        <a class="footer__link" href="image.html">Image Detection</a>
+        <a class="footer__link" href="video.html">Video Detection</a>
+        <a class="footer__link" href="audio.html">Audio Detection</a>
+        <a class="footer__link" href="humanize.html">Text Humanization</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
       </nav>
     </div>
 
@@ -260,6 +351,7 @@
     </div>
   </footer>
 
+<<<<<<< HEAD
   <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/auth.js') }}?v=2" defer></script>
@@ -924,3 +1016,9 @@
 </body>
 </html>
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+  <script src="theme.js" defer></script>
+  <script src="auth.js" defer></script>
+</body>
+</html>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

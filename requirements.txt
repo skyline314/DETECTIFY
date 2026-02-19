@@ -13,10 +13,14 @@ redis
 numpy
 pandas
 <<<<<<< HEAD
+<<<<<<< HEAD
 scikit-learn==1.5.1
 =======
 scikit-learn==1.6.1
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+scikit-learn==1.6.1
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 xgboost
 joblib
 librosa
@@ -37,6 +41,7 @@ resend
 opencv-python-headless
 requests
 <<<<<<< HEAD
+<<<<<<< HEAD
 gensim
 mlflow
 dagshub
@@ -44,3 +49,7 @@ dagshub
 tensorflow
 gensim
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+tensorflow
+gensim
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

@@ -24,6 +24,7 @@ def process_humanize_task(analysis_id):
 
         with s3_temp_file(job.file_location) as temp_path:
 <<<<<<< HEAD
+<<<<<<< HEAD
             # Baca teks dari file
             raw_text = extract_text_from_file(temp_path)
             
@@ -35,6 +36,11 @@ def process_humanize_task(analysis_id):
             raw_text = extract_text_from_file(temp_path)
             
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+            # Baca teks dari file .input
+            raw_text = extract_text_from_file(temp_path)
+            
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             # Deteksi bahasa dari nama file (id_manual_text.input atau en_manual_text.input)
             lang = 'id' if job.file_name_original.startswith('id_') else 'en'
             

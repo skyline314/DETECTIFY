@@ -3,9 +3,12 @@ os.environ['OMP_NUM_THREADS'] = '1'
 
 import joblib
 <<<<<<< HEAD
+<<<<<<< HEAD
 import mlflow.sklearn
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 import pandas as pd
 import numpy as np
 import librosa
@@ -22,6 +25,7 @@ from PIL import Image
 from timm import create_model
 import cv2
 <<<<<<< HEAD
+<<<<<<< HEAD
 from gensim.models.doc2vec import Doc2Vec
 from gensim.utils import simple_preprocess
 import boto3
@@ -29,6 +33,10 @@ import boto3
 import tensorflow as tf
 from gensim.models.doc2vec import Doc2Vec
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+import tensorflow as tf
+from gensim.models.doc2vec import Doc2Vec
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 ###########################################################################################################
 # GLOBAL CONFIGURATION & PATHS
@@ -49,6 +57,7 @@ ENGLISH_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regr
 ENGLISH_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'English', 'logistic_regression' ,'tfidf_vectorizer.pkl')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.pth')
 INDONESIAN_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'doc2Vec.d2v')
 # tf.config.set_visible_devices([], 'GPU')
@@ -57,6 +66,11 @@ INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.
 INDONESIAN_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'doc2Vec.d2v')
 tf.config.set_visible_devices([], 'GPU')
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+INDONESIAN_TEXT_MODEL_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'bi_lstm.h5')
+INDONESIAN_TEXT_VECTORIZER_PATH = os.path.join(TEXT_MODEL_DIR, 'Indonesia', 'doc2Vec.d2v')
+tf.config.set_visible_devices([], 'GPU')
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 
 # IMAGE
@@ -82,6 +96,7 @@ def clean_text(text):
     text = re.sub(r'\w*\d\w*', '', text)
     return text
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 def text_preprocessing_id(text):
     """Preprocessing khusus Bahasa Indonesia"""
@@ -115,6 +130,8 @@ def ensure_model_exists(s3_key, local_path):
 
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 ###########################################################################################################
 
 # MODEL CLASSES
@@ -174,6 +191,7 @@ class EfficientNetV2(nn.Module):
         out = self.classifier(features)
         return out.squeeze(1)
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 
 class BiLSTM(nn.Module):
@@ -197,6 +215,8 @@ class BiLSTM(nn.Module):
         return self.sigmoid(out)
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 ###########################################################################################################
 # REGISTRY CORE
@@ -213,10 +233,14 @@ class ModelRegistry:
         # Text Assets
         self.en_text_model = None
 <<<<<<< HEAD
+<<<<<<< HEAD
         # self.en_text_vectorizer = None # Removed: Included in MLflow Pipeline
 =======
         self.en_text_vectorizer = None
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+        self.en_text_vectorizer = None
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         self.id_text_model = None
         self.id_text_vectorizer = None
 
@@ -231,6 +255,7 @@ class ModelRegistry:
             return
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         # Ensure Env Vars are loaded for MLflow
         if not os.getenv("MLFLOW_TRACKING_URI"):
             from app.config import Config
@@ -240,6 +265,8 @@ class ModelRegistry:
 
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         print(f"[CORE] Loading ML Models on {DEVICE}")
         self._load_audio_model()
         self._load_text_model()
@@ -250,9 +277,12 @@ class ModelRegistry:
     # --- Loader Sub-methods ---
     def _load_audio_model(self):
 <<<<<<< HEAD
+<<<<<<< HEAD
         ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH)
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         try:
             if os.path.exists(AUDIO_MODEL_PATH):
                 print(f"[Core] Loading Audio Model from: {AUDIO_MODEL_PATH}")
@@ -263,6 +293,7 @@ class ModelRegistry:
             print(f"[Core]  Error loading Audio Model: {e}")
 
     def _load_text_model(self):
+<<<<<<< HEAD
 <<<<<<< HEAD
         # Load English Model (MLflow Pipeline)
         try:
@@ -298,6 +329,8 @@ class ModelRegistry:
                     
                     print(f"[Core] Loaded PyTorch Text Model: Indonesian Text Detection")
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         # Load englsih model
         try:
             if os.path.exists(ENGLISH_TEXT_MODEL_PATH) and os.path.exists(ENGLISH_TEXT_VECTORIZER_PATH):
@@ -314,7 +347,10 @@ class ModelRegistry:
                         self.id_text_model = tf.keras.models.load_model(INDONESIAN_TEXT_MODEL_PATH)
                         self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
                     print(f"[Core] Loaded Text Model: Indonesian Text Detection")
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         except Exception as e:
             print(f"[Core] Error loading Text Models: {e}")
 
@@ -322,10 +358,13 @@ class ModelRegistry:
     def _load_image_model(self):
         try:
 <<<<<<< HEAD
+<<<<<<< HEAD
             ensure_model_exists("assets/models/image/IMAGE_MODEL.pth", IMAGE_MODEL_PATH)
             
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             if os.path.exists(IMAGE_MODEL_PATH):
                 self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
                 checkpoint = torch.load(IMAGE_MODEL_PATH, map_location=DEVICE, weights_only=True)
@@ -426,6 +465,7 @@ class ModelRegistry:
         if not raw_text or len(raw_text.strip()) < 10:
             return {"error": "Teks terlalu pendek (Minimal 10 karakter)."}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         # Predict
         if language == 'en':
@@ -439,6 +479,8 @@ class ModelRegistry:
                 prediction = self.en_text_model.predict([processed_text])[0]
                 probabilities = self.en_text_model.predict_proba([processed_text])[0]
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         if not self.text_model or not self.text_vectorizer: return {"error": "Model Teks tidak tersedia."}
 
         # Predict
@@ -448,13 +490,17 @@ class ModelRegistry:
                 text_vectorized = self.en_text_vectorizer.transform([processed_text])
                 prediction = self.en_text_model.predict(text_vectorized)[0]
                 probabilities = self.en_text_model.predict_proba(text_vectorized)[0]
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                 
                 # Mapping: 0 = Human/REAL, 1 = AI/FAKE
                 label = "FAKE" if prediction == 1 else "REAL"
                 confidence = probabilities[1] if prediction == 1 else probabilities[0]
 
                 return {
+<<<<<<< HEAD
 <<<<<<< HEAD
                     "model_used": f"Detectify_Text_LogReg_v2 (MLflow)",
                     "prediction": label,
@@ -465,12 +511,18 @@ class ModelRegistry:
                     "prediction": label,
                     "confidence_score": float(confidence), 
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+                    "model_used": f"Detectify_Text_Logistic_Regression",
+                    "prediction": label,
+                    "confidence_score": float(confidence), 
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                     "probability_ai": float(probabilities[1]),
                     "probability_human": float(probabilities[0])
                 }
             except Exception as e:
                 return {"error": f"Text prediction failed: {str(e)}"}
         elif language == 'id':
+<<<<<<< HEAD
 <<<<<<< HEAD
             if not getattr(self, 'id_text_model', None) or not getattr(self, 'id_text_vectorizer', None):
                 return {"error": "Model Teks Indonesia tidak tersedia."}
@@ -506,6 +558,8 @@ class ModelRegistry:
                     "probability_ai": float(prob_ai),
                     "probability_human": float(prob_human)
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             try: 
                 with tf.device('/CPU:0'):
                     vector = self.id_text_vectorizer.infer_vector(raw_text.split())
@@ -521,7 +575,10 @@ class ModelRegistry:
                     "confidence_score": round(float(confidence) * 100, 2),
                     "model_used": "Indo_BiLSTM_Doc2Vec",
                     "language": "Indonesian"
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
                 }
             except Exception as e:
                 return {"error": f"Text prediction failed: {str(e)}"}

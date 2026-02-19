@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Get Started • DetectiFy</title>
 
+<<<<<<< HEAD
   <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
   <meta http-equiv="refresh" content="0; url={{ url_for('auth.login_ui') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
@@ -36,3 +40,19 @@
 </body>
 </html>
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+  <script src="theme-init.js"></script>
+  <meta http-equiv="refresh" content="0; url=login.html" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container" style="padding: 120px 0; text-align:center;">
+    <p style="color: var(--muted);">Redirecting… If nothing happens, <a href="login.html">click here</a>.</p>
+  </main>
+  <script>
+    // JS fallback for environments ignoring meta refresh
+    location.replace("login.html");
+  </script>
+</body>
+</html>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

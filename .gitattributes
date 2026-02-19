@@ -3,7 +3,10 @@
 *.h5 filter=lfs diff=lfs merge=lfs -text
 *.d2v filter=lfs diff=lfs merge=lfs -text
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.npy filter=lfs diff=lfs merge=lfs -text
 app/static/assets/* filter=lfs diff=lfs merge=lfs -text
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

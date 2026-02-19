@@ -1,13 +1,19 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="id">
 <<<<<<< HEAD
 
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+<!doctype html> 
+<html lang="id">
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Audio Detection • DetectiFy</title>
+<<<<<<< HEAD
 <<<<<<< HEAD
   <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,6 +40,9 @@
       document.documentElement.setAttribute("data-theme", theme);
     })();
   </script>
+=======
+  <script src="theme-init.js"></script>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,12 +51,16 @@
 </head>
 
 <body>
+<<<<<<< HEAD
   <!-- TOPBAR (konsisten dengan index) -->
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
   <header class="topbar" id="top">
     <div class="container">
       <div class="topbar__shell">
         <div class="nav">
+<<<<<<< HEAD
 <<<<<<< HEAD
           <a class="brand" href="{{ url_for('analysis.index') }}" aria-label="Back to top">
             <img class="brand__logo brand__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
@@ -135,10 +148,42 @@
             </nav>
 
             <a class="btn btn--primary" href="login.html">Get Started</a>
+=======
+          <!-- Brand -->
+          <a class="brand" href="#top" aria-label="Back to top">
+            <img class="brand__logo brand__logo--light" src="assets/light-logo.png" width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <img class="brand__logo brand__logo--dark"  src="assets/dark-logo.png"  width="75" height="45" alt="DetectiFy" decoding="async" loading="eager" />
+            <span class="brand__name">DetectiFy</span>
+          </a>
+
+          <div class="nav__right">
+            <div class="nav__icons" aria-label="Quick actions">
+              <!-- Theme toggle -->
+              <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+                <span class="icon-btn__icon" id="themeIcon" aria-hidden="true"></span>
+              </button>
+
+              <!-- Mobile hamburger -->
+              <button class="icon-btn icon-btn--menu" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Desktop nav -->
+            <nav class="nav__links" aria-label="Primary navigation">
+              <a class="nav__link" href="index.html">Home</a>
+              <a class="nav__link" href="apps.html">Application</a>
+            </nav>
+
+            <a class="btn btn--primary" href="auth.html">Get Started</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
           </div>
         </div>
       </div>
 
+<<<<<<< HEAD
       <div class="mobile-menu" id="mobileMenu" hidden>
         <nav class="mobile-menu__links" aria-label="Mobile navigation">
           <a class="mobile-link" href="index.html#home">Home</a>
@@ -147,6 +192,15 @@
         </nav>
         <a class="btn btn--primary btn--block" href="login.html">Get Started</a>
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+      <!-- Mobile menu -->
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <nav class="mobile-menu__links" aria-label="Mobile navigation">
+          <a class="mobile-link" href="index.html">Home</a>
+          <a class="mobile-link" href="apps.html">Application</a>
+        </nav>
+        <a class="btn btn--primary btn--block" href="auth.html">Get Started</a>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
       </div>
     </div>
   </header>
@@ -156,6 +210,7 @@
       <h1 class="app-title">AI Audio Detection</h1>
       <p class="app-subtitle">Find out whether your Audio is real or AI generated</p>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       <div class="upload-card">
         <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload audio file">
@@ -186,6 +241,8 @@
         </div>
 
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
       <!-- Upload Card -->
       <div class="upload-card">
         <div
@@ -205,6 +262,7 @@
           <div class="dropzone__inner">
             <div class="dropzone__icon" aria-hidden="true">
               <!-- audio file icon (simple) -->
+<<<<<<< HEAD
               <svg viewBox="0 0 24 24">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
                   fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -218,16 +276,43 @@
 
             <div class="meta-pills" aria-label="file constraints">
               <span class="pill">File format: <b>MP3, WAV</b></span>
+=======
+              <img
+                src="assets/audio-upload.png"
+                alt=""
+                class="dropzone__iconImg"
+                decoding="async"
+                loading="eager"
+              />
+            </div>
+
+            <div class="dropzone__title">Upload your audio here</div>
+            <div class="dropzone__subtitle">
+              Or
+              <button type="button" class="dropzone__browse" id="browseBtn">browse files</button>
+              on your computer
+            </div>
+
+            <div class="meta-pills" aria-label="file constraints">
+              <span class="pill">File format: <b>(MP3, WAV)</b></span>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
               <span class="dot" aria-hidden="true">•</span>
               <span class="pill">Max Size: <b>100 MB</b></span>
             </div>
 
+<<<<<<< HEAD
             <div class="dropzone__hint">Klik area ini atau drag & drop file ke sini.</div>
+=======
+            <div class="dropzone__hint">Tips: use a clear, high-resolution audio file for better results.</div>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
           </div>
         </div>
 
         <!-- Selected file + actions -->
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         <div class="upload-actions">
           <div class="file-info" id="fileInfo" hidden>
             <div class="file-info__name" id="fileName">—</div>
@@ -237,10 +322,14 @@
           <div class="actions-row">
             <button class="btn" type="button" id="btnRemove" disabled>Remove</button>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <button class="btn btn--primary" type="button" id="btnUpload" disabled>Analyze</button>
 =======
             <button class="btn btn--primary" type="button" id="btnUpload" disabled>Upload</button>
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+            <button class="btn btn--primary" type="button" id="btnUpload" disabled>Upload</button>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
           </div>
 
           <div class="progress" id="progressWrap" hidden aria-label="upload progress">
@@ -248,6 +337,7 @@
           </div>
 
           <div class="status" id="status" role="status" aria-live="polite"></div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
           <div id="resultCard" class="result-card" style="display:none;">
@@ -268,16 +358,23 @@
           </div>
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         </div>
       </div>
     </section>
   </main>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  <!-- FOOTER -->
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
   <footer class="site-footer" aria-label="Website footer">
     <div class="container footer__grid">
       <div class="footer__brand">
         <div class="footer__logoRow">
+<<<<<<< HEAD
           <img class="footer__logo footer__logo--dark" src="{{ url_for('static', filename='assets/dark-logo.png') }}"
             alt="DetectiFy logo" />
           <img class="footer__logo footer__logo--light" src="{{ url_for('static', filename='assets/light-logo.png') }}"
@@ -302,11 +399,40 @@
         <a class="footer__link" href="{{ url_for('analysis.humanize_ui') }}">Text Humanization</a>
       </nav>
     </div>
+=======
+          <img class="footer__logo footer__logo--dark" src="assets/dark-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <img class="footer__logo footer__logo--light" src="assets/light-logo.png" alt="DetectiFy logo" loading="lazy" decoding="async" />
+          <strong class="footer__name">DetectiFy</strong>
+        </div>
+        <p class="footer__desc">
+          Authenticate checks for AI-generated content, delivers transparent &amp; reliable results
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__heading">Quick Links</h3>
+        <a class="footer__link" href="index.html">Home</a>
+        <a class="footer__link" href="apps.html">Application</a>
+        <a class="footer__link" href="pricing.html">Pricing</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Features">
+        <h3 class="footer__heading">Features</h3>
+        <a class="footer__link" href="text.html">Text Detection</a>
+        <a class="footer__link" href="image.html">Image Detection</a>
+        <a class="footer__link" href="video.html">Video Detection</a>
+        <a class="footer__link" href="audio.html">Audio Detection</a>
+        <a class="footer__link" href="humanize.html">Text Humanization</a>
+      </nav>
+    </div>
+
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     <div class="container footer__bottom">
       <span class="footer__copy">© 2025 DetectiFy. All rights reserved.</span>
     </div>
   </footer>
 
+<<<<<<< HEAD
   <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
@@ -315,8 +441,13 @@
 
 </html>
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
   <script src="theme.js" defer></script>
   <script src="upload-audio.js" defer></script>
 </body>
 </html>
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f

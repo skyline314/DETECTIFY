@@ -1,22 +1,31 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from flask import request, jsonify, current_app, url_for, redirect
 =======
 from flask import request, jsonify, current_app, url_for
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+from flask import request, jsonify, current_app, url_for
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 from . import auth_bp
 from app.models import User
 from app.extensions import db, mail
 from flask_mail import Message
 <<<<<<< HEAD
+<<<<<<< HEAD
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 =======
 from flask_jwt_extended import create_access_token
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+from flask_jwt_extended import create_access_token
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta, timezone
 from flask import render_template
 import resend
 import os
+<<<<<<< HEAD
 <<<<<<< HEAD
 import secrets
 
@@ -43,6 +52,8 @@ def get_me():
     }), 200
 =======
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 
 def generate_confirmation_token(email):
@@ -68,10 +79,14 @@ def confirm_token(token, expiration=86400):
 
 def send_email(to, subject, body):
 <<<<<<< HEAD
+<<<<<<< HEAD
     """Mengirim email via Resend API."""
 =======
     """Mengirim email (dibungkus try-except agar app tidak crash jika gagal)."""
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+    """Mengirim email (dibungkus try-except agar app tidak crash jika gagal)."""
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     resend.api_key = os.environ.get("RESEND_API_KEY")
     try:
         from_email = "Detectify <no-reply@detectify-app.online>"
@@ -85,16 +100,22 @@ def send_email(to, subject, body):
 
         resend.Emails.send(msg)
 <<<<<<< HEAD
+<<<<<<< HEAD
         print(f" [EMAIL] Success sent via API to {to}", flush=True)
         return True
     except Exception as e:
         print(f" [EMAIL] Failed to send via API to {to}: {str(e)}", flush=True)
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         print(f" [EMAIL] Berhasil dikirim via API ke {to}", flush=True)
         return True
     except Exception as e:
         print(f" [EMAIL] GAGAL mengirim via API ke {to}: {str(e)}", flush=True)
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         return False
 
 
@@ -104,15 +125,20 @@ def register_user():
         data = request.get_json()
         if not data or not data.get('email') or not data.get('password'):
 <<<<<<< HEAD
+<<<<<<< HEAD
             return jsonify({"error": "Email and password are required"}), 400
 =======
             return jsonify({"error": "Email dan password diperlukan"}), 400
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+            return jsonify({"error": "Email dan password diperlukan"}), 400
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         # 1. Cek apakah email sudah terdaftar dan semua sudah di isi
         if not username or not email or not password:
@@ -145,6 +171,8 @@ def register_user():
             db.session.add(new_user)
         
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         
 
         # 1. Cek apakah email sudah terdaftar dan semua sudah di isi
@@ -161,7 +189,10 @@ def register_user():
         new_user = User(username=username, email=email)
         new_user.set_password(password)
         db.session.add(new_user)
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         db.session.commit()
 
         # 3. Proses Token & Email 
@@ -169,9 +200,12 @@ def register_user():
             # Generate Token
             token = generate_confirmation_token(new_user.email)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             # Buat Link Verifikasi
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             
             # # DEBUG: Print Token ke Terminal 
             # print("="*50)
@@ -180,11 +214,15 @@ def register_user():
 
             # Buat Link Verifikasi
             # Link akan berbentuk: baseurl/auth/verify/<token>
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             verify_url = url_for('auth.verify_email', token=token, _external=True)
             
             # Kirim Email
             html_body = f"""
+<<<<<<< HEAD
 <<<<<<< HEAD
             <div style="max-width:480px;margin:0 auto;font-family:Arial,sans-serif;padding:20px">
                 <h2 style="color:#0ea5c7">Verify Email Detectify</h2>
@@ -201,6 +239,8 @@ def register_user():
             """
             send_email(new_user.email, "Verify Email Detectify", html_body)
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             <p>Halo,</p>
             <p>Terima kasih telah mendaftar di Detectify.</p>
             <p>Silakan klik link di bawah untuk memverifikasi akun Anda:</p>
@@ -209,7 +249,10 @@ def register_user():
             <p>Link ini berlaku selama 24 jam.</p>
             """
             send_email(new_user.email, "Verifikasi Email Detectify", html_body)
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             
         except Exception as e:
             # Jika email gagal, jangan batalkan registrasi, tapi log errornya
@@ -217,10 +260,14 @@ def register_user():
 
         return jsonify({
 <<<<<<< HEAD
+<<<<<<< HEAD
             "message": "Registration successful. Please check your email for verification.",
 =======
             "message": "Registrasi berhasil. Silakan cek email (atau terminal) untuk verifikasi.",
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+            "message": "Registrasi berhasil. Silakan cek email (atau terminal) untuk verifikasi.",
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             "user_id": new_user.user_id
         }), 201
 
@@ -228,15 +275,20 @@ def register_user():
         db.session.rollback()
         print(f"Critical Error Register: {e}")
 <<<<<<< HEAD
+<<<<<<< HEAD
         return jsonify({"error": "Internal server error"}), 500
 =======
         return jsonify({"error": "Terjadi kesalahan internal"}), 500
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+        return jsonify({"error": "Terjadi kesalahan internal"}), 500
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 
 @auth_bp.route('/verify/<token>', methods=['GET'])
 def verify_email(token):
     """
+<<<<<<< HEAD
 <<<<<<< HEAD
     User clicks verification link from email.
     Redirect to auth page with status query param.
@@ -244,10 +296,15 @@ def verify_email(token):
     Endpoint ini dipanggil saat user mengklik link di email.
     Format URL: /auth/verify/<token_panjang>
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+    Endpoint ini dipanggil saat user mengklik link di email.
+    Format URL: /auth/verify/<token_panjang>
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     """
     try:
         email = confirm_token(token)
         if not email:
+<<<<<<< HEAD
 <<<<<<< HEAD
             return redirect('/auth/get-started?verified=error&msg=Token+is+invalid+or+expired')
         
@@ -258,13 +315,18 @@ def verify_email(token):
         if user.is_verified:
             return redirect('/auth/get-started?verified=already&msg=Account+already+verified')
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             return jsonify({"error": "Link verifikasi tidak valid atau sudah kadaluarsa."}), 400
         
         user = User.query.filter_by(email=email).first_or_404()
         
         if user.is_verified:
             return jsonify({"message": "Akun sudah terverifikasi sebelumnya."}), 200
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
         # Update Status Verifikasi
         user.is_verified = True
@@ -272,16 +334,22 @@ def verify_email(token):
         db.session.commit()
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         return redirect('/auth/get-started?verified=success&msg=Email+has+been+verified!+Please+login.')
 
     except Exception as e:
         return redirect('/auth/get-started?verified=error&msg=Error+occurred+during+verification')
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         return jsonify({"message": "Selamat! Email berhasil diverifikasi. Silakan login."}), 200
 
     except Exception as e:
         return jsonify({"error": "Terjadi kesalahan saat verifikasi", "details": str(e)}), 500
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -291,10 +359,14 @@ def login_user():
         
         if not data or not data.get('email') or not data.get('password'):
 <<<<<<< HEAD
+<<<<<<< HEAD
             return jsonify({"error": "Email and password are required"}), 400
 =======
             return jsonify({"error": "Email dan password diperlukan"}), 400
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+            return jsonify({"error": "Email dan password diperlukan"}), 400
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
         email = data.get('email')
         password = data.get('password')
@@ -304,6 +376,7 @@ def login_user():
         # Cek User Ada & Password Cocok
         if not user or not user.check_password(password):
 <<<<<<< HEAD
+<<<<<<< HEAD
             return jsonify({"error": "Wrong Email or Password, please check again"}), 401 
         
         if not user.is_verified:
@@ -311,13 +384,18 @@ def login_user():
                 "error": "Account not verified", 
                 "message": "Please verify your account before logging in."
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             return jsonify({"error": "Email atau password salah"}), 401 
         
         if not user.is_verified:
             return jsonify({
                 "error": "Akun belum diverifikasi", 
                 "message": "Silakan cek email Anda untuk memverifikasi akun sebelum login."
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             }), 403
 
         access_token = create_access_token(identity=user.user_id)
@@ -326,10 +404,14 @@ def login_user():
     except Exception as e:
         print(f"ERROR LOGIN: {e}") 
 <<<<<<< HEAD
+<<<<<<< HEAD
         return jsonify({"error": "Internal server error"}), 500
 =======
         return jsonify({"error": "Terjadi kesalahan internal"}), 500
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+        return jsonify({"error": "Terjadi kesalahan internal"}), 500
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
     
 
 @auth_bp.route('/forgot-password', methods=['POST'])
@@ -342,6 +424,7 @@ def forgot_password():
         email = data.get('email')
         if not email:
 <<<<<<< HEAD
+<<<<<<< HEAD
             return jsonify({"error": "Email is required"}), 400
 
         user = User.query.filter_by(email=email).first()
@@ -350,6 +433,8 @@ def forgot_password():
 
         # 1. Generate Token
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             return jsonify({"error": "Email diperlukan"}), 400
 
         user = User.query.filter_by(email=email).first()
@@ -362,11 +447,15 @@ def forgot_password():
         # Note: Bisa pakai JWT/Serializer, tapi karena kita punya kolom DB, 
         # kita pakai random string saja biar beda variasi.
         import secrets
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         reset_token = secrets.token_hex(32)
         
         # 2. Simpan ke Database
         user.reset_token = reset_token
+<<<<<<< HEAD
 <<<<<<< HEAD
         user.reset_token_expiration = datetime.now(timezone.utc) + timedelta(hours=1)
         db.session.commit()
@@ -420,6 +509,8 @@ def reset_password_page(token):
     
     return render_template('reset_password.html', token=token)
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         # Token berlaku 1 jam
         user.reset_token_expiration = datetime.now(timezone.utc) + timedelta(hours=1)
         db.session.commit()
@@ -444,7 +535,10 @@ def reset_password_page(token):
     except Exception as e:
         print(f"Error Forgot Password: {e}")
         return jsonify({"error": "Terjadi kesalahan internal"}), 500
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
 
 @auth_bp.route('/reset-password', methods=['POST'])
@@ -459,15 +553,20 @@ def reset_password():
 
         if not token or not new_password:
 <<<<<<< HEAD
+<<<<<<< HEAD
             return jsonify({"error": "Token and new password are required"}), 400
 =======
             return jsonify({"error": "Token dan password baru diperlukan"}), 400
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+            return jsonify({"error": "Token dan password baru diperlukan"}), 400
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
         # 1. Cari User berdasarkan Token
         user = User.query.filter_by(reset_token=token).first()
 
         if not user:
+<<<<<<< HEAD
 <<<<<<< HEAD
             return jsonify({"error": "Token is invalid or expired"}), 400
 
@@ -477,35 +576,49 @@ def reset_password():
         if expiry < now:
             return jsonify({"error": "Token is expired. Please request again."}), 400
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
             return jsonify({"error": "Token tidak valid atau salah"}), 400
 
         # 2. Cek Kadaluarsa
         if user.reset_token_expiration < datetime.utcnow():
             return jsonify({"error": "Token sudah kadaluarsa. Silakan request ulang."}), 400
+<<<<<<< HEAD
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
         # 3. Update Password
         user.set_password(new_password)
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         # 4. Hapus Token
 =======
         # 4. Hapus Token (Supaya tidak bisa dipakai lagi)
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+        # 4. Hapus Token (Supaya tidak bisa dipakai lagi)
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         user.reset_token = None
         user.reset_token_expiration = None
         
         db.session.commit()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         return jsonify({"message": "Password has been changed. Please login."}), 200
 =======
         return jsonify({"message": "Password berhasil diubah. Silakan login."}), 200
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+        return jsonify({"message": "Password berhasil diubah. Silakan login."}), 200
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
 
     except Exception as e:
         db.session.rollback()
         print(f"Error Reset Password: {e}")
+<<<<<<< HEAD
 <<<<<<< HEAD
         return jsonify({"error": "Internal server error"}), 500
 
@@ -551,10 +664,16 @@ def change_username():
         print(f"Error Change Username: {e}")
         return jsonify({"error": "Internal server error"}), 500
 =======
+=======
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
         return jsonify({"error": "Terjadi kesalahan internal"}), 500
     
 
 @auth_bp.route('/console')
 def developer_console():
+<<<<<<< HEAD
     return render_template('console.html')
 >>>>>>> 1a28d7f5a860d74198facd1c65210be6a133fa59
+=======
+    return render_template('console.html')
+>>>>>>> 45a07fcd43bd6fae16c3910ebcd43151321b3a1f
