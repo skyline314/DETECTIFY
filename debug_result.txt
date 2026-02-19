@@ -1,0 +1,1 @@
+{'model_used': 'Detectify_Text_BiLSTM_PyTorch', 'prediction': 'REAL', 'confidence_score': 0.75, 'language': 'Indonesian', 'probability_ai': 0.25, 'probability_human': 0.75}
