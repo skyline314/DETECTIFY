@@ -35,3 +35,4 @@ requests
 gensim
 mlflow
 dagshub
+prometheus-flask-exporter

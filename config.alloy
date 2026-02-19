@@ -1,0 +1,21 @@
+
+// 1. Scrape Local Metrics
+prometheus.scrape "local_app" {
+    targets = [
+        { "__address__" = "localhost:7860" },
+    ]
+    forward_to = [prometheus.remote_write.grafana_cloud.receiver]
+    scrape_interval = "15s"
+}
+
+// 2. Push to Grafana Cloud
+prometheus.remote_write "grafana_cloud" {
+    endpoint {
+        url = sys.env("GC_URL") 
+        
+        basic_auth {
+            username = sys.env("GC_USERNAME")
+            password = sys.env("GC_PASSWORD")
+        }
+    }
+}

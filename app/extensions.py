@@ -41,3 +41,8 @@ def init_s3_client(app):
     
     s3_client = session.client('s3')
     app.config['S3_CLIENT'] = s3_client
+
+# 5. Inisialisasi Prometheus Metrics (Monitoring)
+# Import di dalam fungsi atau global tergantung kebutuhan, tapi extension biasanya global
+from prometheus_flask_exporter import PrometheusMetrics
+metrics = PrometheusMetrics(app=None) # Lazy init
