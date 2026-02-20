@@ -135,6 +135,10 @@ def test_tc_img_10_decision_susp(setup_image_model):
 
 # --- TC-IMG-11: Image Corrupt / Error ---
 def test_tc_img_11_image_error():
+    # Setup mock so it bypasses loading check
+    ml_registry.image_model = MagicMock()
+    ml_registry._is_loaded = True
+
     with patch("PIL.Image.open", side_effect=RuntimeError("Corrupt Binary")):
         result = ml_registry.predict_image("broken.jpg")
         assert "error" in result

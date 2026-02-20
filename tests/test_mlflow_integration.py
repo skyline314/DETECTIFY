@@ -16,6 +16,9 @@ def test_mlflow_english_model_integration():
     Test that the English Text model loads correctly from MLflow 
     and can perform prediction.
     """
+    if not os.getenv("MLFLOW_TRACKING_URI"):
+        pytest.skip("Skipping MLflow integration test: MLFLOW_TRACKING_URI not set.")
+    
     print("Testing MLflow Integration for English Text...")
     
     # Text to predict

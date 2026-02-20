@@ -16,11 +16,15 @@ except ImportError:
     sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tests'))
     from generate_dummy_audio import create_dummy_wav
 
+@pytest.mark.integration
 def test_mlflow_audio_model_integration():
     """
     Test that the Audio model loads correctly from MLflow 
     and can perform prediction on a real (silent) wav file.
     """
+    if not os.getenv("MLFLOW_TRACKING_URI"):
+        pytest.skip("Skipping MLflow integration test: MLFLOW_TRACKING_URI not set.")
+
     print("Testing MLflow Integration for Audio...")
     
     # 1. Generate Dummy Audio
