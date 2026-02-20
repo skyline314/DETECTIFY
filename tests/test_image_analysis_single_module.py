@@ -30,8 +30,12 @@ def setup_image_model():
     """Mocks the Image Model in ml_registry."""
     mock_model = MagicMock()
     ml_registry.image_model = mock_model
+    ml_registry.image_transforms = MagicMock() # Mock transforms
     ml_registry._is_loaded = True
-    return mock_model
+    
+    # Mock torchvision
+    with patch("torchvision.transforms.Compose") as mock_compose:
+        yield mock_model
 
 # ========================================================================================
 # TEST CASES (TC-IMG-01 to TC-IMG-11)
