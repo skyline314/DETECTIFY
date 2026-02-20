@@ -229,36 +229,21 @@ class ModelRegistry:
         
         audio_loaded = False
         
-        # 1. Try Loading from MLflow (Artifact Download)
+        # 1. Try Loading from MLflow (PyTorch Flavor)
         try:
-            print(f"[Core] Attempting to load Audio Model from MLflow...")
-            client = mlflow.tracking.MlflowClient()
-            model_name = "Audio_Deepfake_Detection_Model"
-            version = "1"
+            model_name = "detectify-deepfake-audio-detector"
+            version = "3"
+            model_uri = f"models:/{model_name}/{version}"
             
-            # Get Run ID form Model Version
-            mv = client.get_model_version(model_name, version)
-            run_id = mv.run_id
+            print(f"[Core] Attempting to load Audio Model from MLflow: {model_uri}")
             
-            # Target Directory
-            target_dir = os.path.dirname(AUDIO_MODEL_PATH)
+            # Load PyTorch Model directly
+            self.audio_model = mlflow.pytorch.load_model(model_uri)
+            self.audio_model.eval()
+            self.audio_model.to(DEVICE)
             
-            # Download "raw_models/tuning_2_2.pth"
-            # Note: download_artifacts maintains directory structure of artifact_path
-            print(f"[Core] Downloading artifact 'raw_models/tuning_2_2.pth' from run {run_id}...")
-            local_artifact_path = client.download_artifacts(run_id, "raw_models/tuning_2_2.pth", dst_path=target_dir)
-            
-            # local_artifact_path will be something like '.../assets/models/audio/raw_models/tuning_2_2.pth'
-            
-            if os.path.exists(local_artifact_path):
-                print(f"[Core] Audio model downloaded to: {local_artifact_path}")
-                self.audio_model = SimpleAudioCNN().to(DEVICE)
-                self.audio_model.load_state_dict(torch.load(local_artifact_path, map_location=DEVICE, weights_only=True))
-                self.audio_model.eval()
-                audio_loaded = True
-                print(f"[Core] Loaded Audio Model from MLflow (State Dict)")
-            else:
-                print(f"[Core] Download returned path {local_artifact_path} but file not found.")
+            audio_loaded = True
+            print(f"[Core] Loaded Audio Model from MLflow (PyTorch)")
 
         except Exception as e:
             print(f"[Core] MLflow Audio Load Failed: {e}")
