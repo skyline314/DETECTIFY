@@ -1,6 +1,9 @@
 import os
+import sys
 os.environ['OMP_NUM_THREADS'] = '1'
 
+import shutil
+import json
 import joblib
 import mlflow.sklearn
 import pandas as pd
@@ -20,7 +23,6 @@ from timm import create_model
 import cv2
 from gensim.models.doc2vec import Doc2Vec
 from gensim.utils import simple_preprocess
-import boto3
 
 ###########################################################################################################
 # GLOBAL CONFIGURATION & PATHS
@@ -82,21 +84,6 @@ def text_preprocessing_id(text):
     text = re.sub(r'[^a-zA-Z\s]', '', text)
     return text.strip()
 
-def ensure_model_exists(s3_key, local_path):
-    """Fungsi untuk mengunduh model dari AWS S3 jika tidak ada di lokal."""
-    if not os.path.exists(local_path):
-        print(f"[S3] Mengunduh aset dari S3: {s3_key} -> {local_path}...")
-        try:
-            os.makedirs(os.path.dirname(local_path), exist_ok=True)
-            s3 = boto3.client(
-                's3',
-                aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-                aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
-            )
-            s3.download_file(os.getenv('AWS_S3_BUCKET_NAME'), s3_key, local_path)
-            print(f"[S3] Selesai mengunduh ke {local_path}")
-        except Exception as e:
-            print(f"[S3] Gagal mengunduh {s3_key}: {e}")
 
 ###########################################################################################################
 
@@ -200,6 +187,14 @@ class ModelRegistry:
         self.image_model = None
         
         self._is_loaded = False
+        self.mlflow_client = None
+
+    DEFAULT_MANIFEST_INFO = {
+        "audio": {"name": "detectify-deepfake-audio-detector", "version": "0", "local_path": "assets/models/audio/AUDIO_MODEL.pth"},
+        "text_en": {"name": "detectify-text-en-logreg", "version": "0", "local_path": "assets/models/text/English/mlflow_en_text_v2"},
+        "text_id": {"name": "detectify-indo-text-bi-lstm", "version": "2", "local_path": "assets/models/text/Indonesia/mlflow_id_text"},
+        "image": {"name": "Image_Deepfake_Detection_Model", "version": "3", "local_path": "assets/models/image/mlflow_image_model_v3.pth"}
+    }
 
     def load_assets(self):
         """Metode utama pemuatan aset (Entry Point)."""
@@ -214,109 +209,274 @@ class ModelRegistry:
                 os.environ["MLFLOW_TRACKING_USERNAME"] = Config.MLFLOW_TRACKING_USERNAME or ""
                 os.environ["MLFLOW_TRACKING_PASSWORD"] = Config.MLFLOW_TRACKING_PASSWORD or ""
             else:
-                print("[CORE] WARNING: MLFLOW_TRACKING_URI is not set in Environment or Config. MLflow model loading may fail.")
+                print("[CORE] WARNING: MLFLOW_TRACKING_URI is not set.")
 
-        print(f"[CORE] Loading ML Models on {DEVICE}")
+        # Load Manifest
+        self.manifest_path = os.path.join(MODEL_DIR, "models_manifest.json")
+        self.manifest = self._load_manifest()
+
+        # Initialize global MLflow Client once
+        try:
+            self.mlflow_client = mlflow.tracking.MlflowClient()
+        except Exception as e:
+            print(f"[CORE] WARNING: Failed to initialize MlflowClient - {e}")
+
+        print(f"[CORE] Syncing & Loading ML Models on {DEVICE}")
         self._load_audio_model()
         self._load_text_model()
         self._load_image_model()
         self._is_loaded = True
-        print("[Core] All Assets Loaded.")
+        print("[Core] All Assets Loaded & Synchronized.")
+
+    def _load_manifest(self):
+        if os.path.exists(self.manifest_path):
+            try:
+                with open(self.manifest_path, 'r') as f:
+                    return json.load(f)
+            except: pass
+        return {}
+
+    def _save_manifest(self):
+        try:
+            os.makedirs(os.path.dirname(self.manifest_path), exist_ok=True)
+            with open(self.manifest_path, 'w') as f:
+                json.dump(self.manifest, f, indent=4)
+        except Exception as e:
+            print(f"[Core] Failed to save manifest: {e}")
+
+    def _get_latest_version(self, client, model_name):
+        """Metadata-only check for latest version in MLflow"""
+        try:
+            versions = client.search_model_versions(f"name='{model_name}'")
+            if not versions: return None
+            versions.sort(key=lambda x: int(x.version), reverse=True)
+            return versions[0].version
+        except: return None
 
     # --- Loader Sub-methods ---
     def _load_audio_model(self):
-        # ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH) # Pindahkan ke fallback
-        
-        audio_loaded = False
-        
-        # 1. Try Loading from MLflow (PyTorch Flavor)
+        """Standardized Sync-then-Load for Audio Model."""
+        model_info = self.manifest.get("audio", self.DEFAULT_MANIFEST_INFO["audio"])
+        model_name = model_info["name"]
+        local_version = model_info["version"]
+        local_path = os.path.join(BASE_DIR, model_info["local_path"])
+        client = self.mlflow_client
+
+        # 1. Synchronize (MLflow -> Local)
         try:
-            model_name = "detectify-deepfake-audio-detector"
-            version = "3"
-            model_uri = f"models:/{model_name}/{version}"
+            remote_version = self._get_latest_version(client, model_name) if client else None
             
-            print(f"[Core] Attempting to load Audio Model from MLflow: {model_uri}")
-            
-            # Load PyTorch Model directly
-            self.audio_model = mlflow.pytorch.load_model(model_uri)
-            self.audio_model.eval()
-            self.audio_model.to(DEVICE)
-            
-            audio_loaded = True
-            print(f"[Core] Loaded Audio Model from MLflow (PyTorch)")
-
+            if remote_version and (remote_version != local_version or not os.path.exists(local_path)):
+                print(f"[Core] Syncing Audio Model (v{local_version} -> v{remote_version})...")
+                model_uri = f"models:/{model_name}/{remote_version}"
+                
+                # Download .pth artifact directly
+                download_uri = client.get_model_version_download_uri(model_name, remote_version)
+                tmp_dir = mlflow.artifacts.download_artifacts(artifact_uri=download_uri)
+                audio_pth = os.path.join(tmp_dir, "data", "model.pth")
+                
+                if os.path.exists(audio_pth):
+                    os.makedirs(os.path.dirname(local_path), exist_ok=True)
+                    if os.path.exists(local_path): os.remove(local_path)
+                    shutil.copy(audio_pth, local_path)
+                    
+                    # Update manifest
+                    self.manifest["audio"] = {"name": model_name, "version": remote_version, "local_path": model_info["local_path"]}
+                    self._save_manifest()
+                    local_version = remote_version # For loading below
+                    print(f"[Core] Audio Model Localized (v{remote_version})")
         except Exception as e:
-            print(f"[Core] MLflow Audio Load Failed: {e}")
-            print("[Core] Falling back to Local/S3...")
+            print(f"[Core] Audio Sync Warning: {e}")
 
-        # 2. Fallback to Local/S3 if MLflow failed
-        if not audio_loaded:
-            try:
-                ensure_model_exists("assets/models/audio/AUDIO_MODEL.pth", AUDIO_MODEL_PATH)
-                if os.path.exists(AUDIO_MODEL_PATH):
-                    print(f"[Core] Loading Audio Model from Local: {AUDIO_MODEL_PATH}")
+        # 2. Force Load from Local Asset
+        try:
+            if os.path.exists(local_path):
+                print(f"[Core] Initializing Audio Model from Asset: {local_path} (v{local_version})")
+                checkpoint = torch.load(local_path, map_location=DEVICE, weights_only=False)
+                
+                if not isinstance(checkpoint, dict):
+                    self.audio_model = checkpoint
+                else:
                     self.audio_model = SimpleAudioCNN().to(DEVICE)
-                    self.audio_model.load_state_dict(torch.load(AUDIO_MODEL_PATH, map_location=DEVICE, weights_only=True))
-                    self.audio_model.eval()
-            except Exception as e:
-                print(f"[Core] Error loading Audio Model (Fallback): {e}")
+                    self.audio_model.load_state_dict(checkpoint.get("model_state_dict", checkpoint))
+                
+                self.audio_model.eval()
+                self.audio_model.to(DEVICE)
+                print(f"[Core] Audio Model Ready.")
+            else:
+                print(f"[Core] WARNING: Audio Model local asset missing at {local_path}")
+        except Exception as e:
+            print(f"[Core] Audio Initialization Failed: {e}")
 
     def _load_text_model(self):
-        # Load English Model (MLflow Pipeline)
-        try:
-            model_name = "detectify-text-en-logreg"
-            version = "2" # Gunakan versi terbaru yang sudah diverifikasi (Pipeline)
-            model_uri = f"models:/{model_name}/{version}"
-            
-            print(f"[Core] Loading English Text Model from MLflow: {model_uri}")
-            self.en_text_model = mlflow.sklearn.load_model(model_uri)
-            print(f"[Core] Loaded English Text Model (Pipeline)")
-            
-        except Exception as e:
-            print(f"[Core] Error loading English Text Model from MLflow: {e}")
-            # Fallback logic could go here if needed
-
-
-        # Load indonesia model
-        try:
-            ensure_model_exists("assets/models/text/Indonesia/bi_lstm.pth", INDONESIAN_TEXT_MODEL_PATH)
-            ensure_model_exists("assets/models/text/Indonesia/doc2Vec.d2v", INDONESIAN_TEXT_VECTORIZER_PATH)
-            
-            # PENTING: Download file .npy pendamping Doc2Vec
-            ensure_model_exists("assets/models/text/Indonesia/doc2vec.d2v.wv.vectors.npy", INDONESIAN_TEXT_VECTORIZER_PATH + ".wv.vectors.npy")
-            ensure_model_exists("assets/models/text/Indonesia/doc2vec.d2v.syn1neg.npy", INDONESIAN_TEXT_VECTORIZER_PATH + ".syn1neg.npy")
-            if os.path.exists(INDONESIAN_TEXT_MODEL_PATH) and os.path.exists(INDONESIAN_TEXT_VECTORIZER_PATH):
-                    # Load Doc2Vec
-                    self.id_text_vectorizer = Doc2Vec.load(INDONESIAN_TEXT_VECTORIZER_PATH)
+        """Standardized Sync-then-Load for English & Indonesian Text Models."""
+        client = self.mlflow_client
+        
+        for lang, key in [("English", "text_en"), ("Indonesian", "text_id")]:
+            try:
+                model_info = self.manifest.get(key, self.DEFAULT_MANIFEST_INFO[key])
+                model_name = model_info["name"]
+                local_version = model_info["version"]
+                local_path = os.path.join(BASE_DIR, model_info["local_path"])
+                
+                # 1. Synchronize (MLflow -> Local)
+                try:
+                    remote_version = self._get_latest_version(client, model_name) if client else None
                     
-                    # Load PyTorch Model
-                    self.id_text_model = BiLSTM().to(DEVICE)
-                    self.id_text_model.load_state_dict(torch.load(INDONESIAN_TEXT_MODEL_PATH, map_location=DEVICE, weights_only=True))
-                    self.id_text_model.eval()
+                    # Robust check: Sync if update found OR folder missing OR folder empty
+                    is_empty = not os.listdir(local_path) if os.path.exists(local_path) and os.path.isdir(local_path) else True
+                    if remote_version and (remote_version != local_version or is_empty):
+                        print(f"[Core] Syncing {lang} Text Model (v{local_version} -> v{remote_version})...")
+                        model_uri = f"models:/{model_name}/{remote_version}"
+                        
+                        # Indonesian Run-Id workaround for sibling artifacts
+                        if key == "text_id" and client:
+                            versions = client.get_latest_versions(model_name)
+                            target_v = next((v for v in versions if v.version == str(remote_version)), None)
+                            if target_v and target_v.run_id:
+                                # Re-create local dir and download run-root artifacts
+                                if os.path.exists(local_path): shutil.rmtree(local_path)
+                                os.makedirs(local_path, exist_ok=True)
+                                # 2. Download everything from run root using modern API
+                                print(f"[Core] Downloading run {target_v.run_id} artifacts...")
+                                run_tmp = mlflow.artifacts.download_artifacts(run_id=target_v.run_id, artifact_path="")
+                                
+                                # 3. Copy items from run root
+                                items = os.listdir(run_tmp)
+                                print(f"[Core] Found {len(items)} items in run artifact root.")
+                                for item in items:
+                                    s, d = os.path.join(run_tmp, item), os.path.join(local_path, item)
+                                    if os.path.isdir(s): shutil.copytree(s, d, dirs_exist_ok=True)
+                                    else: shutil.copy2(s, d)
+                            else:
+                                raise ValueError(f"Run ID not found for {lang} v{remote_version}")
+                        else:
+                            # Standard MLflow artifact download
+                            tmp_dir = mlflow.artifacts.download_artifacts(artifact_uri=model_uri)
+                            if os.path.exists(local_path): shutil.rmtree(local_path)
+                            shutil.copytree(tmp_dir, local_path)
+                            
+                        # Update Manifest
+                        self.manifest[key] = {"name": model_name, "version": remote_version, "local_path": model_info["local_path"]}
+                        self._save_manifest()
+                        local_version = remote_version
+                        print(f"[Core] {lang} Asset Localized (v{remote_version})")
+                except Exception as sync_err:
+                    print(f"[Core] {lang} Sync Warning: {sync_err}")
+
+                # 2. Force Load from Local Asset
+                if os.path.exists(local_path):
+                    print(f"[Core] Initializing {lang} Text Model from Asset (v{local_version})")
                     
-                    print(f"[Core] Loaded PyTorch Text Model: Indonesian Text Detection")
-        except Exception as e:
-            print(f"[Core] Error loading Text Models: {e}")
+                    if key == "text_en":
+                        # English (Sklearn Pipeline)
+                        self.en_text_model = mlflow.sklearn.load_model(local_path)
+                    else:
+                        # Indonesian v2.1+ Logic (Standardized: artifacts/ and code/)
+                        art_root = os.path.join(local_path, "artifacts")
+                        code_root = os.path.join(local_path, "code")
+                        
+                        bi_lstm_pkl = os.path.join(art_root, "indo_text_pipeline_bi_lstm.pkl")
+                        bi_lstm_vec = os.path.join(art_root, "doc2Vec.d2v")
+                        bi_lstm_pth = os.path.join(art_root, "bi_lstm.pth")
+
+                        if os.path.exists(bi_lstm_pkl):
+                            # Add Code folder to sys.path for joblib wrapper resolution
+                            if code_root not in sys.path: sys.path.append(code_root)
+                            
+                            self.id_text_model = joblib.load(bi_lstm_pkl)
+                            
+                            # Load Vectorizer Component
+                            if os.path.exists(bi_lstm_vec):
+                                self.id_text_vectorizer = Doc2Vec.load(bi_lstm_vec)
+                            
+                            # Patch pipeline paths (Handle hardcoded paths from training env)
+                            if hasattr(self.id_text_model, 'named_steps'):
+                                for step_name, step in self.id_text_model.named_steps.items():
+                                    if hasattr(step, 'model_path'):
+                                        old_path = str(step.model_path).lower()
+                                        if 'doc2vec' in old_path:
+                                            step.model_path = bi_lstm_vec
+                                            if hasattr(step, 'model'): step.model = self.id_text_vectorizer
+                                        elif 'bi_lstm.pth' in old_path:
+                                            step.model_path = bi_lstm_pth
+                        else:
+                            print(f"[Core] Indonesian .pkl pipeline not found in {art_root}")
+                    
+                    print(f"[Core] {lang} Text Model Ready.")
+                else:
+                    print(f"[Core] WARNING: {lang} Text Model local asset missing.")
+            except Exception as e:
+                print(f"[Core] {lang} Initialization Failed: {e}")
 
     
     def _load_image_model(self):
+        """Standardized Sync-then-Load for Image Model."""
+        model_info = self.manifest.get("image", self.DEFAULT_MANIFEST_INFO["image"])
+        model_name = model_info["name"]
+        local_version = model_info["version"]
+        local_path = os.path.join(BASE_DIR, model_info["local_path"])
+        client = self.mlflow_client
+
+        # 1. Synchronize (MLflow -> Local)
         try:
-            ensure_model_exists("assets/models/image/IMAGE_MODEL.pth", IMAGE_MODEL_PATH)
+            remote_version = self._get_latest_version(client, model_name) if client else None
             
-            if os.path.exists(IMAGE_MODEL_PATH):
-                self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
-                checkpoint = torch.load(IMAGE_MODEL_PATH, map_location=DEVICE, weights_only=True)
+            if remote_version and (remote_version != local_version or not os.path.exists(local_path)):
+                print(f"[Core] Syncing Image Model (v{local_version} -> v{remote_version})...")
                 
-                # Handle dictionary vs full model save
+                mv = client.get_model_version(model_name, remote_version)
+                run_id = mv.run_id
+                artifact_path = "raw_models/final_model.pth"
+                
+                os.makedirs(os.path.dirname(local_path), exist_ok=True)
+                downloaded_file = mlflow.artifacts.download_artifacts(
+                    run_id=run_id, 
+                    artifact_path=artifact_path,
+                    dst_path=os.path.dirname(local_path)
+                )
+                
+                if os.path.exists(local_path): os.remove(local_path)
+                shutil.move(downloaded_file, local_path)
+                
+                raw_dir = os.path.join(os.path.dirname(local_path), "raw_models")
+                if os.path.exists(raw_dir): shutil.rmtree(raw_dir)
+                
+                self.manifest["image"] = {"name": model_name, "version": remote_version, "local_path": model_info["local_path"]}
+                self._save_manifest()
+                local_version = remote_version
+                print(f"[Core] Image Model Localized (v{remote_version})")
+        except Exception as e:
+            print(f"[Core] Image Sync Warning: {e}")
+
+        # 2. Force Load from Local Asset
+        try:
+            if os.path.exists(local_path):
+                print(f"[Core] Initializing Image Model from Asset: {local_path} (v{local_version})")
+                self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
+                checkpoint = torch.load(local_path, map_location=DEVICE, weights_only=False)
                 if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
                     self.image_model.load_state_dict(checkpoint["model_state_dict"])
                 else:
                     self.image_model.load_state_dict(checkpoint)
                 
                 self.image_model.eval()
-                print(f"[Core] Image Model Loaded")
+                print(f"[Core] Image Model Ready.")
+            else:
+                if os.path.exists(IMAGE_MODEL_PATH):
+                    print(f"[Core] Initializing Image Model from Legacy Fallback: {IMAGE_MODEL_PATH}")
+                    self.image_model = EfficientNetV2(pretrained=False).to(DEVICE)
+                    checkpoint = torch.load(IMAGE_MODEL_PATH, map_location=DEVICE, weights_only=False)
+                    if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
+                        self.image_model.load_state_dict(checkpoint["model_state_dict"])
+                    else:
+                        self.image_model.load_state_dict(checkpoint)
+                    
+                    self.image_model.eval()
+                else:
+                    print(f"[Core] WARNING: Image Model local asset missing.")
         except Exception as e:
-            print(f"[Core] Error loading Image Model: {e}")
+            print(f"[Core] Image Initialization Failed: {e}")
     
     # --- Audio Inference Sub-methods ---
 
@@ -433,21 +593,20 @@ class ModelRegistry:
             if not getattr(self, 'id_text_model', None) or not getattr(self, 'id_text_vectorizer', None):
                 return {"error": "Model Teks Indonesia tidak tersedia."}
             try: 
-                # 1. Preprocessing
-                clean_txt = text_preprocessing_id(raw_text)
-                words = simple_preprocess(clean_txt)
-
-                # 2. Vectorization (Doc2Vec)
-                vector = self.id_text_vectorizer.infer_vector(words, epochs=20)
-
-                # 3. Reshape untuk LSTM (Batch, Seq_Len, Input_Dim) -> (1, 1000, 1)
-                vector_tensor = torch.tensor(vector, dtype=torch.float32).view(1, 1000, 1).to(DEVICE)
-
-                # 4. Inference
-                with torch.no_grad():
-                    prob_human = self.id_text_model(vector_tensor).item()
-                
-                prob_ai = 1.0 - prob_human
+                # Indonesian Inference (Standard v2.1 Pipeline)
+                if hasattr(self.id_text_model, 'predict_proba'):
+                    # Standard Pipeline with Probabilities
+                    probabilities = self.id_text_model.predict_proba([raw_text])[0]
+                    # Mapping: [prob_ai, prob_human] (Indo model: 0=AI, 1=Human)
+                    prob_ai = probabilities[0]
+                    prob_human = probabilities[1]
+                elif hasattr(self.id_text_model, 'predict'):
+                    # Pipeline with only binary output (0=AI, 1=Human)
+                    prediction = self.id_text_model.predict([raw_text])[0]
+                    prob_ai = 1.0 if prediction == 0 else 0.0
+                    prob_human = 1.0 - prob_ai
+                else:
+                    return {"error": "Model Teks Indonesia format v2.1+ tidak terdeteksi (Missing predict/predict_proba)."}
 
                 # 5. Penentuan Label
                 label = "FAKE" if prob_ai >= 0.5 else "REAL"
@@ -455,9 +614,12 @@ class ModelRegistry:
                 # 6. Hitung Confidence Score (mengambil probabilitas tertinggi)
                 confidence = prob_ai if label == "FAKE" else prob_human
 
+                # Model name detection for display
+                model_display = "Detectify_Indo_BiLSTM_v2 (Pipeline)" if hasattr(self.id_text_model, 'predict_proba') else "Detectify_Indo_BiLSTM (Legacy)"
+
                 # Output disamakan persis dengan format English
                 return {
-                    "model_used": "Detectify_Text_BiLSTM_PyTorch",
+                    "model_used": model_display,
                     "prediction": label,
                     "confidence_score": float(confidence), 
                     "language": "Indonesian",
@@ -478,6 +640,9 @@ class ModelRegistry:
         if self.image_model is None: return {"error": "Model Image Not Found"}
 
         try:
+            # Explicitly set to eval mode to avoid BatchNorm error with batch_size=1
+            self.image_model.eval()
+
             # Cek apakah input adalah path (str) atau sudah berupa objek Image
             if isinstance(image_path, str):
                 # Jika String: Ini adalah alur S3/Image 

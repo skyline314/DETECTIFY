@@ -114,9 +114,10 @@ def test_tc_txt_07_en_real(setup_text_models):
 
 # --- TC-TXT-08: Indonesian FAKE ---
 def test_tc_txt_08_id_fake(setup_text_models):
-    # Mock prob returned by ID model (LSTM)
-    # Output 0.25 means 0.25 Human -> 0.75 AI
-    setup_text_models['id_model'].return_value = torch.tensor([0.25])
+    # Mock predict_proba returned by ID model (Pipeline v2.1+)
+    # Mapping: [prob_ai, prob_human] -> [0.75, 0.25] 
+    setup_text_models['id_model'].predict_proba.return_value = [[0.75, 0.25]]
+    
     # Mock vectorizer to avoid Doc2Vec logic
     setup_text_models['id_vec'].infer_vector.return_value = [0] * 1000
     
@@ -128,8 +129,8 @@ def test_tc_txt_08_id_fake(setup_text_models):
 
 # --- TC-TXT-09: Indonesian REAL ---
 def test_tc_txt_09_id_real(setup_text_models):
-    # Output 0.8 means 0.8 Human -> 0.2 AI
-    setup_text_models['id_model'].return_value = torch.tensor([0.8])
+    # Mapping: [prob_ai, prob_human] -> [0.2, 0.8]
+    setup_text_models['id_model'].predict_proba.return_value = [[0.2, 0.8]]
     setup_text_models['id_vec'].infer_vector.return_value = [0] * 1000
     
     with patch("celery_worker.core.text_preprocessing_id", return_value="teks bersih"):
