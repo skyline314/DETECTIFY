@@ -129,6 +129,10 @@ def test_tc_sm_09_voting_fake(setup_audio_model):
 
 # --- TC-SM-10: Error Handler ---
 def test_tc_sm_10_error_handler():
+    # Setup mock model so it bypasses loading check
+    ml_registry.audio_model = MagicMock()
+    ml_registry._is_loaded = True
+
     import torchaudio
     with patch("torchaudio.load", side_effect=RuntimeError("Corrupt file")):
         result = ml_registry.predict_audio("corrupt.wav")

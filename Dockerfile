@@ -19,7 +19,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     zstd \
     curl \
+    gpg \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Grafana Alloy
+RUN mkdir -p /etc/apt/keyrings/ && \
+    curl -fsSL https://apt.grafana.com/gpg.key | gpg --dearmor -o /etc/apt/keyrings/grafana.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | tee /etc/apt/sources.list.d/grafana.list && \
+    apt-get update && apt-get install -y alloy && \
+    apt-get clean
 
 # Install Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
@@ -37,11 +45,12 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy sisa file
+# Copy sisa file
 COPY --chown=user . .
 
 # Buat folder log dan tmp di dalam folder yang bisa ditulis user
-RUN mkdir -p /app/logs /app/tmp
+RUN mkdir -p /app/logs /app/tmp /app/tmp/alloy
 
 EXPOSE 7860
 
-CMD ["sh", "-c", "ollama serve & sleep 5 && ollama pull llama3 && gunicorn --bind 0.0.0.0:7860 --workers 1 --threads 8 --timeout 0 run:app & celery -A celery_worker.celery_app.celery worker --loglevel=info -P solo"]
+CMD ["sh", "-c", "alloy run --storage.path=/app/tmp/alloy /app/config.alloy & ollama serve & sleep 5 && ollama pull llama3 && gunicorn --bind 0.0.0.0:7860 --workers 1 --threads 8 --timeout 0 run:app & celery -A celery_worker.celery_app.celery worker --loglevel=info -P solo"]

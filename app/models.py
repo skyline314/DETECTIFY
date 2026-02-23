@@ -41,14 +41,19 @@ class User(db.Model):
         """Hanya cek status dan masa berlaku."""
         if self.plan != UserPlan.PREMIUM:
             return False
-        if self.subscription_end and self.subscription_end < datetime.now(timezone.utc):
-            return False
+            
+        if not self.subscription_end:
+            return False 
         
+        # Pastikan timezones consistent (naive vs aware issue)
         now = datetime.now(timezone.utc)
-        now_naive = now.replace(tzinfo=None)
-        sub_end_naive = self.subscription_end.replace(tzinfo=None)
-
-        return sub_end_naive > now_naive
+        sub_end = self.subscription_end
+        
+        # Convert naive datetime to aware (assume UTC)
+        if sub_end.tzinfo is None:
+            sub_end = sub_end.replace(tzinfo=timezone.utc)
+            
+        return sub_end > now
 
     def __repr__(self):
         return f'<User {self.email} [{self.plan}]>'

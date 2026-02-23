@@ -83,14 +83,19 @@
 
       <div class="profile-popup__divider"></div>
 
-      <div class="profile-popup__plan ${planClass}">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <div class="profile-popup__plan ${planClass}" style="align-items:flex-start;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-top:2px;">
           <path d="M3 7l4.5 4L12 5l4.5 6L21 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"
                 fill="currentColor" opacity=".25"/>
           <path d="M3 7l4.5 4L12 5l4.5 6L21 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"
                 stroke="currentColor" stroke-width="1.5" fill="none"/>
         </svg>
-        <span>${planLabel}</span>
+        <div style="display:flex; flex-direction:column;">
+          <span>${planLabel}</span>
+          ${user.plan === "premium" && user.plan_expires_at ?
+        `<span style="font-size:11px; opacity:0.75; margin-top:2px; font-weight:normal;">Valid until: ${new Date(user.plan_expires_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ""
+      }
+        </div>
       </div>
 
       ${user.plan !== "premium" ? `
@@ -429,38 +434,12 @@
       });
     }
 
-    // --- Mobile: replace "Get Started" link ---
+    // --- Mobile: remove "Get Started" from hamburger menu if logged in ---
     const mobileCta = document.querySelector(
       '.mobile-menu a.btn.btn--primary.btn--block'
     );
     if (mobileCta) {
-      const mobileWrapper = document.createElement("div");
-      mobileWrapper.className = "mobile-profile-section";
-      mobileWrapper.innerHTML = `
-        <div class="mobile-profile-header">
-          <span class="mobile-profile-avatar">${(user.username || "U").charAt(0).toUpperCase()}</span>
-          <div class="mobile-profile-info">
-            <div class="mobile-profile-name">${user.username}</div>
-            <div class="mobile-profile-email">${user.email}</div>
-          </div>
-        </div>
-        <a class="mobile-link" href="/history-page">📜 History</a>
-        <a class="mobile-link" href="${PRICING_URL}">💳 Pricing</a>
-        <a class="mobile-link" href="#" id="mobileChangeUsernameBtn">👤 Change Username</a>
-        <button class="btn btn--primary btn--block" type="button" id="mobileLogoutBtn">Log out</button>
-      `;
-      mobileCta.replaceWith(mobileWrapper);
-
-      document
-        .getElementById("mobileLogoutBtn")
-        ?.addEventListener("click", () => doLogout());
-
-      document
-        .getElementById("mobileChangeUsernameBtn")
-        ?.addEventListener("click", (e) => {
-          e.preventDefault();
-          showChangeUsernameModal(user.username);
-        });
+      mobileCta.remove();
     }
 
     // --- Home Page: hide "Try it for Free" pill ---

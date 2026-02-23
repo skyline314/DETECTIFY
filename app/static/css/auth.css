@@ -19,7 +19,7 @@
   /* ===== AUTH SLIDER IMAGES (GANTI SESUAI FILE KAMU) ===== */
   --media-login: url("../assets/hero-bg.jpg");
   --media-signup: url("../assets/hero-bg.jpg");
-  --auth-h: 560px;
+  --auth-h: 640px;
   /* tinggi box auth, kamu boleh ubah */
 }
 
@@ -105,10 +105,11 @@ body {
 }
 
 .auth__media-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.4rem, 3vw, 2.5rem);
   font-weight: 800;
   margin-bottom: 2rem;
   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  word-break: break-word;
 }
 
 .btn--outline-white {
@@ -137,50 +138,60 @@ body {
 }
 
 /* ======================================================
-       AUTH SLIDER (GAMBAR SAJA SLIDE)
+       AUTH SLIDER — CSS GRID LAYOUT
        ====================================================== */
+
+/* Shell: a 2-column grid on desktop so height auto-sizes
+   to whichever column is taller.  The media panel slides
+   over one column via transform. */
 .auth__shell.auth-slider {
-  position: relative;
-  min-height: var(--auth-h);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 16px;
   overflow: hidden;
+  min-height: 0;
+  /* let content drive the height */
 }
 
-/* panel form */
+/* ---- Form panels ---- */
+/* Both form panels live in column 1, stacked via
+   grid-area so only the active one is visible. */
 .auth__shell.auth-slider .auth__panel {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 50%;
+  grid-column: 1;
+  grid-row: 1;
   z-index: 2;
-  transition: opacity .25s ease;
+  transition: opacity .3s ease;
+  padding: clamp(24px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .auth__shell.auth-slider .auth__panel--login {
-  left: 0;
   opacity: 1;
   pointer-events: auto;
 }
 
 .auth__shell.auth-slider .auth__panel--signup {
-  left: 50%;
   opacity: 0;
   pointer-events: none;
+  visibility: hidden;
+  position: absolute;
+  /* take out of grid flow */
 }
 
-/* media: ini yang slide */
+/* ---- Media panel (the sliding image) ---- */
 .auth__shell.auth-slider .auth__panel-media {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 50%;
-  height: 100%;
+  grid-column: 2;
+  grid-row: 1;
   z-index: 3;
+  position: relative;
+  overflow: hidden;
   transition: transform .55s ease;
   transform: translateX(0);
-  overflow: hidden;
 }
 
-/* background login */
+/* Background image fills the panel */
 .auth__shell.auth-slider .auth__mediaInner {
   position: absolute;
   inset: 0;
@@ -190,7 +201,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/* background signup overlay */
+/* Signup overlay image */
 .auth__shell.auth-slider .auth__mediaInner::after {
   content: "";
   position: absolute;
@@ -207,7 +218,7 @@ body {
   display: none;
 }
 
-/* state signup */
+/* ---- Signup state ---- */
 .auth__shell.auth-slider.is-signup .auth__panel-media {
   transform: translateX(-100%);
 }
@@ -215,11 +226,17 @@ body {
 .auth__shell.auth-slider.is-signup .auth__panel--login {
   opacity: 0;
   pointer-events: none;
+  visibility: hidden;
+  position: absolute;
 }
 
 .auth__shell.auth-slider.is-signup .auth__panel--signup {
+  grid-column: 2;
+  /* move to the now-uncovered column */
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
+  position: relative;
 }
 
 .auth__shell.auth-slider.is-signup .media-content--login {
@@ -234,25 +251,149 @@ body {
   opacity: 1;
 }
 
-/* mobile stack */
-@media (max-width: 768px) {
-  .auth__shell.auth-slider {
-    position: static;
-    min-height: auto;
+/* ===== TABLET: tighter spacing ===== */
+@media (max-width: 980px) {
+  .auth__media-content {
+    padding: 1.5rem;
   }
 
+  .btn--outline-white {
+    padding: 0.6rem 2rem;
+    font-size: 13px;
+  }
+}
+
+/* ===== MOBILE: single-column stack ===== */
+@media (max-width: 768px) {
+  .auth {
+    margin-top: 30px !important;
+  }
+
+  .auth__shell.auth-slider {
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+  }
+
+  /* Reset all panels to normal flow */
   .auth__shell.auth-slider .auth__panel,
   .auth__shell.auth-slider .auth__panel-media {
-    position: static;
+    grid-column: 1;
+    grid-row: auto;
     width: 100%;
+    height: auto;
     transform: none !important;
+    position: relative;
+    visibility: visible;
   }
 
-  .auth__shell.auth-slider .auth__panel--signup {
-    left: auto;
+  /* Media banner on top */
+  .auth__shell.auth-slider .auth__panel-media {
+    order: -1;
+    min-height: 160px;
+    max-height: 180px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth__media-title {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .auth__media-content {
+    padding: 1.2rem;
+  }
+
+  .btn--outline-white {
+    padding: 0.6rem 2rem;
+    font-size: 13px;
+  }
+
+  /* Login visible by default */
+  .auth__shell.auth-slider .auth__panel--login {
     opacity: 1;
-    /* biar bisa kebaca kalau kamu scroll */
     pointer-events: auto;
+    display: block;
+    visibility: visible;
+    position: relative;
+  }
+
+  /* Signup hidden by default */
+  .auth__shell.auth-slider .auth__panel--signup {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    display: block;
+    grid-column: 1;
+    visibility: hidden;
+    position: relative;
+  }
+
+  /* Toggle → show signup, hide login */
+  .auth__shell.auth-slider.is-signup .auth__panel--login {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .auth__shell.auth-slider.is-signup .auth__panel--signup {
+    opacity: 1;
+    height: auto;
+    overflow: visible;
+    pointer-events: auto;
+    visibility: visible;
+    position: relative;
+    grid-column: 1;
+  }
+
+  /* Card padding */
+  .auth__card {
+    padding: 24px 20px;
+  }
+
+  .auth__title {
+    font-size: 22px;
+  }
+
+  .auth__desc {
+    font-size: 14px;
+  }
+
+  .field input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .field label {
+    font-size: 13px;
+  }
+}
+
+/* ===== EXTRA-SMALL ===== */
+@media (max-width: 480px) {
+  .auth {
+    margin-top: 16px !important;
+  }
+
+  .auth__shell.auth-slider .auth__panel-media {
+    min-height: 130px;
+    max-height: 150px;
+  }
+
+  .auth__media-title {
+    font-size: 1.15rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .auth__card {
+    padding: 20px 16px;
+  }
+
+  .auth__title {
+    font-size: 19px;
   }
 }
 

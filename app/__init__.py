@@ -8,7 +8,8 @@ from .extensions import (
     jwt, 
     cors, 
     init_s3_client,
-    mail
+    mail,
+    metrics
 )
 from flask_cors import CORS
 import os
@@ -28,6 +29,15 @@ def create_app(config_name='default'):
     cors.init_app(app)
     mail.init_app(app)
     init_s3_client(app)
+    
+    # Initialize Metrics
+    metrics.init_app(app)
+    # Set static info (optional)
+    # Set static info (optional)
+    try:
+        metrics.info('app_info', 'Application info', version='1.0.0')
+    except ValueError:
+        pass # Metric already registered
 
     with app.app_context():
         from . import models 

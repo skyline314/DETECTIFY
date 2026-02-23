@@ -25,21 +25,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const user = await res.json();
 
       if (user.plan === "premium") {
-        updateUI("pro");
+        updateUI("pro", user.plan_expires_at);
       }
     } catch {
       // ignore
     }
   }
 
-  function updateUI(plan) {
+  function updateUI(plan, expiresAt) {
     if (plan === "pro") {
       const proCta = document.getElementById("upgradeToProBtn");
       if (proCta) {
-        proCta.textContent = "Current Plan";
+        if (expiresAt) {
+          const d = new Date(expiresAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+          proCta.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px 0;">
+              <div>Current Plan</div>
+              <div style="font-size: 13px; opacity: 0.8; font-weight: 500; text-transform: none;">Valid until: ${d}</div>
+            </div>
+          `;
+        } else {
+          proCta.textContent = "Current Plan";
+        }
         proCta.classList.add("plan__cta--current");
         proCta.style.pointerEvents = "none";
         proCta.removeAttribute("href");
+      }
+
+      const freeCta = document.getElementById("freeTierBtn");
+      if (freeCta) {
+        freeCta.textContent = "Free Plan";
+        freeCta.classList.remove("plan__cta--current");
       }
     }
   }

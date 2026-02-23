@@ -30,6 +30,7 @@ def get_me():
         "username": user.username,
         "email": user.email,
         "plan": user.plan.value if user.plan else "free",
+        "plan_expires_at": user.subscription_end.isoformat() if user.subscription_end else None,
         "daily_limit": int(current_app.config.get('LIMIT_DAILY') or 5)
     }), 200
 

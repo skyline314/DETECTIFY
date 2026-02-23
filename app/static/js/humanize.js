@@ -26,15 +26,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  // --- Copy result ---
+  // --- Copy result (with visual feedback) ---
   const btnCopy = document.getElementById("btn-copy");
-  if (btnCopy) btnCopy.addEventListener("click", () => {
-    if (output.value) {
-      navigator.clipboard.writeText(output.value);
-      btnCopy.title = "Copied!";
-      setTimeout(() => { btnCopy.title = ""; }, 2000);
-    }
-  });
+  if (btnCopy) {
+    const originalHTML = btnCopy.innerHTML;
+    btnCopy.addEventListener("click", async () => {
+      if (output.value) {
+        try {
+          await navigator.clipboard.writeText(output.value);
+          // Ganti icon ke checkmark hijau sementara
+          btnCopy.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--success, #22c55e)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+          btnCopy.title = "Copied!";
+
+          setTimeout(() => {
+            btnCopy.innerHTML = originalHTML;
+            btnCopy.title = "Copy result";
+          }, 2000);
+        } catch (err) {
+          console.error("Failed to copy!", err);
+        }
+      }
+    });
+  }
 
   // --- Show/update result panel ---
   function showResultPanel(status) {

@@ -24,7 +24,7 @@ def setup_global_mocks():
             sys.modules[lib] = m
 
 # Execute immediately upon import by pytest
-setup_global_mocks()
+# setup_global_mocks()
 
 # ========================================================================================
 # SHARED FIXTURES
@@ -48,3 +48,22 @@ def app():
 @pytest.fixture(scope="session")
 def client(app):
     return app.test_client()
+
+@pytest.fixture(autouse=True)
+def reset_ml_registry():
+    """Reset ML Registry state before each test to prevent pollution."""
+    from celery_worker.core import ml_registry
+    
+    # Backup original state if needed, here we just reset to None/False
+    ml_registry.audio_model = None
+    ml_registry.en_text_model = None
+    ml_registry.id_text_model = None
+    ml_registry.id_text_vectorizer = None
+    ml_registry.image_model = None
+    ml_registry._is_loaded = False
+    
+    # Also clear any mocks attached to it
+    if hasattr(ml_registry, 'image_transforms'):
+        del ml_registry.image_transforms
+    
+    yield

@@ -36,9 +36,12 @@ class Config:
 
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,  # Cek koneksi sebelum digunakan
-        "pool_recycle": 1800,   # Reset koneksi setiap 30 menit
+        "pool_recycle": 300,    # Reset koneksi setiap 5 menit (lebih cocok untuk Neon)
         "pool_size": 10,        # Jumlah koneksi maksimal
-        "max_overflow": 20      # Toleransi kelebihan koneksi
+        "max_overflow": 20,     # Toleransi kelebihan koneksi
+        "connect_args": {
+            "connect_timeout": 30  # Timeout koneksi diperpanjang (Neon cold start)
+        }
     }
 
     # Celery (Async Tasks)

@@ -30,8 +30,12 @@ def setup_image_model():
     """Mocks the Image Model in ml_registry."""
     mock_model = MagicMock()
     ml_registry.image_model = mock_model
+    ml_registry.image_transforms = MagicMock() # Mock transforms
     ml_registry._is_loaded = True
-    return mock_model
+    
+    # Mock torchvision
+    with patch("torchvision.transforms.Compose") as mock_compose:
+        yield mock_model
 
 # ========================================================================================
 # TEST CASES (TC-IMG-01 to TC-IMG-11)
@@ -131,6 +135,10 @@ def test_tc_img_10_decision_susp(setup_image_model):
 
 # --- TC-IMG-11: Image Corrupt / Error ---
 def test_tc_img_11_image_error():
+    # Setup mock so it bypasses loading check
+    ml_registry.image_model = MagicMock()
+    ml_registry._is_loaded = True
+
     with patch("PIL.Image.open", side_effect=RuntimeError("Corrupt Binary")):
         result = ml_registry.predict_image("broken.jpg")
         assert "error" in result
