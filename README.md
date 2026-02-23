@@ -1,7 +1,7 @@
 <div align="center">
   <img src="app/static/assets/dark-logo.png" alt="DetectiFy Logo" width="150" />
   <h1>DETECTIFY: Verify Reality, Faster.</h1>
-  <p>An advanced, Open-Source deepfake detection application leveraging Machine Learning to uncover AI-generated text, images, video, and audio.</p>
+  <p>An advanced deepfake detection application leveraging Machine Learning to uncover AI-generated text, images, video, and audio.</p>
 
   [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/YOUR_RAILWAY_TEMPLATE)
   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
@@ -29,13 +29,13 @@ DETECTIFY is built with a robust, modern stack to ensure high performance and sc
 ---
 
 ## One-Click Deploy
-Want to host your own instance of DetectiFy? You can deploy it instantly! 
+Want to host an instance of DetectiFy? You can deploy it instantly! 
 Click one of the deployment buttons at the top of this README. Make sure you have your secrets ready. 
 For *Hugging Face Spaces*, simply duplicate this space.
 
 ---
 
-## Local Developer Setup
+## Local Environment Setup
 
 To run DetectiFy locally on your machine, follow these steps:
 
@@ -101,16 +101,3 @@ docker build -t detectify .
 docker run -p 5000:5000 --env-file .env detectify
 ```
 *(Note: A full `docker-compose.yml` to spin up Redis & Postgres alongside the app is coming soon!)*
-
----
-
-## Contributing
-Contributions are always welcome! Whether it's improving the UI, optimizing ML models, or fixing bugs:
-1. Fork the Project.
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the Branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
-
-## License
-All rights reserved © 2026 DetectiFy.
