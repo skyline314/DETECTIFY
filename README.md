@@ -1,12 +1,3 @@
----
-title: Detectify
-emoji: 🛡️
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-pinned: false
----
-
 <div align="center">
   <img src="app/static/assets/dark-logo.png" alt="DetectiFy Logo" width="150" />
   <h1>DETECTIFY: Verify Reality, Faster.</h1>
@@ -18,15 +9,15 @@ pinned: false
 
 <br />
 
-## 🌟 Key Features
-- 🎥 **Video & 🖼️ Image Detection**: Instantly spot AI-generated objects, visual glitches, and manipulation.
-- 🔊 **Audio Detection**: Uncover cloned voices and deepfake speech audio.
-- 📝 **Text Analysis**: Differentiate between human-written and LLM-generated texts.
-- 🛠️ **Text Humanizer**: Refine AI-written text into natural, human-sounding writing.
+## Key Features
+- **Video & Image Detection**: Instantly spot AI-generated objects, visual glitches, and manipulation.
+- **Audio Detection**: Uncover cloned voices and deepfake speech audio.
+- **Text Analysis**: Differentiate between human-written and LLM-generated texts.
+- **Text Humanizer**: Refine AI-written text into natural, human-sounding writing.
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 DETECTIFY is built with a robust, modern stack to ensure high performance and scalability:
 - **Backend & API**: Flask (Python) powers the core routing and application logic.
 - **Asynchronous Tasks**: Celery & Redis handle heavy machine learning inference tasks in the background without blocking the UI.
@@ -37,14 +28,14 @@ DETECTIFY is built with a robust, modern stack to ensure high performance and sc
 
 ---
 
-## 🚀 One-Click Deploy
+## One-Click Deploy
 Want to host your own instance of DetectiFy? You can deploy it instantly! 
 Click one of the deployment buttons at the top of this README. Make sure you have your secrets ready. 
 For *Hugging Face Spaces*, simply duplicate this space.
 
 ---
 
-## 💻 Local Developer Setup
+## Local Developer Setup
 
 To run DetectiFy locally on your machine, follow these steps:
 
@@ -101,7 +92,7 @@ Your application should now be accessible at `http://127.0.0.1:5000`!
 
 ---
 
-## 🐋 Docker Setup (Alternative)
+## Docker Setup (Alternative)
 If you prefer running everything via Docker:
 1. Ensure your `.env` is fully populated.
 2. Build and run the image:
@@ -113,7 +104,7 @@ docker run -p 5000:5000 --env-file .env detectify
 
 ---
 
-## 🤝 Contributing
+## Contributing
 Contributions are always welcome! Whether it's improving the UI, optimizing ML models, or fixing bugs:
 1. Fork the Project.
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
@@ -121,5 +112,5 @@ Contributions are always welcome! Whether it's improving the UI, optimizing ML m
 4. Push to the Branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
-## 📄 License
+## License
 All rights reserved © 2026 DetectiFy.
