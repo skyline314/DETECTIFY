@@ -96,20 +96,20 @@
         <div class="hero__grid">
           <div class="hero__left">
             <h1 class="hero__title">Looking<br><span class="hero__titleThin">for</span></h1>
-            <a class="hero__pill" href="{{ url_for('auth.auth_page') }}" aria-label="Try it for free">
-              <span>Try it for Free</span>
-              <span class="hero__pillIcon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </a>
           </div>
 
           <div class="hero__right" aria-hidden="false">
             <h1 class="hero__title hero__title--right">a<br>Real<br>Answer?</h1>
           </div>
+          <a class="hero__pill" href="{{ url_for('auth.auth_page') }}" aria-label="Try it for free">
+            <span>Try it for Free</span>
+            <span class="hero__pillIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13 5l7 7-7 7M20 12H4" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
         </div>
       </div>
     </section>
@@ -118,8 +118,12 @@
     <section class="section section--know" id="app" aria-label="Get to know Detectify">
       <div class="container">
         <div class="know__head">
-          <p class="know__kicker">Let’s Get</p>
-          <h2 class="know__title">to Know <span>Detectify</span> <em>More!</em></h2>
+          <h2 class="know__title">
+            Let’s Get<br>
+            to Know<br>
+            <span>Detectify</span><br>
+            <em>More!</em>
+          </h2>
         </div>
 
         <div class="carousel3d" data-carousel="know">
@@ -145,6 +149,7 @@
           <button class="carousel3d__nav carousel3d__nav--next" type="button" aria-label="Next card">
             <span aria-hidden="true">›</span>
           </button>
+
         </div>
       </div>
     </section>
@@ -190,6 +195,7 @@
                 score you can trust.</p>
             </div>
           </a>
+
         </div>
       </div>
     </section>
@@ -218,6 +224,7 @@
             authenticity
             checks and informed decision-making.
           </p>
+
         </div>
       </div>
     </section>
@@ -251,6 +258,7 @@
         <div class="founded__media">
           <img class="found__image" src="{{ url_for('static', filename='assets/laptop_logo.png') }}"
             alt="Detectify on laptop" />
+
         </div>
       </div>
     </section>
@@ -275,6 +283,7 @@
               <button type="submit">Subscribe</button>
             </div>
           </form>
+
         </div>
       </div>
     </section> -->
