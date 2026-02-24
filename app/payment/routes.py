@@ -12,7 +12,7 @@ payment_bp = Blueprint('payment', __name__)
 @payment_bp.route('/pricing')
 def pricing():
     price = int(current_app.config.get('PREMIUM_PRICE', 100000))
-    limit = int(current_app.config.get('LIMIT_DAILY', 3))
+    limit = int(current_app.config.get('LIMIT_DAILY') or 5)
     midtrans_client_key = current_app.config.get('MIDTRANS_CLIENT_KEY', '')
     midtrans_is_production = current_app.config.get('MIDTRANS_IS_PRODUCTION', False)
     return render_template('pricing.html',

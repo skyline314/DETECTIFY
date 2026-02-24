@@ -64,13 +64,19 @@ Create a `.env` file in the root directory. You can copy the provided example:
 ```bash
 cp .env.example .env
 ```
-**Critical `.env` Variables to Configure:**
-- `SECRET_KEY`: A random string for Flask cookie security.
-- `DATABASE_URL`: Connection string. (e.g. `sqlite:///detectify.db` for local testing).
-- `CELERY_BROKER_URL` / `REDIS_URL`: Your Redis connection string (`redis://localhost:6379/0`).
-- `MLFLOW_TRACKING_URI`: Your DagsHub or MLflow server tracking URL to download model weights.
-- `AWS_S3_BUCKET_NAME`: S3 credentials if you are storing large user uploads remotely.
-- `RESEND_API_KEY`: For sending verification and password reset emails.
+**Step-by-step `.env` Setup:**
+1. **Flask & Security**:
+   - `SECRET_KEY`: Generate a random string (e.g., `python -c "import secrets; print(secrets.token_hex(16))"`) for Flask session security.
+2. **Database**:
+   - `DATABASE_URL`: Your database connection string. For quick local testing, use `sqlite:///detectify.db`.
+3. **Celery & Redis** (Required for background ML tasks):
+   - `CELERY_BROKER_URL` / `CELERY_RESULT_BACKEND`: Use `redis://localhost:6379/0` if running Redis locally.
+4. **MLflow / Model Weights (Provided by Us)**:
+   - `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`: **These credentials will be provided by the DetectiFy team.** You must use our provided MLflow server to automatically download the pre-trained model weights.
+5. **Additional Services (Optional for basic local run)**:
+   - `AWS_S3_...`: S3 credentials if you are storing large user uploads remotely.
+   - `RESEND_API_KEY`: For sending verification and password reset emails.
+   - `MIDTRANS_...`: Required if you want to test premium subscription payments.
 
 ### 4. Running the Application
 You will need to run two separate processes for the app to function fully:

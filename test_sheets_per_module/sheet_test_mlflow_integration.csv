@@ -1,0 +1,2 @@
+Test Case,Penjelasan Singkat / Scenario,Result
+test_mlflow_english_model_integration,Test that the English Text model loads correctly from MLflow and can perform prediction.,Passed

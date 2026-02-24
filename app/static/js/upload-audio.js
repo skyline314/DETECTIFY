@@ -65,16 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- FAKE PROGRESS (realistic animation during analysis) ---
     function startFakeProgress() {
-        let pct = 0;
-        progressWrap.hidden = false;
-        progressBar.style.width = "0%";
+        let pct = 30; // start after upload phase
         progressBar.style.transition = "width 0.5s ease";
 
         fakeProgressTimer = setInterval(() => {
-            if (pct < 30) pct += Math.random() * 8;
-            else if (pct < 60) pct += Math.random() * 4;
-            else if (pct < 85) pct += Math.random() * 2;
-            else if (pct < 92) pct += Math.random() * 0.5;
+            if (pct < 45) pct += Math.random() * 5;
+            else if (pct < 65) pct += Math.random() * 3;
+            else if (pct < 80) pct += Math.random() * 1.5;
+            else if (pct < 92) pct += Math.random() * 0.4;
             // Never exceed 92% until result arrives
             pct = Math.min(pct, 92);
             progressBar.style.width = pct + "%";
@@ -98,6 +96,15 @@ document.addEventListener("DOMContentLoaded", () => {
         btnUpload.disabled = true;
         btnUpload.textContent = "Uploading...";
         document.getElementById("resultCard").style.display = "none";
+        // Reset previous result content
+        document.getElementById("barAi").style.width = "0%";
+        document.getElementById("barHuman").style.width = "0%";
+        document.getElementById("pctAi").textContent = "0%";
+        document.getElementById("pctHuman").textContent = "0%";
+        document.getElementById("resultLabel").textContent = "-";
+        document.getElementById("resultLabel").className = "result-card__label";
+        document.getElementById("resultConfidence").textContent = "-";
+        document.getElementById("resultDetails").textContent = "";
 
         // Real progress for upload phase
         progressWrap.hidden = false;

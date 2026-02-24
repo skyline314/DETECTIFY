@@ -78,6 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!window.requireLogin || !window.requireLogin()) return;
       const token = localStorage.getItem("detectify_token");
 
+      // Clear previous result before starting new humanization
+      document.getElementById("resultBody").hidden = true;
+      document.getElementById("emptyState").hidden = false;
+      output.value = "";
+
       btn.disabled = true;
       btn.textContent = "Processing...";
 

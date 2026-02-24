@@ -22,15 +22,18 @@
 }
 
 .df-hero h1 {
-  font-size: clamp(32px, 4vw, 56px);
-  letter-spacing: 0.5px;
-  margin: 0 0 8px;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  margin: 14px 0 6px;
 }
 
 .df-hero p {
-  margin: 0;
-  opacity: 0.85;
-  font-size: clamp(14px, 1.5vw, 18px);
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 1;
 }
 
 /* ===== Panel ===== */

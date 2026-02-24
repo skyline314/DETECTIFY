@@ -35,6 +35,38 @@ def get_me():
     }), 200
 
 
+@auth_bp.route('/quota', methods=['GET'])
+@jwt_required()
+def get_quota():
+    """Return the current user's daily quota status."""
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    is_premium = user.is_premium_active()
+    limit = int(current_app.config.get('LIMIT_DAILY') or 5)
+
+    if is_premium:
+        return jsonify({
+            "is_premium": True,
+            "usage": None,
+            "limit": None,
+            "remaining": None
+        }), 200
+
+    from app.analysis.services import AnalysisService
+    usage = AnalysisService.get_daily_usage(user_id)
+    remaining = max(0, limit - usage)
+
+    return jsonify({
+        "is_premium": False,
+        "usage": usage,
+        "limit": limit,
+        "remaining": remaining
+    }), 200
+
+
 def generate_confirmation_token(email):
     """Membuat token aman yang berisi email user."""
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])

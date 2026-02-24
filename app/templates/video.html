@@ -87,6 +87,9 @@
     <section class="container app-hero" aria-label="Video detection">
       <h1 class="app-title">AI Video Detection</h1>
       <p class="app-subtitle">Find out whether your video is real or AI generated</p>
+      <div class="quota-badge-row">
+        <div id="quotaBadge"></div>
+      </div>
 
       <div class="upload-card">
         <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload video file">
@@ -199,6 +202,7 @@
   <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/login-guard.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/auth-navbar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/quota-badge.js') }}" defer></script>
   <script src="{{ url_for('static', filename='js/upload-video.js') }}" defer></script>
 </body>
 

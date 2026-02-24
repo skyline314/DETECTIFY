@@ -95,6 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
         btnUpload.disabled = true;
         btnUpload.textContent = "Uploading...";
         document.getElementById("resultCard").style.display = "none";
+        // Reset previous result content
+        document.getElementById("barAi").style.width = "0%";
+        document.getElementById("barHuman").style.width = "0%";
+        document.getElementById("pctAi").textContent = "0%";
+        document.getElementById("pctHuman").textContent = "0%";
+        document.getElementById("resultLabel").textContent = "-";
+        document.getElementById("resultLabel").className = "result-card__label";
+        document.getElementById("resultConfidence").textContent = "-";
+        document.getElementById("resultDetails").textContent = "";
         progressWrap.hidden = false;
         progressBar.style.transition = "width 0.3s ease";
 

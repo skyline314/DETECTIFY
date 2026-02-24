@@ -119,11 +119,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = textInput.value.trim();
 
     if (!selectedLang) return alert("Please choose language first (English / Indonesia).");
-    if (!text) return alert("Please input text or upload a file."); // Simplified check as file content is extracted to textInput
+    if (!text) return alert("Please input text or upload a file.");
 
     // Login guard
     if (!window.requireLogin || !window.requireLogin()) return;
     const token = localStorage.getItem("detectify_token");
+
+    // Clear previous result before starting new analysis
+    document.getElementById("resultBody").hidden = true;
+    document.getElementById("emptyState").hidden = false;
+    updateBar("barAi", "pctAi", 0);
+    updateBar("barHuman", "pctHuman", 0);
+    const confEl = document.getElementById("confidence");
+    if (confEl) confEl.textContent = "-";
+    const sigEl = document.getElementById("signals");
+    if (sigEl) sigEl.textContent = "-";
+    const noteEl = document.getElementById("resultNote");
+    if (noteEl) noteEl.textContent = "";
 
     setLoading(true);
 

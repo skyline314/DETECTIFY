@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import jsonify
+from flask import jsonify, current_app
 from flask_jwt_extended import get_jwt_identity
 from app.models import User
 from app.analysis.services import AnalysisService
@@ -22,7 +22,7 @@ def premium_required(fn):
         # Logika Subscription
         if not is_premium:
             usage = AnalysisService.get_daily_usage(user.user_id)
-            limit = 3
+            limit = int(current_app.config.get('LIMIT_DAILY') or 5)
 
             if usage >= limit:
                 return jsonify({

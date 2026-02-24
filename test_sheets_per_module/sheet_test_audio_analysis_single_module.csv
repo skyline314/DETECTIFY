@@ -1,0 +1,11 @@
+Test Case,Penjelasan Singkat / Scenario,Result
+test_tc_sm_01_auth_fail,Skenario pengujian untuk tc sm 01 auth fail,Passed
+test_tc_sm_02_quota_exceeded,Skenario pengujian untuk tc sm 02 quota exceeded,Passed
+test_tc_sm_03_invalid_extension,Skenario pengujian untuk tc sm 03 invalid extension,Passed
+test_tc_sm_04_model_loading,Skenario pengujian untuk tc sm 04 model loading,Passed
+test_tc_sm_05_resampling,Skenario pengujian untuk tc sm 05 resampling,Passed
+test_tc_sm_06_mixing_mono,Skenario pengujian untuk tc sm 06 mixing mono,Passed
+test_tc_sm_07_segmentation_short,Skenario pengujian untuk tc sm 07 segmentation short,Passed
+test_tc_sm_08_loop_logic,Skenario pengujian untuk tc sm 08 loop logic,Passed
+test_tc_sm_09_voting_fake,Skenario pengujian untuk tc sm 09 voting fake,Passed
+test_tc_sm_10_error_handler,Skenario pengujian untuk tc sm 10 error handler,Passed
