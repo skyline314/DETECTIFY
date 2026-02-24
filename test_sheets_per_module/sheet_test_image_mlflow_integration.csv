@@ -1,2 +1,0 @@
-Test Case,Penjelasan Singkat / Scenario,Result
-test_mlflow_image_model_integration,Test that the Image model loads correctly from MLflow (via artifact download) and can perform prediction.,Passed

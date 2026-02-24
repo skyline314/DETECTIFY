@@ -27,6 +27,8 @@ instance/
 test_detectify.sqlite
 .pytest_cache
 run_benchmark.py
+test_sheets_per_module/
+test_results_sheet.csv
 
 
 # Ignore all ML models and vectorizers

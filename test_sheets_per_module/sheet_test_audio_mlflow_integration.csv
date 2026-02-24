@@ -1,2 +1,0 @@
-Test Case,Penjelasan Singkat / Scenario,Result
-test_mlflow_audio_model_integration,Test that the Audio model loads correctly from MLflow and can perform prediction on a real (silent) wav file.,Passed
