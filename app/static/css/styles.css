@@ -864,20 +864,47 @@ html[data-theme="dark"] .chip {
     display: none;
   }
 
-  /* Keep .btn--primary and .nav-profile-wrapper visible on mobile */
+  /* Hide brand logo image on mobile to save space — text "DetectiFy" stays */
+  .brand__logo {
+    display: none !important;
+  }
 
-  /* Hide Get Started inside hamburger — it stays in the navbar */
-  .mobile-menu .btn--primary {
-    display: none;
+  .brand {
+    padding: 4px 4px;
+    gap: 4px;
+  }
+
+  .brand__name {
+    font-size: 16px;
+  }
+
+  /* Shrink the right capsule */
+  .nav__right {
+    gap: 6px;
+    padding: 5px 6px;
+  }
+
+  /* Smaller icon buttons */
+  .icon-btn {
+    width: 32px;
+    height: 32px;
   }
 
   .nav__icons {
     border-right: 0;
     padding-right: 0;
+    gap: 4px;
   }
 
   .icon-btn--menu {
     display: grid;
+  }
+
+  /* Compact Get Started button — stays visible to the left of the hamburger */
+  .nav__right .btn--primary {
+    padding: 6px 10px;
+    font-size: 11px;
+    white-space: nowrap;
   }
 
   .features {
@@ -2415,12 +2442,12 @@ html[data-theme="light"] .hero__title {
   }
 
   .carousel3d {
-    height: clamp(360px, 80vw, 420px);
+    height: clamp(400px, 80vw, 500px);
   }
 
   .carousel3d__card {
     width: min(220px, 60vw);
-    height: clamp(320px, 50vw, 400px);
+    height: clamp(400px, 50vw, 500px);
   }
 }
 
@@ -4176,11 +4203,6 @@ html[data-theme="light"] .nav__right .btn--primary:active {
 
 /* ===== Responsive: compact avatar on mobile ===== */
 @media (max-width: 760px) {
-  .nav__right .btn--primary {
-    padding: 8px 14px;
-    font-size: 12px;
-  }
-
   .nav-avatar-btn {
     padding: 4px 8px 4px 4px;
     gap: 6px;
