@@ -1,8 +1,7 @@
 from flask import request, jsonify, current_app, url_for, redirect
 from . import auth_bp
 from app.models import User
-from app.extensions import db, mail
-from flask_mail import Message
+from app.extensions import db
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta, timezone

@@ -2,7 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_mail import Mail
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+from flask_migrate import Migrate
 from boto3 import Session
 from botocore.config import Config
 import os
@@ -14,9 +17,8 @@ migrate = Migrate()
 # 2. Inisialisasi JWT (Otentikasi)
 jwt = JWTManager()
 
-# 3. Inisialisasi CORS (Cross-Origin Resource Sharing) dan FLask_Mail
+# 3. Inisialisasi CORS (Cross-Origin Resource Sharing)
 cors = CORS()
-mail = Mail()
 
 # 4. Inisialisasi Sesi Boto3 (AWS S3)
 s3_client = None

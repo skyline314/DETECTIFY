@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 
-__version__ = '1.0.0'
+__version__ = '1.1.2'
 from .config import config
 from .extensions import (
     db, 
@@ -8,7 +8,6 @@ from .extensions import (
     jwt, 
     cors, 
     init_s3_client,
-    mail,
     metrics
 )
 from flask_cors import CORS
@@ -27,7 +26,6 @@ def create_app(config_name='default'):
     migrate.init_app(app, db)
     jwt.init_app(app)
     cors.init_app(app)
-    mail.init_app(app)
     init_s3_client(app)
     
     # Initialize Metrics
@@ -35,7 +33,7 @@ def create_app(config_name='default'):
     # Set static info (optional)
     # Set static info (optional)
     try:
-        metrics.info('app_info', 'Application info', version='1.0.0')
+        metrics.info('app_info', 'Application info', version='1.1.2')
     except ValueError:
         pass # Metric already registered
 

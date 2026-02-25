@@ -53,10 +53,6 @@ class Config:
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 
-    # MAIL
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
-
     #LIMIT
     LIMIT_DAILY = os.environ.get('LIMIT_DAILY')
 

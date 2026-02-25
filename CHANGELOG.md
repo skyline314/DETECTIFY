@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2026-02-25
+
+### Changed
+- Explicitly documented AWS S3 as a mandatory requirement for background Celery tasks, moving it out of optional services.
+- Replaced Flask-Mail completely with Resend API for sending authentication and verification emails.
+- Removed unused Flask-Mail extension and environment variables.
+
 ## [1.1.1] - 2026-02-24
 
 ### Added
