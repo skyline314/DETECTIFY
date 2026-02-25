@@ -48,7 +48,7 @@ To run DetectiFy locally on your machine, follow these steps:
 ### 2. Installation
 Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/skylined214/detectify.git
+git clone https://github.com/skyline314/detectify.git
 cd detectify
 
 # Create and activate a virtual environment
