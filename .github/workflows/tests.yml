@@ -21,10 +21,10 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install system dependencies (FFmpeg for av)
+    - name: Install system dependencies (FFmpeg, Cairo)
       run: |
         sudo apt-get update
-        sudo apt-get install -y pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libavfilter-dev libswscale-dev libswresample-dev
+        sudo apt-get install -y pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libavfilter-dev libswscale-dev libswresample-dev libcairo2-dev
 
     - name: Install dependencies
       run: |
