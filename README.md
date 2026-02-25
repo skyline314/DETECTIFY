@@ -71,12 +71,17 @@ cp .env.example .env
    - `DATABASE_URL`: Your database connection string. For quick local testing, use `sqlite:///detectify.db`.
 3. **Celery & Redis** (Required for background ML tasks):
    - `CELERY_BROKER_URL` / `CELERY_RESULT_BACKEND`: Use `redis://localhost:6379/0` if running Redis locally.
-4. **MLflow / Model Weights (Provided by Us)**:
-   - `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`: **These credentials will be provided by the DetectiFy team.** You must use our provided MLflow server to automatically download the pre-trained model weights.
-5. **Additional Services (Optional for basic local run)**:
-   - `AWS_S3_...`: S3 credentials if you are storing large user uploads remotely.
-   - `RESEND_API_KEY`: For sending verification and password reset emails.
-   - `MIDTRANS_...`: Required if you want to test premium subscription payments.
+4. **MLflow / Model Weights**: Use the provided MLflow server to automatically download the pre-trained model weights.
+   ```env
+   MLFLOW_TRACKING_URI=https://dagshub.com/theofrolicdean/Detectify-ML-Model.mlflow
+   MLFLOW_TRACKING_USERNAME=theofrolicdean
+   MLFLOW_TRACKING_PASSWORD=efcef74ceffc763f3fab9c5e166fb50ea5e49444
+   ```
+5. **AWS S3** (Required):
+   - `AWS_S3_...`: S3 credentials are required because S3 is used as the temporary data storage between the Flask app and Celery workers.
+6. **Additional Services**:
+   - `RESEND_API_KEY` (Optional): For sending verification and password reset emails.
+   - `MIDTRANS_...` (Optional): Required if you want to test premium subscription payments.
 
 ### 4. Running the Application
 You will need to run two separate processes for the app to function fully:
